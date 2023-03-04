@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{% static 'css/appstyle.css' %}" />
+    <title>Login Page</title>
+  </head>
+  <body>
+    <div class="login-body">
+      <div class="login-container">
+        <form action="" method="POST">
+          {% csrf_token %}
+            <h2 class="login-text">LOGIN</h2>
+            <br />
+            <div class="login-error">
+              <p class="error">{{  messages  }}</p>
+            </div>
+            <label for="login-username" class="login-input-element">Username</label> <br />
+            <input type="text" class="login-input" id="login-username" name="username"/> <br />
+            <label for="login-password" class="login-input-element">Password</label> <br />
+            <input type="text" class="login-input" id="login-password" name="password"/> <br />
+            <input type="submit" class="login-submit-btn" />
+        </form>
+      </div>
+    </div>
+    <script>
+        const loginSubmitBtn = document.querySelector(".login-submit-btn")
+        const loginPasswordInput = document.querySelector("#login-password")
+        const loginUsernameInput = document.querySelector("#login-username")
+
+        loginSubmitBtn.addEventListener('click', () => {
+          loginUsernameInput.textContent += ""
+          loginPasswordInput.textContent += ""
+        })
+    </script>
+  </body>
+</html>

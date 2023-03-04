@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{% static 'css/appstyle.css' %}" />
+    <title>Main page</title>
+  </head>
+  <body>
+    <nav class="main-nav">
+      <div class="main-nav-menu-container">
+        <div class="main-nav-menu"></div>
+        <div class="main-nav-menu"></div>
+        <div class="main-nav-menu"></div>
+      </div>
+    </nav>
+    <a href="{% url 'subsmain' %}">
+      <div class="main-select-transaction main-pink">Sub-distributors</div>
+    </a>
+    <a href="{% url 'wholesales' %}">
+      <div class="main-select-transaction main-purple">Wholesales</div>
+    </a>
+    <a href="{% url 'retail' %}">
+      <div class="main-select-transaction main-pink-purple">Retail</div>
+    </a>
+
+    <a href="{% url 'deliveryshop' %}">
+      <div class="main-select-transaction main-pink-pink">Delivery</div>
+    </a>
+
+    <div class="main-menu-container-main-con main-menu-hide">
+
+      <div class="main-menu-container" id="showmenu">
+        <div class="main-menu-exit-container">
+          <div class="main-menu-exit main-menu-exit-bar1"></div>
+          <div class="main-menu-exit main-menu-exit-bar2"></div>
+        </div>
+
+        <ul>
+          <li class="main-menu-item"><a href="{% url 'adminpanel' %}"> ADMIN PANEL</a></li>
+          <li class="main-menu-item"><a href="{% url 'stockquantity' %}"> STOCK QUANTITY</a></li>
+          <li class="main-menu-item"><a href="{% url 'invoice' %}"> UPLOAD INVOICE</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <script>
+      /* For main menu's(index.html) menu bar */
+      let mainMenuDisplay = document.querySelector(".main-nav-menu-container");
+      let mainMenuRemove = document.querySelector(".main-menu-exit-container");
+      let mainMenuTarget = document.querySelector(".main-menu-container-main-con");
+
+      mainMenuDisplay.addEventListener("click", () => {
+        if (mainMenuTarget.classList.contains("main-menu-hide")) {
+          mainMenuTarget.classList.remove("main-menu-hide");
+          mainMenuTarget.classList.add("main-menu-main-container-main-animation")
+        } else {
+          return False;
+        }
+      });
+
+      mainMenuRemove.addEventListener("click", () => {
+        if (mainMenuRemove.classList.contains("main-menu-hide")) {
+          return True;
+        } else {
+          mainMenuTarget.classList.add("main-menu-hide");
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/appstyle.css' %}">
+    <title>Invoice</title>
+</head>
+<body>
+    
+    <header class="invoice-head">
+        <div class="invoice-head-title">Invoice</div>
+        <div class="invoice-head-motive">Record Invoice for Newly Delivered Goods</div>
+    </header>
+
+    <main class="invoice-main">
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="invoice-main-section">
+                <div class="invoice-main-company-con">
+                    <div class="invoice-main-company-display">Choose Company</div>
+                    <div class="invoice-main-company-opt-con invoice-hide">
+                        {% for company in companies %}
+                        <div class="invoice-main-company-opt">{{company}}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="invoice-main-backend-con" style="display: none;">
+                        
+                    </div>
+                </div>
+
+                <!--Add form here-->
+
+                <div class="invoice-details">
+
+                    <div class="upload-invoice-text-con">
+                        <p class="upload-invoice-txt">Upload Invoice</p>
+                    </div>
+
+                    <div class="invoice-details-con">
+                        <div class="invoice-number-txt-val">Add Invoice Number: </div>
+                        <input type="text" class="invoice-number-input" name="invoicenumber">
+                    </div>
+
+                    <div class="invoice-details-con">
+                        <p class="invoice-number-txt-val">Upload Invoice Image: </p>
+                        <input type="file" required name="invoiceimage" class="upload-invoice-file">
+                    </div>
+
+                    <div class="upload-invoice-con">
+                        <input type="submit" class="submit-invoice" placeholder="Submit Invoice">
+                    </div>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </main>
+
+    
+    <script>
+        let invoiceChooseComTxt = document.querySelector(".invoice-main-company-display")
+        let invoiceComOpt = document.querySelector(".invoice-main-company-opt-con")
+        let invoiceCom = document.querySelectorAll(".invoice-main-company-opt")
+
+        //Backend variables
+        let invoiceBackendCon = document.querySelector(".invoice-main-backend-con")
+
+        invoiceChooseComTxt.addEventListener('click', () => {
+            invoiceComOpt.classList.toggle("invoice-hide")
+        })
+
+        invoiceCom.forEach(e => {
+            e.addEventListener('click', () => {
+                invoiceChooseComTxt.textContent = e.textContent
+                invoiceComOpt.classList.add("invoice-hide")
+                invoiceBackendCon.innerHTML = `<input name="company" value="${e.textContent}"/>`
+            })
+        })
+
+    </script>
+</body>
+</html>

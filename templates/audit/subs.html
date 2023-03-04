@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/appstyle.css' %}" />
+    <title>Subs Page</title>
+</head>
+  <body>
+    <div class="subs-body-container">  
+      <header class="subs-header">
+          <h4>SUB-DISTRIBUTORS</h4>
+        </header>
+    
+        <main class="subs-body">
+    
+          <section class="subs-display">
+            <section class="subs-product-display">
+              <div class="subs-customer-search">
+                <h3 class="subs-customer-name-value"></h3>
+                <input
+                  type="text"
+                  class="subs-search-variant-input"
+                  placeholder="Search for a Variant"
+                  onkeyup="subsSearch()"
+                />
+              </div>
+              <div class="subs-name-item"><p>{{ subname }}</p></div>
+              <div class="subs-product-container">
+                {% for product in products %}
+                <div class="subs-item">
+                  <img src="{{ product.image.url }}" alt="" />
+                  <p class="subs-product-name">{{ product.name }}</p>
+                  <p class="subs-page-price">
+                    Subs Price: <span class="subs-item-price">{{ product.subPrice|floatformat }}</span>
+                  </p>
+    
+                  <button class="subs-sell-btn">SELL</button>
+                </div>
+                {% endfor %}
+    
+              </div>
+            </section>
+    
+            <section class="subs-calculate-btn-container">
+                <button class="subs-calculate-btn">CALCULATE</button>
+            </section>
+              </section>
+          </section>
+    
+          
+          <div class="subs-popup-container subs-hidden">
+            <div class="subs-popup">
+              <div class="subs-popup-title-container">
+                <div class="subs-popup-title-main-headers">
+                  <p class="subs-popup-title-main-headers-title">
+                    How many
+                    <span class="subs-popup-product-name"></span>?
+                  </p>
+                  <p class="subs-popup-title-main-headers-title-price">
+                    (Price:
+                    <span class="subs-popup-product-price"></span>)
+                  </p>
+                </div>
+                <div class="subs-menu-exit-container">
+                  <div class="subs-menu-exit main-menu-exit-bar1"></div>
+                  <div class="subs-menu-exit main-menu-exit-bar2"></div>
+                </div>
+              </div>
+              <input
+                type="text"
+                class="subs-popup-input"
+                placeholder="Enter amount"
+              />
+              <br />
+                <input type="submit" class="subs-popup-submit" />
+            </div>
+          </div>
+        </main>
+
+
+        <div class="subs-calculate-display-div subs-hidden">
+          <h1 class="subs-times">&times;</h1>
+          <div class="subs-container-div">
+            <div class="subs-calculate-details">
+              <p>Product</p>
+              <p>Quantity</p>
+              <p>Price</p>
+              <p>total</p>
+            </div>
+
+            <div class="subs-calculate-details-products">
+                
+            </div>
+
+            <div class="subs-calculate-total">Total <span class="subs-total"></span></div>
+
+            <div class="subs-calc-btn-container">
+            <Button class="subs-calculate-go-back">Go Back</Button>
+            <form method="POST">
+             {% csrf_token %} 
+              <Button class="subs-calculate-finish-transaction" type="button">Finish Transaction</Button>
+              
+            </form>
+          </div>
+          </div>
+        </div>
+
+
+        <div class="subs-third-bgg subs-hide">
+          <div class="subs-third-popup-bg-con">
+            <div class="subs-third-popup-main-con">
+              <div class="subs-third-popup-main-con-pre-con">
+                <div class="subs-third-popup-data-con">
+
+                  <div class="subs-third-popup-data-con-txt-con">
+                    <p class="subs-third-popup-data-con-txt"><span class="subs-third-popup-data-con-txt-name-of-sub">Mr Uche: </span><span class="subs-third-popup-data-con-txt-sub-total-amt">443000</span> </p>
+                  </div>
+
+                  <div class="subs-third-popup-data-con-mode-of-payment-con">
+
+                    <div class="subs-third-popup-data-con-mode-of-payment">
+                      <p class="subs-third-popup-data-con-mode-of-payment-txt">Mode Of Payment</p>
+                    </div>
+
+                    <div class="subs-third-popup-data-con-mode-of-payment-payment-options-con subs-hide">
+
+                      <div class="subs-third-popup-data-con-cash-option">
+                        <p class="subs-third-popup-data-con-cash-option-txt">Cash</p>
+                      </div>
+
+                      <div class="subs-third-popup-data-con-transfer-option">
+                        <p class="subs-third-popup-data-con-transfer-option-txt">Transfer</p>
+                      </div>
+
+                      <div class="subs-third-popup-data-con-pos-option">
+                        <p class="subs-third-popup-data-con-pos-option-txt">POS</p>
+                      </div>
+
+                    </div>
+                  </div>
+
+                  <div class="subs-third-popup-data-cash-details-main-con subs-hide">
+
+                    <div class="subs-third-popup-data-cash-details-amt-collected-con">
+                      <div class="subs-third-popup-data-cash-details-amt-collected-txt-con">
+                        <p class="subs-third-popup-data-cash-details-amt-collected-txt">Amount Collected From <span class="subs-third-popup-data-cash-details-amt-collected-txt-sub-name"></span></p>
+                      </div>
+                      <div class="subs-third-popup-data-cash-details-amt-collected-input-con">
+                        <input type="text" class="subs-third-popup-data-cash-details-amt-collected-input">
+                      </div>
+                    </div>
+
+                    <div class="subs-third-popup-data-cash-details-to-balance-con">
+                      <div class="subs-third-popup-data-cash-details-to-balance-txt-con">
+                        <p class="subs-third-popup-data-cash-details-to-balance-txt">To balance: </p>
+                      </div>
+                      <div class="subs-third-popup-data-cash-details-to-balance-input-con">
+                        <input type="text" class="subs-third-popup-data-cash-details-to-balance-input">
+                      </div>
+                    </div>
+
+                    <div class="subs-third-popup-data-cash-details-balance-con">
+                      <div class="subs-third-popup-data-cash-details-balance-txt-con">
+                        <p class="subs-third-popup-data-cash-details-balance-txt">Balance: </p>
+                      </div>
+                      <div class="subs-third-popup-data-cash-details-balance-input-con">
+                        <input type="text" class="subs-third-popup-data-cash-details-balance-input">
+                      </div>
+                    </div>
+
+
+                  </div>
+
+                  <div class="subs-third-popup-data-cash-details-btns-con">
+
+                    <div class="subs-third-popup-data-cash-details-btns-go-back-btn-con">
+                      <button class="subs-third-popup-data-cash-details-btns-go-back-btn">Go Back</button>
+                    </div>
+
+                    <form method="POST" class="third-popup-submit-form">
+                      {% csrf_token %}
+
+                      <div class="subs-third-popup-data-cash-details-btns-submit-btn-con">
+                        <button class="subs-third-popup-data-cash-details-btns-submit-btn" type="button">Submit</button>
+                      </div>
+
+                      <div class="subs-backend-con" style="display:none;">
+                
+                      </div>
+
+                    </form>
+
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+    <script>
+
+      /* For the subs's(subs.html) hidden display */
+
+      let subsDisplay = document.querySelector(".subs-display")
+      let exitContainer = document.querySelector(".subs-menu-exit-container")
+      let subsPopup = document.querySelector(".subs-popup-container")
+      let subsSellBtns = document.querySelectorAll(".subs-sell-btn")
+      let subNameItem = document.querySelector(".subs-name-item")
+
+      let subsPopupProductName = document.querySelector(".subs-popup-product-name")
+      let subsPopupSubmit = document.querySelector(".subs-popup-submit")
+      let subsPopupProductPrice = document.querySelector(".subs-popup-product-price")
+
+      let subsCalculateBtn = document.querySelector(".subs-calculate-btn")
+      let subTotalAmount = document.querySelector(".subs-total")
+
+      let subsItem = document.querySelectorAll(".subs-item")
+
+      let subsSearchVariant = document.querySelector(".subs-search-variant-input")
+
+      let productName = document.querySelectorAll(".subs-product-name")
+
+      let subsFinishTransaction = document.querySelector(".subs-calculate-finish-transaction")
+
+      //Backend Variables
+      let subsBackendCon = document.querySelector(".subs-backend-con")
+
+      let subsCalculatePopupDisplay = document.querySelector(".subs-calculate-display-div")
+      let subsCalculateDetails = document.querySelector(".subs-calculate-details")
+      let subsCalculateDetailsProducts = document.querySelector(".subs-calculate-details-products")
+      let subsTotal = document.querySelector(".subs-total")
+      let subsTimes = document.querySelector(".subs-times")
+      let subsGoBack = document.querySelector(".subs-calculate-go-back")
+
+      // Third Popup
+      let subsThirdPopupBgg = document.querySelector(".subs-third-bgg")
+      let subsThirdPopupBackground = document.querySelector(".subs-third-popup-bg-con")
+      let subsThirdPopupSubName = document.querySelector(".subs-third-popup-data-con-txt-name-of-sub")
+      let subsThirdPopupSubAmount = document.querySelector(".subs-third-popup-data-con-txt-sub-total-amt")
+      let subsThirdPopupModeOfPaymentTxtCon = document.querySelector(".subs-third-popup-data-con-mode-of-payment")
+      let subsThirdPopupModeOfPaymentTxt = document.querySelector(".subs-third-popup-data-con-mode-of-payment-txt")
+      let subsThirdPopupModeOfPaymentOptionsCon = document.querySelector(".subs-third-popup-data-con-mode-of-payment-payment-options-con")
+      let subsThirdPopupCashOptionTxtCon = document.querySelector(".subs-third-popup-data-con-cash-option")
+      let subsThirdPopupCashOptionTxt = document.querySelector(".subs-third-popup-data-con-cash-option-txt")
+      let subsThirdPopupTransferOptionTxtCon = document.querySelector(".subs-third-popup-data-con-transfer-option")
+      let subsThirdPopupTransferOptionTxt = document.querySelector(".subs-third-popup-data-con-transfer-option-txt")
+      let subsThirdPopupPosOptionTxtCon = document.querySelector(".subs-third-popup-data-con-pos-option")
+      let subsThirdPopupPosOptionTxt = document.querySelector(".subs-third-popup-data-con-pos-option-txt")
+      let subsThirdPopupCashCollectedDetails = document.querySelector(".subs-third-popup-data-cash-details-main-con")
+      let subsThirdPopupAmtCollectedInput = document.querySelector(".subs-third-popup-data-cash-details-amt-collected-input")
+      let subsThirdPopupToBalanceInput = document.querySelector(".subs-third-popup-data-cash-details-to-balance-input")
+      let subsThirdPopupBalanceInput = document.querySelector(".subs-third-popup-data-cash-details-balance-input")
+      let subsThirdPopupGoBackBtnCon = document.querySelector(".subs-third-popup-data-cash-details-btns-go-back-btn-con")
+      let subsThirdPopupGoBackBtn = document.querySelector(".subs-third-popup-data-cash-details-btns-go-back-btn")
+      let subsThirdPopupSubmitBtnCon = document.querySelector(".subs-third-popup-data-cash-details-btns-submit-btn-con")
+      let subsThirdPopupSubmitBtn = document.querySelector(".subs-third-popup-data-cash-details-btns-submit-btn")
+
+
+      let itemspurchased = {}
+      
+      /* For Search for a Variant functionality */
+
+      function subsSearch() {
+        subsItem.forEach(function(n) {
+          n.classList.add("subs-hidden")
+        })
+
+        let value = subsSearchVariant.value
+
+        productName.forEach(function(e) {
+          if(e.textContent.toUpperCase().includes(value.toUpperCase().trim())) {
+              e.parentElement.classList.remove("subs-hidden")
+        }
+        })
+
+      }
+
+
+
+      /* To display items to sell */
+
+      subsSellBtns.forEach(function(subsSellBtn) {
+          subsSellBtn.addEventListener('click', function(e) {
+              let itemName = e.currentTarget.parentElement.querySelector(".subs-product-name")
+              let itemPrice = e.currentTarget.parentElement.querySelector(".subs-item-price")
+              subsPopupProductName.textContent = itemName.textContent
+              subsPopupProductPrice.innerHTML = itemPrice.textContent
+              if(subsPopup.classList.contains("subs-hidden")) {
+                  subsPopup.classList.remove("subs-hidden")
+                }
+          })
+      })
+
+
+      subsPopupSubmit.addEventListener('click', function(e) {
+          let nameOfItem = e.currentTarget.parentElement.querySelector(".subs-popup-product-name").innerText
+          let productAmount = Number(e.currentTarget.parentElement.querySelector(".subs-popup-input").value)
+          let productPrice = Number(e.currentTarget.parentElement.querySelector(".subs-popup-product-price").innerText)
+          itemspurchased[nameOfItem] = [productAmount, productPrice]
+          subsPopup.classList.add("subs-hidden")
+      })
+
+
+
+      exitContainer.addEventListener('click', function() {
+          subsPopup.classList.add("subs-hidden")
+      })
+
+      subsCalculateBtn.addEventListener('click', function() {
+        if(subsCalculatePopupDisplay.classList.contains("subs-hidden")) {
+          subsCalculatePopupDisplay.classList.remove("subs-hidden")
+        }
+        let i = 0
+        for(x in itemspurchased) {
+          let subsItemTotal = itemspurchased[x][0] * itemspurchased[x][1]
+          i += subsItemTotal
+          subsCalculateDetailsProducts.innerHTML += `<div class="subs-calculate-details"> <p>${x}</p> <p>${itemspurchased[x][0]}</p> <p>${itemspurchased[x][1]}</p> <p>${subsItemTotal}</p></div>`
+        }
+        subsTotal.textContent = i
+      })
+
+
+      subsTimes.addEventListener('click', function() {
+        subsCalculatePopupDisplay.classList.add("subs-hidden")
+      })
+
+      subsGoBack.addEventListener('click', function() {
+        history.back()
+      })
+
+      subsFinishTransaction.addEventListener('click', function() {
+        // for(x in itemspurchased) {
+        //   subsBackendCon.innerHTML += `<div style="display:none;"><input name="${x}" value="${itemspurchased[x][0]}"/></div>`
+        // }
+
+        subsThirdPopupBgg.classList.remove("subs-hide")
+        subsThirdPopupSubName.textContent = subNameItem.textContent + ":"
+        subsThirdPopupSubAmount.textContent = subTotalAmount.textContent
+      })
+
+      //Third Popup Functionality
+
+      subsThirdPopupModeOfPaymentTxtCon.addEventListener('click', () => {
+        subsThirdPopupModeOfPaymentOptionsCon.classList.toggle("subs-hide")
+      })
+
+
+      subsThirdPopupCashOptionTxtCon.addEventListener('click', () => {
+        subsThirdPopupModeOfPaymentTxt.textContent = subsThirdPopupCashOptionTxt.textContent
+        subsThirdPopupCashCollectedDetails.classList.remove("subs-hide")
+        subsThirdPopupModeOfPaymentOptionsCon.classList.add("subs-hide")
+      })
+
+      subsThirdPopupTransferOptionTxtCon.addEventListener('click', () => {
+        subsThirdPopupModeOfPaymentTxt.textContent = subsThirdPopupTransferOptionTxt.textContent
+        subsThirdPopupModeOfPaymentOptionsCon.classList.add("subs-hide")
+        subsThirdPopupCashCollectedDetails.classList.add("subs-hide")
+      })
+
+      subsThirdPopupPosOptionTxtCon.addEventListener('click', () => {
+        subsThirdPopupModeOfPaymentTxt.textContent = subsThirdPopupPosOptionTxt.textContent
+        subsThirdPopupModeOfPaymentOptionsCon.classList.add("subs-hide")
+        subsThirdPopupCashCollectedDetails.classList.add("subs-hide")
+
+      })
+
+      subsThirdPopupGoBackBtn.addEventListener('click', () => {
+        subsThirdPopupBgg.classList.add("subs-hide")
+      })
+
+      subsThirdPopupSubmitBtn.addEventListener('click', () => {
+        if(subsThirdPopupModeOfPaymentTxt.textContent.trim() == "Cash" && (subsThirdPopupAmtCollectedInput.value == "" || subsThirdPopupToBalanceInput.value == "" || subsThirdPopupBalanceInput.value == "")) {
+          subsThirdPopupGoBackBtnCon.classList.add("subs-hide")
+        }else if(subsThirdPopupModeOfPaymentTxt.textContent.trim() == "Mode Of Payment") {
+          subsThirdPopupGoBackBtnCon.classList.add("subs-hide")
+        }else {
+          if(subsThirdPopupModeOfPaymentTxt.textContent.trim() == "Cash") {
+            subsBackendCon.innerHTML += `<div style="display: none;"><input type="text" name="subname" value="${subNameItem.textContent}"/><input type="text" name="subproductvalue" value="${subsTotal.textContent}"/><input type="text" name="subsmodeofpayment" value="Cash"/><input type="text" name="amtcollectedfromsub" value="${subsThirdPopupAmtCollectedInput.value}"/><input type="text" name="substobalance" value="${subsThirdPopupToBalanceInput.value}"/><input type="text" name="subsbalance" value="${subsThirdPopupBalanceInput.value}"/></div>`
+            for(x in itemspurchased) {
+              subsBackendCon.innerHTML += `<div style="display: none;"><input type="text" name="${x}" value="${itemspurchased[x][0]}"/></div>`
+            }
+            subsThirdPopupSubmitBtn.setAttribute("type", "submit")
+          }else if(subsThirdPopupModeOfPaymentTxt.textContent.trim() == "Transfer") {
+            subsBackendCon.innerHTML += `<div style="display: none;"><input type="text" name="subname" value="${subNameItem.textContent}"/><input type="text" name="subproductvalue" value="${subsTotal.textContent}"/><input type="text" name="subsmodeofpayment" value="Transfer"/></div>`
+            for(x in itemspurchased) {
+              subsBackendCon.innerHTML += `<div style="display: none;"><input type="text" name="${x}" value="${itemspurchased[x][0]}"/></div>`
+            }
+            subsThirdPopupSubmitBtn.setAttribute("type", "submit")
+          }else if(subsThirdPopupModeOfPaymentTxt.textContent.trim() == "POS") {
+            subsBackendCon.innerHTML += `<div style="display: none;"><input type="text" name="subname" value="${subNameItem.textContent}"/><input type="text" name="subproductvalue" value="${subsTotal.textContent}"/><input type="text" name="subsmodeofpayment" value="POS"/></div>`
+            for(x in itemspurchased) {
+              subsBackendCon.innerHTML += `<div style="display: none;"><input type="text" name="${x}" value="${itemspurchased[x][0]}"/></div>`
+            }
+            subsThirdPopupSubmitBtn.setAttribute("type", "submit")
+          }else {
+            pass
+          }
+        }
+      })
+
+
+
+      
+
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{% static 'css/appstyle.css' %}" />
+    <title>Stock quantity</title>
+  </head>
+  <body>
+    <header class="stock-header">
+      <div class="stock-header-title">STOCK QUANTITY</div>
+
+      <nav class="stock-header-nav">
+        {% if showOpeningStockBar %}
+          <div class="stock-item stock-opening">OPENING STOCK</div>
+        {% else %}
+          <div class="stock-item stock-opening stock-hide">OPENING STOCK</div>
+        {% endif %}
+        <div class="stock-item stock-new">NEW STOCK</div>
+        <div class="stock-item stock-closing">CLOSING STOCK</div>
+      </nav>
+    </header>
+
+    <main>
+      <!---Opening Stock starts here-->
+
+      <div class="stock-main-opening stock-hide">
+        <form method="POST">
+        {% csrf_token %}
+        <input type="text" name="opening-stock" style="display: none;">
+        {% for company in companies %}
+        <div class="stock-item-type">
+          <div class="stock-item-type-title">{{ company.name }}</div>
+  
+          <div class="stock-item-type-products">
+            {% for product in products %}
+            {% if product.company.name == company.name %}
+            <div class="stock-item-type-product">
+              <img
+                src="{{ product.image.url }}"
+                alt=""
+                class="stock-item-type-image"
+              />
+              <p class="stock-item-type-product-name">{{ product.name }}</p>
+              <p class="stock-item-type-product-status">Opening Stock Value</p>
+              <input type="text" class="stock-item-type-product-input stock-item-opening-input"/>
+            </div>
+            {% endif %}
+            {% endfor %}
+
+          </div>
+        </div>
+        {% endfor %}
+
+        <div class="stock-item-opening-stock-submit-btn-con">
+          <button class="stock-item-opening-stock-submit" type="button">Submit Opening Stock</button>
+        </div>
+
+      </form> 
+      </div>
+
+
+      <!--Opening Stock ends here-->
+
+      <!--New Stock starts here-->
+
+      <div class="stock-main-new stock-hide">
+        <form method="POST">
+          {% csrf_token %}
+          <input type="text" name="new-stock" style="display: none;">
+          {% for company in companies %}
+          <div class="stock-item-type">
+            <div class="stock-item-type-title">{{ company.name }}</div>
+            <div class="stock-item-type-products">
+              {% for product in products %}
+              {% if product.company.name == company.name %}
+              <div class="stock-item-type-product">
+                <img
+                  src="{{ product.image.url }}"
+                  alt=""
+                  class="stock-item-type-image"
+                />
+                <p class="stock-item-type-product-name">{{ product.name }}</p>
+                <p class="stock-item-type-product-status">New Stock Value</p>
+                <input type="text" class="stock-item-type-product-input stock-item-new-input"/>
+              </div>
+              {% endif %}
+              {% endfor %}
+
+            </div>
+          </div>
+          {% endfor %}
+
+          <div class="stock-item-new-stock-submit-btn-con">
+            <button class="stock-item-new-stock-submit" type="button">Submit New Stock</button>
+          </div>
+      </form> 
+      </div>
+
+      <!--New Stock ends here-->
+
+      <!--Closing Stock starts here-->
+
+      <div class="stock-main-closing stock-hide">
+        <form method="POST">
+          {% csrf_token %}
+          <input type="text" name="closing-stock" style="display: none;">
+          {% for company in companies %}
+          <div class="stock-item-type">
+            <div class="stock-item-type-title">{{ company.name }}</div>
+            <div class="stock-item-type-products">
+              {% for product in products %}
+              {% if product.company.name == company.name %}
+              <div class="stock-item-type-product">
+                <img
+                  src="{{ product.image.url }}"
+                  alt=""
+                  class="stock-item-type-image"
+                />
+                <p class="stock-item-type-product-name">{{ product.name }}</p>
+                <p class="stock-item-type-product-status">Closing Stock Value</p>
+                <input type="text" class="stock-item-type-product-input stock-item-closing-input"/>
+              </div>
+              {% endif %}
+              {% endfor %}
+
+            </div>
+          </div>
+          {% endfor %}
+
+          <div class="stock-item-closing-stock-submit-btn-con">
+            <button class="stock-item-closing-stock-submit" type="button">Submit Closing Stock</button>
+          </div>
+      </form> 
+      </div>
+
+      <!--Closing Stock ends here-->
+
+      <!--Final Closing stock page starts here-->
+
+      <div class="stock-main-closed stk-hide">
+        <div class="stock-main-closed-elements">
+          <form method="POST" class="stock-main-closed-form">
+            {% csrf_token %}
+            <div style="display: none;">
+              <input type="text" name="closed">
+            </div>
+            <div class="stock-main-closed-elements-con">
+
+              <div class="stock-main-closed-shop-sales-handover-con">
+                <div class="stock-main-closed-shop-sales-handover-con-title-con">
+                  <p class="stock-main-closed-shop-sales-handover-con-title">Total value of your handover</p>
+                </div>
+                <div class="stock-main-closed-shop-sales-handover-con-input">
+                  <input type="text" class="stock-main-closed-shop-sales-handover-input" name="shopsaleshandover">
+                </div>
+              </div>
+
+              <div class="stock-main-closed-shop-delivery-handover-con">
+                <div class="stock-main-closed-shop-delivery-handover-con-title-con">
+                  <p class="stock-main-closed-shop-delivery-handover-con-title">Total value of Delivery driver's handover</p>
+                </div>
+                <div class="stock-main-closed-shop-delivery-handover-con-input">
+                  <input type="text" class="stock-main-closed-shop-delivery-handover-input" name="shopdeliveryhandover">
+                </div>
+              </div>
+
+              <div class="stock-main-closed-shop-handover-btn-con">
+                <Button class="stock-main-closed-shop-handover-btn" type="button">Submit</Button>
+              </div>
+
+
+            </div>
+          </form>
+
+          <div class="stock-main-closed-error-con stock-hide">
+            <p class="stock-main-closed-error">Please, fill in your handover and the delivery driver's handover before submitting</p>
+          </div>
+
+        </div>
+      </div>
+      <!--Final closing stock page ends here-->
+
+
+    </main>
+
+    <script>
+      let stockNavOpening = document.querySelector(".stock-opening");
+      let stockNavNew = document.querySelector(".stock-new");
+      let stockNavClosing = document.querySelector(".stock-closing");
+
+      let stockMainOpening = document.querySelector(".stock-main-opening");
+      let stockMainNew = document.querySelector(".stock-main-new");
+      let stockMainClosing = document.querySelector(".stock-main-closing");
+
+      let stockOpeningStockProductInput = document.querySelectorAll(".stock-item-opening-input")
+      let stockNewStockProductInput = document.querySelectorAll(".stock-item-new-input")
+      let stockClosingStockProductInput = document.querySelectorAll(".stock-item-closing-input")
+
+      let stockOpeningSubmitBtn = document.querySelector(".stock-item-opening-stock-submit")
+      let stockNewSubmitBtn = document.querySelector(".stock-item-new-stock-submit")
+      let stockClosingSubmitBtn = document.querySelector(".stock-item-closing-stock-submit")
+
+      let stockMainNavCon = document.querySelector(".stock-header-nav")
+      let stockMainClosed = document.querySelector(".stock-main-closed")
+      let stockMainClosedShopSalesHandoverInput = document.querySelector(".stock-main-closed-shop-sales-handover-input")
+      let stockMainClosedDeliveryHandoverInput = document.querySelector(".stock-main-closed-shop-delivery-handover-input")
+      let stockMainClosedHandoverButton = document.querySelector(".stock-main-closed-shop-handover-btn")
+      let stockMainClosedErrorCon = document.querySelector(".stock-main-closed-error-con")
+      let stockLclStorage = JSON.parse(localStorage.getItem("closingstatus"))
+
+
+    if(stockLclStorage) {
+      stockMainNavCon.classList.add("stk-hide")
+      stockMainClosed.classList.remove("stk-hide")
+
+      stockMainClosedHandoverButton.addEventListener('click', () => {
+        if(stockMainClosedShopSalesHandoverInput.value != "" && stockMainClosedDeliveryHandoverInput.value !== "") {
+          stockMainClosedHandoverButton.setAttribute("type", "submit")
+          localStorage.removeItem("closingstatus")
+        }else {
+          stockMainClosedErrorCon.classList.remove("stock-hide")
+        }
+      })
+
+
+    }else {
+      stockNavOpening.addEventListener("click", function () {
+        stockNavOpening.classList.add("stock-item-active");
+        stockNavNew.classList.remove("stock-item-active");
+        stockNavClosing.classList.remove("stock-item-active");
+
+        stockMainOpening.classList.remove("stock-hide");
+        stockMainNew.classList.add("stock-hide");
+        stockMainClosing.classList.add("stock-hide");
+      });
+
+      stockNavNew.addEventListener("click", function () {
+        stockNavOpening.classList.remove("stock-item-active");
+        stockNavNew.classList.add("stock-item-active");
+        stockNavClosing.classList.remove("stock-item-active");
+
+        stockMainOpening.classList.add("stock-hide");
+        stockMainNew.classList.remove("stock-hide");
+        stockMainClosing.classList.add("stock-hide");
+      });
+
+      stockNavClosing.addEventListener("click", function () {
+        stockNavOpening.classList.remove("stock-item-active");
+        stockNavNew.classList.remove("stock-item-active");
+        stockNavClosing.classList.add("stock-item-active");
+
+        stockMainOpening.classList.add("stock-hide");
+        stockMainNew.classList.add("stock-hide");
+        stockMainClosing.classList.remove("stock-hide");
+      });
+
+      stockOpeningSubmitBtn.addEventListener('click', () => {
+        stockOpeningStockProductInput.forEach(e => {
+          let stockProductName = e.parentElement.querySelector(".stock-item-type-product-name")
+          if(e.value !== "") {
+            e.setAttribute("name", stockProductName.textContent)
+          }
+        })
+        stockOpeningSubmitBtn.setAttribute("type", "submit")
+      })
+
+      stockNewSubmitBtn.addEventListener('click', () => {
+        stockNewStockProductInput.forEach(e => {
+          let stockProductName = e.parentElement.querySelector(".stock-item-type-product-name")
+          if(e.value !== "") {
+            e.setAttribute("name", stockProductName.textContent)
+          }
+        })
+        stockNewSubmitBtn.setAttribute("type", "submit")
+      })
+
+      stockClosingSubmitBtn.addEventListener('click', () => {
+        stockClosingStockProductInput.forEach(e => {
+          let stockProductName = e.parentElement.querySelector(".stock-item-type-product-name")
+          if(e.value !== "") {
+            e.setAttribute("name", stockProductName.textContent)
+          }
+        })
+        stVal = {
+          'closingstat': 'closingstockrecorded'
+        }
+        localStorage.setItem("closingstatus", JSON.stringify(stVal))
+        stockClosingSubmitBtn.setAttribute("type", "submit")
+      })
+    } 
+    
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{% static 'css/appstyle.css' %}" />
+    <title>Wholesales Page</title>
+  </head>
+  <body>
+    <header class="wholesales-header">
+      <h4>WHOLESALES</h4>
+    </header>
+
+    <main class="wholesales-body">
+      <section class="wholesales-customer-info">
+        <div class="form-container">
+          <input
+            type="text"
+            placeholder="Customer name"
+            id="wholesales-customer-name"
+          />
+        </div>
+        <input type="submit" class="wholesales-submit-btn" />
+      </section>
+
+      <section class="wholesales-display wholesales-product-display-hide" >
+        <section class="wholesales-product-display">
+          <div class="wholesales-customer-search">
+            <h3 class="wholesales-customer-name-value"></h3>
+            <input
+              type="text"
+              class="wholesales-search-variant-input"
+              placeholder="Search for a Variant"
+              onkeyup = "wholesalesSearch()"
+            />
+          </div>
+          <div class="wholesales-product-container">
+            {% for product in products %}
+            <div class="wholesales-item">
+              <img src="{{ product.image.url }}" alt="" />
+              <p class="wholesales-product-name">{{ product.name }}</p>
+              <p class="wholesales-page-price">
+                Wholesale Price: <span class="wholesales-item-price">{{ product.wholesalePrice|floatformat }}</span>
+              </p>
+
+              <button class="wholesales-sell-btn">SELL</button>
+            </div>
+            {% endfor %}
+
+      
+          </div>
+        </section>
+
+        <section class="wholesales-calculate-btn-container">
+          <a href="{% url 'confirmation' %}">
+            <button class="wholesales-calculate-btn">CALCULATE</button>
+          </a>
+        </section>
+          </section>
+      </section>
+
+        <div class="wholesales-popup-container wholesales-hidden">
+          <div class="wholesales-popup">
+            <div class="wholesales-popup-title-container">
+              <div class="wholesales-popup-title-header-itms-con">
+                <p>
+                  How many
+                  <span class="wholesales-popup-product-name">Kingsize</span>?
+                </p>
+                <p>
+                  Price:
+                  <span class="wholesales-popup-product-price">1100</span>
+                </p>
+              </div>
+              <div class="wholesales-menu-exit-container">
+                <div class="wholesales-menu-exit main-menu-exit-bar1"></div>
+                <div class="wholesales-menu-exit main-menu-exit-bar2"></div>
+              </div>
+            </div>
+
+            <input
+              type="text"
+              class="wholesales-popup-input"
+              placeholder="Enter amount"
+            />
+            <br />
+              <input type="submit" class="wholesales-popup-submit" />
+          </div>
+        </div>
+
+
+    </main>
+    <script>
+
+      /* For the wholesale's(wholesale.html) hidden display */
+
+      let customerName = document.querySelector("#wholesales-customer-name")
+      let verifyRealCustomer = document.querySelector(".wholesales-submit-btn")
+      let wholesalesDisplay = document.querySelector(".wholesales-display")
+      let customerNameDisplay = document.querySelector(".wholesales-customer-name-value")
+      let exitContainer = document.querySelector(".wholesales-menu-exit-container")
+      let wholesalesPopup = document.querySelector(".wholesales-popup-container")
+      let wholesalesSellBtns = document.querySelectorAll(".wholesales-sell-btn")
+
+      let wholesalesPopupProductName = document.querySelector(".wholesales-popup-product-name")
+      let wholesalesPopupSubmit = document.querySelector(".wholesales-popup-submit")
+      let wholesalesPopupProductPrice = document.querySelector(".wholesales-popup-product-price")
+
+      let wholesalesCalculateBtn = document.querySelector(".wholesales-calculate-btn")
+
+      let wholesalesItem = document.querySelectorAll(".wholesales-item")
+
+      let wholesalesSearchVariant = document.querySelector(".wholesales-search-variant-input")
+
+      let productName = document.querySelectorAll(".wholesales-product-name")
+
+      let itemspurchased = {}
+
+      /* To display product and customer name */
+      verifyRealCustomer.addEventListener('click', function() {
+          if(wholesalesDisplay.classList.contains("wholesales-product-display-hide")) {
+              wholesalesDisplay.classList.remove("wholesales-product-display-hide")
+              customerNameDisplay.innerHTML = customerName.value
+          }
+      })
+
+
+      /* For Search for a Variant functionality */
+
+      function wholesalesSearch() {
+        wholesalesItem.forEach(function(n) {
+          n.classList.add("wholesales-hidden")
+        })
+  
+        let value = wholesalesSearchVariant.value
+
+        productName.forEach(function(e) {
+          if(e.textContent.toUpperCase().includes(value.toUpperCase().trim())) {
+              e.parentElement.classList.remove("wholesales-hidden")
+        }
+        })
+
+      }
+
+      
+
+      /* To display items to sell */
+
+      wholesalesSellBtns.forEach(function(wholesalesSellBtn) {
+          wholesalesSellBtn.addEventListener('click', function(e) {
+              let itemName = e.currentTarget.parentElement.querySelector(".wholesales-product-name")
+              let itemPrice = e.currentTarget.parentElement.querySelector(".wholesales-item-price")
+              wholesalesPopupProductName.textContent = itemName.textContent
+              wholesalesPopupProductPrice.innerHTML = itemPrice.textContent
+              if(wholesalesPopup.classList.contains("wholesales-hidden")) {
+                  wholesalesPopup.classList.remove("wholesales-hidden")
+                }
+          })
+      })
+
+
+      wholesalesPopupSubmit.addEventListener('click', function(e) {
+          let nameOfItem = e.currentTarget.parentElement.querySelector(".wholesales-popup-product-name").innerText
+          let productAmount = Number(e.currentTarget.parentElement.querySelector(".wholesales-popup-input").value)
+          let productPrice = Number(e.currentTarget.parentElement.querySelector(".wholesales-popup-product-price").innerText)
+          itemspurchased[nameOfItem] = [productAmount, productPrice]
+          wholesalesPopup.classList.add("wholesales-hidden")
+      })
+
+
+      wholesalesCalculateBtn.addEventListener('click', function() {
+          nOc = {name: customerNameDisplay.textContent}
+          localStorage.setItem("customerName", JSON.stringify(nOc))
+          localStorage.setItem(customerNameDisplay.innerText, JSON.stringify(itemspurchased))
+      })
+
+
+
+      exitContainer.addEventListener('click', function() {
+          wholesalesPopup.classList.add("wholesales-hidden")
+      })
+
+
+    </script>
+  </body>
+</html>

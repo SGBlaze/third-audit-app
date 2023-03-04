@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/appstyle.css' %}">
+    <title>Retail Page</title>
+</head>
+  <body>
+    <div class="retail-body-container">  
+      <header class="retail-header">
+          <h4>Retail</h4>
+        </header>
+    
+        <main class="retail-body">
+    
+          <section class="retail-display">
+            <section class="retail-product-display">
+              <div class="retail-customer-search">
+                <h3 class="retail-customer-name-value"></h3>
+                <input
+                  type="text"
+                  class="retail-search-variant-input"
+                  placeholder="Search for a Variant"
+                  onkeyup="retailSearch()"
+                />
+              </div>
+              <div class="retail-product-container">
+                {% for product in products %}
+                <div class="retail-item">
+                  <img src="{{ product.image.url }}" alt="" />
+                  <p class="retail-product-name">{{ product.name }}</p>
+                  <p class="retail-page-price">
+                    Retail Price: <span class="retail-item-price">{{ product.retailPrice|floatformat }}</span>
+                  </p>
+    
+                  <button class="retail-sell-btn">SELL</button>
+                </div>
+                {% endfor %}
+    
+              </div>
+            </section>
+    
+            <section class="retail-calculate-btn-container">
+                <button class="retail-calculate-btn">CALCULATE</button>
+            </section>
+              </section>
+          </section>
+    
+          <div class="retail-popup-container retail-hidden">
+            <div class="retail-popup">
+              <div class="retail-popup-title-container">
+                <div class="retail-popup-title-header-itms">
+                  <p>
+                    How many
+                    <span class="retail-popup-product-name"></span>?
+                  </p>
+                  <p>
+                    (Price:
+                    <span class="retail-popup-product-price"></span>)
+                  </p>
+                </div>
+                <div class="retail-menu-exit-container">
+                  <div class="retail-menu-exit main-menu-exit-bar1"></div>
+                  <div class="retail-menu-exit main-menu-exit-bar2"></div>
+                </div>
+              </div>
+    
+              <input
+                type="text"
+                class="retail-popup-input"
+                placeholder="Enter amount"
+              />
+              <br />
+                <input type="submit" class="retail-popup-submit" />
+            </div>
+          </div>
+        </main>
+
+
+        <div class="retail-calculate-display-div retail-hidden">
+          <h1 class="retail-times">&times;</h1>
+          <div class="retail-container-div">
+            <div class="retail-calculate-details">
+              <p>Product</p>
+              <p>Quantity</p>
+              <p>Price</p>
+              <p>total</p>
+            </div>
+
+            <div class="retail-calculate-details-products">
+                
+            </div>
+
+            <div class="retail-calculate-total">Total <span class="retail-total"></span></div>
+
+            <div class="retail-calc-btn-container">
+            <Button class="retail-calculate-go-back">Go Back</Button>
+            <form method="POST">
+              {% csrf_token %}
+              <Button class="retail-calculate-finish-transaction" type="submit">Finish Transaction</Button>
+              <div class="retail-backend-con" style="display: none;">
+                
+              </div>
+            </form>
+          </div>
+          </div>
+        </div>
+    </div>
+    <script>
+
+      /* For the retail's(retail.html) hidden display */
+
+      let retailDisplay = document.querySelector(".retail-display")
+      let exitContainer = document.querySelector(".retail-menu-exit-container")
+      let retailPopup = document.querySelector(".retail-popup-container")
+      let retailSellBtns = document.querySelectorAll(".retail-sell-btn")
+
+      let retailPopupProductName = document.querySelector(".retail-popup-product-name")
+      let retailPopupSubmit = document.querySelector(".retail-popup-submit")
+      let retailPopupProductPrice = document.querySelector(".retail-popup-product-price")
+
+      let retailCalculateBtn = document.querySelector(".retail-calculate-btn")
+
+      let retailItem = document.querySelectorAll(".retail-item")
+
+      let retailSearchVariant = document.querySelector(".retail-search-variant-input")
+
+      let productName = document.querySelectorAll(".retail-product-name")
+
+      //Backend Variables
+      let retailBackendCon = document.querySelector(".retail-backend-con")
+
+      let retailFinishTransaction = document.querySelector(".retail-calculate-finish-transaction")
+
+      let retailCalculatePopupDisplay = document.querySelector(".retail-calculate-display-div")
+      let retailCalculateDetails = document.querySelector(".retail-calculate-details")
+      let retailCalculateDetailsProducts = document.querySelector(".retail-calculate-details-products")
+      let retailTotal = document.querySelector(".retail-total")
+      let retailTimes = document.querySelector(".retail-times")
+      let retailGoBack = document.querySelector(".retail-calculate-go-back")
+
+      let itemspurchased = {}
+      
+      /* For Search for a Variant functionality */
+
+      function retailSearch() {
+        retailItem.forEach(function(n) {
+          n.classList.add("retail-hidden")
+        })
+
+        let value = retailSearchVariant.value
+
+        productName.forEach(function(e) {
+          if(e.textContent.toUpperCase().includes(value.toUpperCase().trim())) {
+              e.parentElement.classList.remove("retail-hidden")
+        }
+        })
+
+      }
+
+
+
+      /* To display items to sell */
+
+      retailSellBtns.forEach(function(retailSellBtn) {
+          retailSellBtn.addEventListener('click', function(e) {
+              let itemName = e.currentTarget.parentElement.querySelector(".retail-product-name")
+              let itemPrice = e.currentTarget.parentElement.querySelector(".retail-item-price")
+              retailPopupProductName.textContent = itemName.textContent
+              retailPopupProductPrice.innerHTML = itemPrice.textContent
+              if(retailPopup.classList.contains("retail-hidden")) {
+                  retailPopup.classList.remove("retail-hidden")
+                }
+          })
+      })
+
+
+      retailPopupSubmit.addEventListener('click', function(e) {
+          let nameOfItem = e.currentTarget.parentElement.querySelector(".retail-popup-product-name").innerText
+          let productAmount = Number(e.currentTarget.parentElement.querySelector(".retail-popup-input").value)
+          let productPrice = Number(e.currentTarget.parentElement.querySelector(".retail-popup-product-price").innerText)
+          itemspurchased[nameOfItem] = [productAmount, productPrice]
+          retailPopup.classList.add("retail-hidden")
+      })
+
+
+
+      exitContainer.addEventListener('click', function() {
+          retailPopup.classList.add("retail-hidden")
+      })
+
+      retailCalculateBtn.addEventListener('click', function() {
+        if(retailCalculatePopupDisplay.classList.contains("retail-hidden")) {
+          retailCalculatePopupDisplay.classList.remove("retail-hidden")
+        }
+        let i = 0
+        for(x in itemspurchased) {
+          let retailItemTotal = itemspurchased[x][0] * itemspurchased[x][1]
+          i += retailItemTotal
+          retailCalculateDetailsProducts.innerHTML += `<div class="retail-calculate-details"> <p>${x}</p> <p>${itemspurchased[x][0]}</p> <p>${itemspurchased[x][1]}</p> <p>${retailItemTotal}</p></div>`
+        }
+        retailTotal.textContent = i
+        
+      })
+
+
+      retailTimes.addEventListener('click', function() {
+        retailCalculatePopupDisplay.classList.add("retail-hidden")
+      })
+
+      retailGoBack.addEventListener('click', function() {
+        history.back()
+      })
+
+      retailFinishTransaction.addEventListener('click', function() {
+        for(y in itemspurchased) {
+          retailBackendCon.innerHTML += `<input name="${y}" value="${itemspurchased[y][0]}"/>`
+        }
+      })
+
+    </script>
+  </body>
+</html>

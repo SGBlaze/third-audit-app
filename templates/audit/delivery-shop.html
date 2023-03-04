@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/appstyle.css' %}">
+    <title>Delivery-shop</title>
+</head>
+<body>
+
+    <header class="delivery-shop-header">Delivery</header>
+
+    <main class="delivery-shop-main-tag">
+
+        <div class="delivery-shop-main">
+
+            <div class="delivery-shop-customer-info">
+                <div class="delivery-shop-form-container">
+                <input
+                    type="text"
+                    placeholder="Name Of Driver"
+                    id="delivery-shop-driver-name"
+                />
+                </div>
+                <input type="submit" class="delivery-shop-submit-btn" />
+            </div>
+            
+            <div class="delivery-shop-product-display delivery-shop-hide">
+                <div class="delivery-shop-main-opening">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="text" style="display: none;" name="drivername" class="delivery-shop-backend-input">
+                        <input type="text" style="display: none;" name="deliveryrecordouting">
+                        {% for company in companies %}
+                        <div class="delivery-shop-item-type">
+                        <div class="delivery-shop-item-type-title">{{ company.name }}</div>
+                        <div class="delivery-shop-item-type-products">
+                            {% for product in products %}
+                            {% if product.company.name == company.name %}
+                            <div class="delivery-shop-item-type-product">
+                            <img
+                                src="{{ product.image.url }}"
+                                alt=""
+                                class="delivery-shop-item-type-image"
+                            />
+                            <p class="delivery-shop-item-type-product-name">{{ product.name }}</p>
+                            <p class="delivery-shop-item-type-product-status">Total sent for Delivery</p>
+                            <input type="text" class="delivery-shop-item-type-product-input"/>
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                        
+                            
+                        </div>
+                        </div>
+                        
+                        {% endfor %}
+
+                        <button class="delivery-shop-item-opening-delivery-shop-submit">
+                        Submit Opening Stock
+                        </button>
+                    </form>    
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="delivery-shop-brought-back delivery-shop-hide">
+            <div class="delivery-shop-brought-back-product-display">
+                <div class="delivery-shop-brought-back-opening">
+                    <p class="delivery-shop-brought-back-title">What did the driver bring back?</p>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="text" style="display: none;" name="goodsbroughtback">
+                        {% for company in companies %}
+                        <div class="delivery-shop-brought-back-item-type">
+                        <div class="delivery-shop-brought-back-item-type-title">{{ company.name }}</div>
+                        <div class="delivery-shop-brought-back-item-type-products">
+                            {% for product in products %}
+                            {% if product.company.name == company.name %}
+                            <div class="delivery-shop-brought-back-item-type-product">
+                            <img
+                                src="{{ product.image.url }}"
+                                alt=""
+                                class="delivery-shop-brought-back-item-type-image"
+                            />
+                            <p class="delivery-shop-brought-back-item-type-product-name">{{ product.name }}</p>
+                            <p class="delivery-shop-brought-back-item-type-product-status">Total quantity brought back</p>
+                            <input type="text" class="delivery-shop-brought-back-item-type-product-input"/>
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                        
+                            
+                        </div>
+                        </div>
+                        
+                        {% endfor %}
+                        <div class="delivery-shop-brought-back-item-opening-delivery-shop-submit-con">
+                            <button class="delivery-shop-brought-back-item-opening-delivery-shop-submit">
+                            Submit Goods Brought Back
+                            </button>
+                        </div>
+                    </form>    
+                </div>
+            </div>
+        </div>
+
+
+        <div class="delivery-shop-ask-amount delivery-shop-hide">
+            <form method="POST">
+             {% csrf_token %}
+                <p class="delivery-shop-ask-amount-text">HOW MUCH DID THE DRIVER BRING BACK</p>
+                <div class="delivery-shop-ask-amount-input-container">
+                    <input type="text" class="delivery-shop-ask-amount-input" name="amountbroughtback">
+                </div>
+                <div class="delivery-shop-submit-amount-btn-container">
+                    <button class="delivery-shop-submit-amount-btn" type="submit">Submit</button>
+                </div>
+        </form>
+        </div>
+
+
+    </main>
+
+    <script>
+        let deliveryShopSubmitDriver = document.querySelector(".delivery-shop-submit-btn")
+        let deliveryShopProductDisplay = document.querySelector(".delivery-shop-product-display")
+        let deliveryShopAskAmount = document.querySelector(".delivery-shop-ask-amount")
+        let deliveryShopDelivered = document.querySelector(".delivery-shop-item-opening-delivery-shop-submit")
+        let deliveryShopMain = document.querySelector(".delivery-shop-main")
+        let deliveryShopInput = document.querySelectorAll(".delivery-shop-item-type-product-input")
+        let driverNameInput = document.getElementById("delivery-shop-driver-name")
+        let deliveryShopBroughtBack = document.querySelector(".delivery-shop-brought-back")
+        let deliveryShopBroughtBackSubmit = document.querySelector(".delivery-shop-brought-back-item-opening-delivery-shop-submit")
+        let deliveryShopBroughtBackInput = document.querySelectorAll(".delivery-shop-brought-back-item-type-product-input")
+        let deliveryShopSubmitAmtBtn = document.querySelector(".delivery-shop-submit-amount-btn")
+
+        //Backend Variables
+        let deliveryShopBackendInput = document.querySelector(".delivery-shop-backend-input")
+
+        let deliveryStatus = localStorage.getItem("delivery")
+
+
+        if(deliveryStatus === "still delivering") {
+            deliveryShopMain.classList.add("delivery-shop-hide")
+            deliveryShopBroughtBack.classList.remove("delivery-shop-hide")
+            deliveryShopAskAmount.classList.add("delivery-shop-hide")
+
+        } else if(deliveryStatus === "awaiting delivery remmittance") {
+            deliveryShopMain.classList.add("delivery-shop-hide")
+            deliveryShopBroughtBack.classList.add("delivery-shop-hide")
+            deliveryShopAskAmount.classList.remove("delivery-shop-hide")
+        } else {
+            deliveryShopMain.classList.remove("delivery-shop-hide")
+            deliveryShopBroughtBack.classList.add("delivery-shop-hide")
+            deliveryShopAskAmount.classList.add("delivery-shop-hide")
+        }
+
+        deliveryShopSubmitDriver.addEventListener('click', () => {
+            if(driverNameInput.value !== "") {
+                deliveryShopProductDisplay.classList.remove("delivery-shop-hide")
+            }
+        })
+
+        deliveryShopDelivered.addEventListener('click', () => {
+            deliveryShopBackendInput.setAttribute("value", driverNameInput.value)
+            deliveryShopInput.forEach(function(e) {
+                if(e.value !== "") {
+                    nop = e.parentElement.querySelector(".delivery-shop-item-type-product-name").textContent
+                    e.setAttribute("name", nop)
+                }
+            })
+            localStorage.setItem("delivery", "still delivering")
+        })
+
+        deliveryShopBroughtBackSubmit.addEventListener('click', () => {
+            deliveryShopBroughtBackInput.forEach(e => {
+                if(e.value !== "") {
+                    nOp = e.parentElement.querySelector(".delivery-shop-brought-back-item-type-product-name").textContent
+                    e.setAttribute("name", nOp)
+                }
+            })
+            deliveryShopBroughtBack.classList.add("delivery-shop-hide")
+            localStorage.setItem("delivery", "awaiting delivery remmittance")
+            location.reload()
+        })
+
+        deliveryShopSubmitAmtBtn.addEventListener('click', () => {
+            localStorage.removeItem("delivery")
+        })
+
+
+    </script>
+
+
+</body>
+</html>

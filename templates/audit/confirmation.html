@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{% static 'css/appstyle.css' %}" />
+    <title>Stock Total</title>
+  </head>
+  <body>
+    <div class="confirmation-body">
+      <header class="confirmation-customer-name"></header>
+
+      <main>
+        <section class="confirmation-purchased-items-display">
+          <div class="confirmation-purchased-items-title">
+            <p>Product</p>
+            <p>Amount</p>
+            <p>Prices</p>
+            <p>total</p>
+          </div>
+        </section>
+
+        <section>
+          <div class="conf-total"> 
+            <p>Total</p> <p class="conf-item-total"></p>
+          </div>
+        </section>
+
+        <section class="confirmation-navigations-container">
+
+         <div class="confirmation-navigations">
+
+          <button class="confirmation-previous-btn">Go Back</button>
+          <button class="confirmation-finish-transaction-btn">
+            Finish Transaction
+          </button>
+
+         </div>
+
+        </section>
+
+      </main>
+
+      <div class="conf-popup-cont conf-hide">
+      <div class="confirmation-popup-container">
+        <div class="confirmation-popup-title"><p class="confirmation-popup-title-main-txt"></p><p class="confirmation-popup-customer-total-amt-show">:</p></div>
+        
+        <div class="confirmation-popup-trans-info-main-con">
+
+          <div class="confirmation-popup-trans-info-mode-of-payment-main-con">
+
+            <div class="confirmation-popup-trans-info-mode-of-payment">
+              <p class="confirmation-popup-trans-info-mode-of-payment-txt">Mode Of Payment</p>
+            </div>
+
+            <div class="confirmation-popup-trans-info-mode-of-payment-options-con conf-hide">
+              <div class="confirmation-popup-trans-info-cash-payment">
+                <p class="confirmation-popup-trans-info-cash-payment-txt">Cash</p>
+              </div>
+
+              <div class="confirmation-popup-trans-info-transfer">
+                <p class="confirmation-popup-trans-info-transfer-txt">Transfer</p>
+              </div>
+
+              <div class="confirmation-popup-trans-info-pos">
+                <p class="confirmation-popup-trans-info-pos-txt">POS</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="confirmation-popup-trans-info-payment-info-main-con conf-hide">
+
+            <div class="confirmation-popup-trans-info-amount-collected-con">
+              <div class="confirmation-popup-trans-info-amount-collected-txt-con">
+                <p class="confirmation-popup-trans-info-amount-collected-txt">Amount Collected from <span class="confirmation-popup-trans-info-amount-collected-name-of-customer-txt"></span></p>
+              </div>
+              <div class="confirmation-popup-trans-info-amount-collected-input-con">
+                <input type="text" class="confirmation-popup-trans-info-amount-collected-input">
+              </div>
+            </div>
+
+            <div class="confirmation-popup-trans-info-balance-con">
+              <div class="confirmation-popup-trans-info-balance-txt-con">
+                <p class="confirmation-popup-trans-info-balance-txt">Balance:</p>
+              </div>
+              <div class="confirmation-popup-trans-info-balance-input-con">
+                <input type="text" class="confirmation-popup-trans-info-balance-input">
+              </div>
+            </div>
+
+            <div class="confirmation-popup-trans-info-to-balance-con">
+              <div class="confirmation-popup-trans-info-to-balance-txt-con">
+                <p class="confirmation-popup-trans-info-to-balance-txt">To Balance:</p>
+              </div>
+              <div class="confirmation-popup-trans-info-to-balance-input-con">
+                <input type="text" class="confirmation-popup-trans-info-to-balance-input">
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="confirmation-navigation-container">
+          <Button class="confirmation-no-btn">Go Back</Button>
+          <form method="POST">
+            {% csrf_token %}
+            <Button class="confirmation-submit-btn" type="button">Submit</Button>
+            <div style="display: none;" class="confirmation-backend-con">
+            
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+      
+    </div>
+
+    <script>
+
+      let confirmationCustomerName = document.querySelector(".confirmation-customer-name")
+      let confirmationPurchasedItems = document.querySelector(".confirmation-purchased-items-display")
+      let confirmationGoBackBtn = document.querySelector(".confirmation-previous-btn")
+      let confirmationFinishTransactionBtn = document.querySelector(".confirmation-finish-transaction-btn")
+
+      //Confirmation Popup Variables
+      let confirmationPopupTitleMainTxt = document.querySelector(".confirmation-popup-title-main-txt")
+      let confirmationPopupCustomerTotalAmountDisplay = document.querySelector(".confirmation-popup-customer-total-amt-show")
+      let confirmationPopupModeOfPayment = document.querySelector(".confirmation-popup-trans-info-mode-of-payment")
+      let confPopupPaymentOptionsCon = document.querySelector(".confirmation-popup-trans-info-mode-of-payment-options-con")
+      let confirmationPopupCashPayment = document.querySelector(".confirmation-popup-trans-info-cash-payment")
+      let confirmationPopupTransferPayment = document.querySelector(".confirmation-popup-trans-info-transfer")
+      let confirmationPopupPosPayment = document.querySelector(".confirmation-popup-trans-info-pos")
+      let confirmationPopupPaymentInfoMainCon = document.querySelector(".confirmation-popup-trans-info-payment-info-main-con")
+      let confirmationAmtClltdFrmCusTxt = document.querySelector(".confirmation-popup-trans-info-amount-collected-name-of-customer-txt")
+
+      let confirmationPopupAmtClltdInput = document.querySelector(".confirmation-popup-trans-info-amount-collected-input")
+      let confirmationPopupBalanceInput = document.querySelector(".confirmation-popup-trans-info-balance-input")
+      let confirmationPopupToBalanceInput = document.querySelector(".confirmation-popup-trans-info-to-balance-input")
+
+      let confirmationPopup = document.querySelector(".conf-popup-cont")
+      let confNoBtn = document.querySelector(".confirmation-no-btn")
+      let confSubmitBtn = document.querySelector(".confirmation-submit-btn")
+
+      //Backend variables
+      let confBackendContainer = document.querySelector(".confirmation-backend-con")
+
+
+      
+      confirmationGoBackBtn.addEventListener('click', function() {
+              localStorage.removeItem(customerNameObj)
+              history.back()
+          })
+
+      if (localStorage.getItem("customerName")){
+          let customerName = JSON.parse(localStorage.getItem("customerName"))["name"]
+          let productsPurchased = JSON.parse(localStorage.getItem(customerName))
+          let confirmationItemTotal = document.querySelector(".conf-item-total")
+
+          confirmationCustomerName.textContent = customerName
+          confirmationPopupTitleMainTxt.textContent = customerName
+          confirmationPopupCustomerTotalAmountDisplay.textContent += confirmationItemTotal.textContent
+          confirmationAmtClltdFrmCusTxt.textContent += customerName + ":"
+          
+
+          let confirmationPurchasedStuff = {}
+
+          for(k in productsPurchased) {
+              confirmationPurchasedStuff[k] = {"itemNumber": productsPurchased[k][0], "itemPrice": productsPurchased[k][1], "itemSum": productsPurchased[k][0] * productsPurchased[k][1]}
+          }
+
+
+          function displayConfirmationProducts() {
+              let itemTotal = 0
+              for(x in confirmationPurchasedStuff) {
+                  let itemName = x
+                  let itemQuantity= confirmationPurchasedStuff[x].itemNumber
+                  let itemPrice = confirmationPurchasedStuff[x].itemPrice
+                  let itemSum = confirmationPurchasedStuff[x].itemSum
+                  confirmationPurchasedItems.innerHTML += `<div class="confirmation-purchased-items"> <p>${itemName}</p> <p>${itemQuantity}</p> <p>${itemPrice}</p> <p>${itemSum}</p>  </div>`
+                  itemTotal += Number(itemSum)
+              }
+
+              confirmationItemTotal.textContent = itemTotal
+              confirmationPopupCustomerTotalAmountDisplay.textContent += confirmationItemTotal.textContent
+              console.log(confirmationItemTotal.textContent)
+          }
+
+
+
+          displayConfirmationProducts()
+
+
+          confirmationFinishTransactionBtn.addEventListener('click', function() {
+              if(confirmationPopup.classList.contains("conf-hide")) {
+                  confirmationPopup.classList.remove("conf-hide")
+              }
+          })
+
+          confirmationPopupModeOfPayment.addEventListener('click', () => {
+            confPopupPaymentOptionsCon.classList.toggle("conf-hide")
+          })
+
+          confirmationPopupCashPayment.addEventListener('click', () => {
+            confPopupPaymentOptionsCon.classList.add("conf-hide")
+            confirmationPopupModeOfPayment.textContent = confirmationPopupCashPayment.textContent
+            confirmationPopupPaymentInfoMainCon.classList.remove("conf-hide")
+          })
+
+          confirmationPopupTransferPayment.addEventListener('click', () => {
+            confPopupPaymentOptionsCon.classList.add("conf-hide")
+            confirmationPopupPaymentInfoMainCon.classList.add("conf-hide")
+            confirmationPopupModeOfPayment.textContent = confirmationPopupTransferPayment.textContent
+          })
+
+          confirmationPopupPosPayment.addEventListener('click', () => {
+            confPopupPaymentOptionsCon.classList.add("conf-hide")
+            confirmationPopupPaymentInfoMainCon.classList.add("conf-hide")
+            confirmationPopupModeOfPayment.textContent = confirmationPopupPosPayment.textContent
+          })
+
+          confNoBtn.addEventListener('click', function() {
+              confirmationPopup.classList.add("conf-hide")
+
+              let backEndCustomerName = JSON.parse(localStorage.getItem("customerName"))["name"]
+              let backEndProductsPurchased = JSON.parse(localStorage.getItem(backEndCustomerName))
+
+              let confPurchasedSt = {}
+              for(c in backEndProductsPurchased) {
+                confPurchasedSt[c] = {"itemAmount": backEndProductsPurchased[c][0], "itemPrice": backEndProductsPurchased[c][1], "itemTotal": backEndProductsPurchased[c][0] * backEndProductsPurchased[c][1]}
+                
+              }
+
+              console.log(confPurchasedSt)
+
+              let confPurchasedStTotal = 0
+
+              for(x in confPurchasedSt) {
+                confPurchasedStTotal += Number(confPurchasedSt[x].itemTotal)
+              }
+
+          })
+
+          confSubmitBtn.addEventListener('click', function() {
+
+            if(confirmationPopupModeOfPayment.textContent.trim() == "Mode Of Payment") {
+              confNoBtn.classList.add("conf-hide")
+              return false
+            }else {
+                confSubmitBtn.setAttribute("type", "submit")
+                let backEndCustomerName = JSON.parse(localStorage.getItem("customerName"))["name"]
+                let backEndProductsPurchased = JSON.parse(localStorage.getItem(backEndCustomerName))
+
+                let confPurchasedSt = {}
+                for(c in backEndProductsPurchased) {
+                  confPurchasedSt[c] = {"itemAmount": backEndProductsPurchased[c][0], "itemPrice": backEndProductsPurchased[c][1], "itemTotal": backEndProductsPurchased[c][0] * backEndProductsPurchased[c][1]}
+                }
+
+                let confPurchasedStTotal = 0
+
+                for(x in confPurchasedSt) {
+                  confPurchasedStTotal += Number(confPurchasedSt[x].itemTotal)
+                }
+
+                console.log(confPurchasedSt)
+
+
+                if(confirmationPopupModeOfPayment.textContent.trim() == "Cash"){
+                  confBackendContainer.innerHTML += `<div style="display: none;"><input type="text" name="customerName" value="${backEndCustomerName}"/><input type="text" name="productValue" value="${confPurchasedStTotal}"/><input type="text" name="modeOfPayment" value="Cash"/><input type="text" name="amtFromCustomer" value="${confirmationPopupAmtClltdInput.value}"/><input type="text" name="customerDebt" value="${confirmationPopupToBalanceInput.value}"/><input type="text" name="customerCredit" value="${confirmationPopupBalanceInput.value}"/></div>`
+                  for(newi in confPurchasedSt) {
+                    confBackendContainer.innerHTML += `<div style="display: none;"><input type="text" name="${newi}" value="${confPurchasedSt[newi].itemAmount}"/></div>`
+                  }
+                }else if (confirmationPopupModeOfPayment.textContent.trim() == "Transfer") {
+                  confBackendContainer.innerHTML += `<div style="display: none;"><input type="text" name="customerName" value="${backEndCustomerName}"/><input type="text" name="productValue" value="${confPurchasedStTotal}"/><input type="text" name="modeOfPayment" value="Transfer"/></div>`
+                  for(newi in confPurchasedSt) {
+                    confBackendContainer.innerHTML += `<div style="display: none;"><input type="text" name="${newi}" value="${confPurchasedSt[newi].itemAmount}"/></div>`
+                  }
+                }else if(confirmationPopupModeOfPayment.textContent.trim() == "POS") {
+                  confBackendContainer.innerHTML += `<div style="display: none;"><input type="text" name="customerName" value="${backEndCustomerName}"/><input type="text" name="productValue" value="${confPurchasedStTotal}"/><input type="text" name="modeOfPayment" value="POS"/></div>`
+                  for(newi in confPurchasedSt) {
+                    confBackendContainer.innerHTML += `<div style="display: none;"><input type="text" name="${newi}" value="${confPurchasedSt[newi].itemAmount}"/></div>`
+                  }
+                }else {
+                  confBackendContainer.innerHTML += `<div style="display: none;">Hi</div>`
+                }
+
+
+                confirmationPopup.classList.add("conf-hide")
+                localStorage.removeItem("customerName")
+              }
+
+              
+          })
+
+
+
+      }
+
+      else {
+          confirmationCustomerName.textContent = "No Items"
+      }
+
+    </script>
+  </body>
+</html>

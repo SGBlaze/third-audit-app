@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/appstyle.css' %}">
+    <title>Settings</title>
+</head>
+<body>
+    
+    <main class="settings-main">
+
+        <header class="settings-header">
+
+            <div class="settings-header-container">
+
+                <div class="settings-back">
+                    <div class="settings-back-bar settings-bar-first"></div>
+                    <div class="settings-back-bar settings-bar-second"></div>
+                    <div class="settings-back-bar settings-bar-third"></div>
+                </div>
+
+                <p class="settings-header-text">Settings</p>
+            
+            </div>
+
+        </header>
+
+        <div class="settings-main-container">
+         
+            <div class="settings-select-options">
+                <div class="settings-select setting-create-employee">Create a Shop Attendant</div>
+                <div class="settings-select setting-delete-employee">Delete an Old employee</div>
+                <div class="settings-select setting-add-product">Add a new product</div>
+                <div class="settings-select setting-remove-product">Remove an old product</div>
+                <div class="settings-select setting-change-price">Change the Price of an existing product</div>
+                <div class="settings-select setting-change-password">Change your password</div>
+                <div class="settings-select setting-create-driver">Create a new driver</div>
+                <div class="settings-select setting-delete-driver">Delete an Old driver</div>
+                <div class="settings-select setting-create-new-sub-click">Create a New Sub-Distributor</div>
+                <div class="settings-select setting-delete-old-sub-click">Delete an Old Sub-Distributor</div>
+                <div class="settings-select setting-shut-everyone-out-click">Shut Everyone Out</div>
+
+
+            </div>
+
+            <div class="settings-option">
+               
+               <div class="setting settings-create-new-employee settings-hide">
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <div style="display: none;">
+                        <input type="text" name="createnewemployee">
+                    </div>
+                    <p class="settings-employee-create">Name of New Employee: </p>
+                    <input type="text" class="settings-employee-input" name="newemployeename">
+
+                    <p class="settings-employee-create">Password of New Employee: </p>
+                    <input type="text" class="settings-employee-input" name="newemployeepassword">
+
+                    <button class="settings-employee-submit" type="submit">Register New Employee</button>
+                </form>
+               </div>
+               
+               <div class="setting settings-delete-old-employee settings-hide">
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <div style="display: none;">
+                        <input type="text" name="deleteoldemployee">
+                    </div>
+                    <p class="settings-employee-delete">Name of Employee: </p>
+                    <input type="text" class="settings-employee-input" name="delemployeename">
+
+                    
+                    <button class="settings-employee-submit" type="submit">Delete old Employee</button>
+                </form>
+               </div>
+
+               <div class="setting settings-create-new-product settings-hide">
+                <form action="" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div style="display: none;">
+                        <input type="text" name="createnewproduct">
+                    </div>
+                    <p class="settings-product-create">Name of Product </p>
+                    <input type="text" class="settings-product-input" name="nameofproduct">
+
+                    <p class="settings-product-create">Reference Name of Product </p>
+                    <input type="text" class="settings-product-input" placeholder="e.g QM for QueensMeal" name="refnameofproduct">
+
+                    <p class="settings-product-create">Image of Product </p>
+                    <input type="file" class="settings-product-input-image" name="imageofproduct">
+
+                    <div class="settings-new-prod-company-info-con">
+
+                        <div class="settings-company-select-con">
+                            <div class="settings-company-select-main">Choose a Company</div>
+                            <div class="settings-company-select-opts-con setting-hide">
+                                {% for company in companies %}
+                                <div class="settings-company-select-opt">{{ company.name }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="settings-company-create-con">
+                            <button type="button" class="settings-company-create-main-btn">Create a New Company</button>
+                            <div class="settings-company-create-sec-con setting-hide">
+                                <p class="settings-company-create-sec-con-lead-txt">Name of New Company</p>
+                                <input type="text" class="settings-company-create-sec-con-new-com-name">
+                                <p class="settings-company-create-sec-con-lead-txt">Reference Name of Company</p>
+                                <input type="text" class="settings-company-create-sec-con-new-com-ref-name">
+                                <button class="settings-company-create-save-new-com" type="button">Save New Company</button>
+                            </div>                            
+                        </div>
+                    </div>
+
+                    <p class="settings-product-create">Cost Price of Product </p>
+                    <input type="text" class="settings-product-input" name="costpriceofproduct">
+                    
+                    <p class="settings-product-create">Sub distributorship Price of Product </p>
+                    <input type="text" class="settings-product-input" name="subpriceofproduct">
+                    
+                    <p class="settings-product-create">Wholesale Price of Product </p>
+                    <input type="text" class="settings-product-input" name="wholesalepriceofproduct">
+
+                    <p class="settings-product-create">Retail Price of Product </p>
+                    <input type="text" class="settings-product-input" name="retailpriceofproduct">
+
+
+                    <button class="settings-new-product-submit" type="submit">Add New Product</button>
+                </form>
+               </div>
+
+               <div class="setting settings-remove-old-product settings-hide">
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <div style="display: none;">
+                        <input type="text" name="removeoldproduct">
+                    </div>
+                    <p class="settings-product-remove">Name of Product </p>
+                    <input type="text" class="settings-product-remove-input" name="nameofproduct">
+
+                    <button class="settings-product-remove-submit" type="submit">Remove Old Product</button>
+                </form>
+               </div>
+
+               <div class="setting settings-change-price settings-hide">
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <div style="display: none;">
+                        <input type="text" name="changepriceofproduct">
+                    </div>
+                    <p class="settings-change-price-text">Name of Product: </p>
+                    <input type="text" class="settings-change-price-input" name="nameofproduct">
+
+                    <p class="settings-product-create">New Cost Price of Product </p>
+                    <input type="text" class="settings-change-price-input" name="newcostpriceofproduct">
+                    
+                    <p class="settings-product-create">New Sub distributorship Price of Product </p>
+                    <input type="text" class="settings-change-price-input" name="newsubpriceofproduct">
+                    
+                    <p class="settings-product-create">New Wholesale Price of Product </p>
+                    <input type="text" class="settings-change-price-input" name="newwholesalepriceofproduct">
+
+                    <p class="settings-product-create">New Retail Price of Product </p>
+                    <input type="text" class="settings-change-price-input" name="newretailpriceofproduct">
+
+                    <button class="settings-change-price-submit" type="submit">Change Price of Product</button>
+                </form>
+               </div>
+
+               <div class="setting settings-change-admin-password settings-hide">
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <div style="display: none;">
+                        <input type="text" name="changeyourpassword">
+                    </div>
+                    <p class="settings-old-admin">Name of Admin: </p>
+                    <input type="text" class="settings-admin-input" name="nameofadmin">
+
+                    <p class="settings-old-admin">Password of Admin: </p>
+                    <input type="text" class="settings-admin-input" name="passwordofadmin">
+                    
+
+                    <div class="settings-new-admin-password">
+
+                        <div style="display: none;">
+                            <input type="text" name="newadmindetails">
+                        </div>
+
+                        <p class="settings-new-admin">Name of New Admin: </p>
+                        <input type="text" class="settings-admin-input" name="nameofnewadmin">
+
+                        <p class="settings-new-admin">Password of New Admin: </p>
+                        <input type="text" class="settings-admin-input" name="passwordofnewadmin">
+
+                        <button class="settings-new-admin-submit" type="submit">Register New Admin</button>
+
+                    </div>
+                </form>
+               </div>
+
+               <div class="setting setting-shut-everyone-out settings-hide">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div style="display: none;">
+                        <input type="text" name="shuteveryoneout">
+                    </div>
+
+                    <div class="setting-shut-everyone-out-main-con">
+                        <p class="setting-shut-everyone-out-main-title-txt">This action will disallow all non-admins from having access</p>
+                        <div class="setting-shut-everyone-out-main-btns-con">
+                            <button type="submit" class="setting-shut-everyone-out-main-btn">Proceed with this action</button>
+                        </div>
+                    </div>
+                </form>
+               </div>
+
+               <!--Driver create and delete section-->
+
+               <div class="setting settings-create-new-driver settings-hide">
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <div style="display: none;">
+                        <input type="text" name="createnewdriver">
+                    </div>
+                    <p class="settings-driver-create">Name of New Driver: </p>
+                    <input type="text" class="settings-driver-input" name="newdrivername">
+
+                    <p class="settings-driver-create">Password of New Driver: </p>
+                    <input type="text" class="settings-driver-input" name="newdriverpassword">
+
+                    <button class="settings-driver-create-submit" type="submit">Register New Driver</button>
+                </form>
+               </div>
+
+               <div class="setting settings-delete-old-driver settings-hide">
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <div style="display: none;">
+                        <input type="text" name="deleteolddriver">
+                    </div>
+                    <p class="settings-driver-delete">Name of Driver to be deleted: </p>
+                    <input type="text" class="settings-driver-input" name="deldrivername">
+
+                    <button class="settings-driver-delete-submit" type="submit">Delete old driver</button>
+                </form>
+               </div>
+
+               <div class="setting settings-create-new-sub settings-hide">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div style="display: none;">
+                            <input type="text" name="createnewsub">
+                        </div>
+                        <p class="settings-create-new-sub-title-txt">Name of new Sub-Distributor</p>
+                        <input type="text" class="create-new-sub-input" name="createnewsubname">
+
+                        <button class="create-new-sub-btn" type="submit">Create a new Sub-Distributor</button>
+                    </form>
+               </div>
+
+               <div class="setting settings-delete-old-sub settings-hide">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div style="display: none;">
+                            <input type="text" name="deleteoldsub">
+                        </div>
+                        <p class="settings-delete-old-sub-main-txt">Name of Old Sub-Distributor</p>
+                        <input type="text" class="delete-old-sub-input" name="deleteoldsubname">
+
+                        <button class="delete-old-sub-btn" type="submit">Delete Old Sub-Distributor</button>
+                    </form>
+               </div>
+
+            </div>
+           
+        </div>
+
+
+    </main>
+
+
+    <script>
+
+        let createNewEmployeeSelect = document.querySelector(".setting-create-employee")
+        let deleteOldEmployeeSelect = document.querySelector(".setting-delete-employee")
+        let addNewProductSelect = document.querySelector(".setting-add-product")
+        let removeOldProductSelect = document.querySelector(".setting-remove-product")
+        let changePriceOfProductSelect = document.querySelector(".setting-change-price")
+        let changeAdminPasswordSelect = document.querySelector(".setting-change-password")
+        let createNewDriverSelect = document.querySelector(".setting-create-driver")
+        let deleteOldDriverSelect = document.querySelector(".setting-delete-driver")
+
+        let setting = document.querySelectorAll(".setting")
+
+        let createNewEmployee = document.querySelector(".settings-create-new-employee")
+        let deleteOldEmployee = document.querySelector(".settings-delete-old-employee")
+        let createNewProduct = document.querySelector(".settings-create-new-product")
+        let removeOldProduct = document.querySelector(".settings-remove-old-product")
+        let changePriceOfProduct = document.querySelector(".settings-change-price")
+        let changeAdminPassword = document.querySelector(".settings-change-admin-password")
+        let createNewDriver = document.querySelector(".settings-create-new-driver")
+        let deleteOldDriver = document.querySelector(".settings-delete-old-driver")
+
+        let settingsBack = document.querySelector(".settings-back")
+
+        let settingsSelect = document.querySelectorAll(".settings-select")
+
+        let settingsSelectCompanyCon = document.querySelector(".settings-company-select-con")
+        let settingsSelectCompanyMain = document.querySelector(".settings-company-select-main")
+        let settingsSelectOptionsCon = document.querySelector(".settings-company-select-opts-con")
+        let settingsSelectOptions = document.querySelectorAll(".settings-company-select-opt")
+
+        let settingsCreateNewCompanyCon = document.querySelector(".settings-company-create-con")
+        let settingsCreateNewCompanyBtn = document.querySelector(".settings-company-create-main-btn")
+        let settingsCreateNewCompanyDetailsCon = document.querySelector(".settings-company-create-sec-con")
+        let settingsCreateNewCompanyMainInput = document.querySelector(".settings-company-create-sec-con-new-com-name")
+        let settingsCreateNewCompanyRefNameInput = document.querySelector(".settings-company-create-sec-con-new-com-ref-name")
+        let settingsCreateNewCompanySaveBtn = document.querySelector(".settings-company-create-save-new-com")
+
+        let settingsShutEveryoneOutClick = document.querySelector(".setting-shut-everyone-out-click")
+        let settingsShutEveryoneOutCon = document.querySelector(".setting-shut-everyone-out")
+
+        let settingCreateNewSubClick = document.querySelector(".setting-create-new-sub-click")
+        let settingCreateNewSubCon = document.querySelector(".settings-create-new-sub")
+
+        let settingDeleteOldSubClick = document.querySelector(".setting-delete-old-sub-click")
+        let settingDeleteOldSubCon = document.querySelector(".settings-delete-old-sub")
+
+
+
+        createNewEmployeeSelect.addEventListener('click', function() {
+            setting.forEach(function(n) {
+                if(n.classList.contains("settings-hide")) {
+                    return true;
+                }
+                else {
+                    n.classList.add("settings-hide")
+                }
+            })
+
+            createNewEmployee.classList.remove("settings-hide")
+        })
+
+
+        deleteOldEmployeeSelect.addEventListener('click', function() {
+            setting.forEach(function(n) {
+                if(n.classList.contains("settings-hide")) {
+                    return true;
+                }
+                else {
+                    n.classList.add("settings-hide")
+                }
+            })
+
+            deleteOldEmployee.classList.remove("settings-hide")
+        })
+
+        addNewProductSelect.addEventListener('click', function() {
+            setting.forEach(function(n) {
+                if(n.classList.contains("settings-hide")) {
+                    return true;
+                }
+                else {
+                    n.classList.add("settings-hide")
+                }
+            })
+
+            createNewProduct.classList.remove("settings-hide")
+        })
+
+        removeOldProductSelect.addEventListener('click', function() {
+            setting.forEach(function(n) {
+                if(n.classList.contains("settings-hide")) {
+                    return true;
+                }
+                else {
+                    n.classList.add("settings-hide")
+                }
+            })
+
+            removeOldProduct.classList.remove("settings-hide")
+        })
+
+        changePriceOfProductSelect.addEventListener('click', function() {
+            setting.forEach(function(n) {
+                if(n.classList.contains("settings-hide")) {
+                    return true;
+                }
+                else {
+                    n.classList.add("settings-hide")
+                }
+            })
+
+            changePriceOfProduct.classList.remove("settings-hide")
+        })
+
+        changeAdminPasswordSelect.addEventListener('click', function() {
+            setting.forEach(function(n) {
+                if(n.classList.contains("settings-hide")) {
+                    return true;
+                }
+                else {
+                    n.classList.add("settings-hide")
+                }
+            })
+
+            changeAdminPassword.classList.remove("settings-hide")
+        })
+
+        createNewDriverSelect.addEventListener('click', function() {
+            setting.forEach(function(n) {
+                if(n.classList.contains("settings-hide")) {
+                    return true;
+                }
+                else {
+                    n.classList.add("settings-hide")
+                }
+            })
+
+            createNewDriver.classList.remove("settings-hide")
+        })
+
+        deleteOldDriverSelect.addEventListener('click', function() {
+            setting.forEach(function(n) {
+                if(n.classList.contains("settings-hide")) {
+                    return true;
+                }
+                else {
+                    n.classList.add("settings-hide")
+                }
+            })
+
+            deleteOldDriver.classList.remove("settings-hide")
+        })
+
+        settingCreateNewSubClick.addEventListener('click', function() {
+            setting.forEach(function(n) {
+                if(n.classList.contains("settings-hide")) {
+                    return true;
+                }
+                else {
+                    n.classList.add("settings-hide")
+                }
+            })
+
+            settingCreateNewSubCon.classList.remove("settings-hide")
+        })
+
+        settingDeleteOldSubClick.addEventListener('click', function() {
+            setting.forEach(function(n) {
+                if(n.classList.contains("settings-hide")) {
+                    return true;
+                }
+                else {
+                    n.classList.add("settings-hide")
+                }
+            })
+
+            settingDeleteOldSubCon.classList.remove("settings-hide")
+        })
+
+
+        settingsShutEveryoneOutClick.addEventListener('click', function() {
+            setting.forEach(function(n) {
+                if(n.classList.contains("settings-hide")) {
+                    return true;
+                }
+                else {
+                    n.classList.add("settings-hide")
+                }
+            })
+
+            settingsShutEveryoneOutCon.classList.remove("settings-hide")
+        })
+
+        settingsSelectCompanyMain.addEventListener('click', () => {
+            settingsSelectOptionsCon.classList.toggle("setting-hide")
+            settingsCreateNewCompanyCon.classList.add("setting-hide")
+        })
+
+        settingsSelectOptions.forEach(e => {
+            e.addEventListener('click', () => {
+                settingsSelectCompanyMain.textContent = e.textContent
+                settingsSelectCompanyMain.innerHTML += `<input style="display: none;" name="fromexistingcompany" value="${e.textContent}"/>`
+                settingsSelectOptionsCon.classList.add("setting-hide")
+            })
+        })
+
+        
+        settingsCreateNewCompanyBtn.addEventListener('click', () => {
+            settingsSelectCompanyCon.classList.add("setting-hide")
+            settingsCreateNewCompanyBtn.classList.add("setting-hide")
+            settingsCreateNewCompanyDetailsCon.classList.remove("setting-hide")
+        })
+
+        settingsCreateNewCompanySaveBtn.addEventListener('click', () => {
+            settingsCreateNewCompanyMainInput.setAttribute("name", "newcompanyname")
+            settingsCreateNewCompanyRefNameInput.setAttribute("name", "refnameofnewcompany")
+        })
+
+        settingsSelect.forEach(function(settSelect) {
+            settSelect.addEventListener('click', function() {
+                settingsSelect.forEach(function(m) {
+                    m.classList.remove('setting-option-select')
+                })
+                settSelect.classList.add('setting-option-select')
+            })
+        })
+
+        settingsBack.addEventListener('click', function() {
+            history.back()
+        })
+
+        
+    </script>
+</body>
+</html>

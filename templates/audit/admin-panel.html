@@ -1,0 +1,2720 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/appstyle.css' %}">
+    <title>Admin Panel</title>
+</head>
+<body>
+    
+    <header class="admin-panel-header">
+        <p class="admin-panel-welcome-text">Welcome Ma'am</p>
+        <div class="admin-menu-container">
+            <div class="admin-nav-menu-item"></div>
+            <div class="admin-nav-menu-item"></div>
+            <div class="admin-nav-menu-item"></div>
+          </div>
+    </header>
+
+    <main class="admin-panel-main">
+
+        <div class="admin-ham-menu-parent-con admin-panel-hide">
+            <div class="admin-ham-menu-con">
+                <div class="admin-ham-menu-main-con">
+
+                    <div class="admin-ham-menu-main-con-title-con">
+                        <div class="admin-ham-menu-main-con-title-text-con">
+                            <p class="admin-ham-menu-main-con-title-text">Navigation Section</p>
+                        </div>
+                        <div class="admin-ham-menu-main-con-title-exit-con">
+                            <p class="admin-ham-menu-main-con-title-exit-icon">&times;</p>
+                        </div>
+                    </div>
+
+                    <div class="admin-ham-menu-main-con-item-main-con">
+
+                        <div class="admin-ham-menu-main-con-item main-admin-go-live-item">Go Live</div>
+                        <div class="admin-ham-menu-main-con-item"><a class="admin-ham-menu-main-con-item-link" href="{% url 'settings' %}">Settings</a></div>
+                        <div class="admin-ham-menu-main-con-item admin-panel-view-shop-sales-audit">View Shop Sales Audit</div>
+                        <div class="admin-ham-menu-main-con-item admin-panel-view-delivery-sales-audit">View Delivery Audit</div>
+                        <div class="admin-ham-menu-main-con-item admin-panel-todays-invoice-click">View Today's Invoice</div>
+                        <div class="admin-ham-menu-main-con-item admin-panel-all-invoices-click">View All Invoices</div>
+                        <div class="admin-ham-menu-main-con-item admin-panel-view-all-debtors-and-creditors-click">D & C's</div>
+                        <div class="admin-ham-menu-main-con-item admin-panel-view-catalogue-click">Catalogue</div>
+                        <div class="admin-ham-menu-main-con-item admin-panel-view-audit-history-click">View Audit History</div>
+                        <div class="admin-ham-menu-main-con-item admin-panel-view-grant-access-click">Grant Access</div>
+                        <div class="admin-ham-menu-main-con-item admin-panel-manually-close-shop-click">Manually Close the Shop</div>
+                        <div class="admin-ham-menu-main-con-item admin-panel-clear-db-click">Clear Entire Database</div>
+                         
+
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-panel-show-info-main-con">
+            <div class="admin-panel-show-new-stock-main-summary-con">
+                {% if tNewStock and calculatedNewStockValue %}
+                <div class="admin-panel-show-new-stock-second-summary-con">
+                    <div class="admin-panel-show-new-stock-text-con">
+                        <p class="admin-panel-show-new-stock-text">You are to transfer <span class="admin-panel-show-new-stock-text-amt">#{{ calculatedNewStockValue }}</span> for today's new stock</p>
+                    </div>
+                    <div class="admin-panel-show-new-stock-show-products-con">
+                        <p class="admin-panel-show-new-stock-show-products-main-txt-con">
+                            <span class="admin-panel-show-new-stock-show-products-main-txt">
+                            Products recieved today:
+                            </span> 
+                            {% for tnewst in tNewStock %}
+                            <span class="admin-panel-show-new-stock-show-products-view-products">
+                                {{ tnewst.product }}: {{ tnewst.quantity }},
+                            </span>
+                            {% endfor %}
+                        </p>
+                    </div>
+                </div>
+                {% else %}
+                <div class="admin-panel-show-new-stock-no-new-stock-con">
+                    <div class="admin-panel-no-new-stock-txt-con">
+                        <p class="admin-panel-no-new-stock-txt">No new stock for today</p>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="admin-panel-show-info-error-main-con">
+                <div class="admin-panel-show-info-error-con">
+
+                    {% if messgs %}
+
+                        <div class="admin-panel-show-info-error-inconsistence-main-con">
+                            <p class="admin-panel-show-info-error-inconsistence-main-txt">You have the following inconsistencies: </p>
+                        </div>
+                        <div class="admin-panel-show-info-error-errors-main-con">
+
+                        
+
+                        {% for messg in messgs %}
+
+                            <div class="admin-panel-show-info-error-errors-main-con-item">
+                                <div class="admin-panel-show-info-error-errors-icon-con">
+                                    <p class="admin-panel-show-info-error-errors-icon">!</p>
+                                </div>
+                                <div class="admin-panel-show-info-error-errors-txt-con">
+                                    <p class="admin-panel-show-info-error-errors-txt">{{ messg }}</p>
+                                </div>
+                            </div>
+
+                        {% endfor %}
+                        
+
+                        </div>
+
+                    {% else %}
+
+                        <p>Sales for the day has not been concluded</p>
+
+                    {% endif %}
+
+                </div>
+            </div>
+
+            <div class="admin-panel-show-true-audit-main-con">
+                <div class="admin-panel-show-true-audit-display-con">
+                    <div class="admin-panel-show-true-audit-display-title-con">
+                        <p class="admin-panel-show-true-audit-display-title-txt">Sales Info</p>
+                    </div>
+
+                    {% if todAudit %}
+
+                        <p>Sales for the day has been concluded (visit shop sales audit)</p>
+
+                    {% else %}
+
+                        <div class="admin-panel-show-true-audit-display-total-qty-goods-sold-con">
+                            <p class="admin-panel-show-true-audit-display-total-qty-goods-sold-txt">
+                                Total quantity of goods sold(Recorded Sales):
+                                <span class="admin-panel-show-true-audit-display-total-qty-goods-sold-txt-main">
+                                    {% for keypsold, valuepsold in goLiveCon.productsSold.items %}
+                                        <span>{{ keypsold }}: </span>
+                                        <span>{{ valuepsold }}, </span>
+                                    {% endfor %}
+                                </span>
+                                
+                            </p>
+                        </div>
+
+
+                        <div class="admin-panel-show-true-audit-display-total-amt-of-money-con">
+                            <p class="admin-panel-show-true-audit-display-total-amt-of-money">Total amount of money(Recorded Amount): <span class="admin-panel-show-true-audit-display-total-amt-of-money-txt-main"> #{{ goLiveCon.totalShopSalesValue }}</span> </p>
+                        </div>
+
+                        <div class="admin-panel-show-true-audit-display-total-profit-con">
+                            <p class="admin-panel-show-true-audit-display-total-profit">
+                                Products remaining in the shop(based on Recorded sales): 
+                                <span class="admin-panel-show-true-audit-display-total-profit-txt-main">
+                                    {% for keypr, valuepr in goLiveCon.productsRemaining.items %}
+                                        <span>{{ keypr }}: </span>
+                                        <span>{{ valuepr }}, </span>
+                                    {% endfor %}
+                                </span> 
+                            </p>
+                        </div>
+
+                    {% endif %}    
+
+
+                </div>
+            </div>
+
+        </div>
+
+        <!--Shop sales audit starts here-->
+
+        <div class="admin-panel-shop-sales-audit-main-hide-con admin-panel-hide">
+            <div class="admin-panel-shop-sales-audit-main-con">
+
+                <div class="admin-panel-shop-sales-audit-main-header-con">
+
+                    <div class="admin-panel-shop-sales-audit-title-con">
+                        <p class="admin-panel-shop-sales-audit-title-txt">Shop Sales Audit</p>
+                    </div>
+
+                    <div class="admin-panel-shop-sales-audit-exit-con">
+                        <p class="admin-panel-shop-sales-audit-exit-icon">&times;</p>
+                    </div>
+
+                </div>
+
+                <div class="admin-panel-shop-sales-audit-main-body-con">
+
+                    {% for todaudt in todAudit %}
+                    {% if todaudt.shopAttendantStatus == "Shop Attendant has closed" %}
+                        <div class="admin-panel-shop-sales-audit-main-body-shop-attendant-name-con admin-panel-shop-sales-main-item-styling">
+                            <p class="admin-panel-shop-sales-audit-main-body-shop-attendant-name-txt-con">
+                                <span class="admin-panel-shop-sales-audit-main-body-shop-attendant-name-txt">Shop attendant: </span>
+                                <span class="admin-panel-shop-sales-audit-main-body-shop-attendant-name-value admin-panel-shop-sales-least-highlighted">{{ todaudt.shopAttendant }}</span>
+                            </p>
+                        </div>
+
+                        <div class="admin-panel-shop-sales-audit-main-body-shop-attendant-status-con admin-panel-shop-sales-main-item-styling">
+                            <p class="admin-panel-shop-sales-audit-main-body-shop-attendant-status-title-txt-con">
+                                <span class="admin-panel-shop-sales-audit-main-body-shop-attendant-status-txt">Status: </span>
+                                <span class="admin-panel-shop-sales-audit-main-body-shop-attendant-status-value">{{ todaudt.shopAttendantStatus }}</span>
+                            </p>
+                        </div>
+
+                        <div class="admin-panel-shop-sales-audit-main-body-openingstock-main-con admin-panel-shop-sales-main-item-styling">
+                            <p class="admin-panel-shop-sales-audit-main-body-openingstock-title admin-panel-shop-sales-main-title">Opening Stock</p>
+                            {% for keytdaudt, valuestdaudt in todaudt.openingStock.items %}
+
+                                <div class="admin-panel-shop-sales-audit-main-body-openingstock-audt-items-con">
+                                    {% for keyaudt, valuesaudt in valuestdaudt.items %}
+                                        <p class="admin-panel-shop-sales-audit-main-body-openingstock-audt-itms-main-con">
+                                            <span class="admin-panel-shop-sales-audit-main-body-openingstock-audt-itms-keys">{{ keyaudt }}: </span>
+                                            <span class="admin-panel-shop-sales-audit-main-body-openingstock-audt-itms-values time-adjust">{{ valuesaudt }}</span>
+                                        </p>
+                                    {% endfor %}
+                                </div>    
+
+                            {% endfor %}
+                        </div>
+
+                        <div class="admin-panel-shop-sales-audit-main-body-newstock-main-con admin-panel-shop-sales-main-item-styling">
+                            <div class="admin-panel-shop-sales-audit-main-body-newstock-title-con admin-panel-shop-sales-main-title">
+                                <p class="admin-panel-shop-sales-audit-main-body-newstock-title-txt">New Stock</p>
+                            </div>
+                            {% for keynst, valuesnst in todaudt.newStock.items %}
+
+                                 <div class="admin-panel-shop-sales-audit-main-body-new-stock-item-con">
+                                    {% for keynt, valuesnt in valuesnst.items %}
+
+                                        <p class="admin-panel-shop-sales-audit-main-body-newstock-item-keynt-valuesnt-con">
+                                            <span class="admin-panel-shop-sales-audit-main-body-newstock-keynt">{{ keynt }}: </span>
+                                            <span class="admin-panel-shop-sales-audit-main-body-newstock-valuesnt">{{ valuesnt }}</span>
+                                        </p>
+
+                                    {% endfor %}
+                                 </div>
+
+                            {% endfor %}
+                        </div>
+
+                        <div class="admin-panel-shop-sales-audit-main-body-closing-stock-main-con admin-panel-shop-sales-main-item-styling">
+
+                            <div class="admin-panel-shop-sales-audit-main-body-closing-stock-title-con admin-panel-shop-sales-main-title">
+                                <p class="admin-panel-shop-sales-audit-main-body-closing-stock-title-txt">Closing Stock</p>
+                            </div>
+                            {% for keycst, valuescst in todaudt.closingStock.items %}
+
+                                 <div class="admin-panel-shop-sales-audit-main-body-closing-stock-item-con admin-panel-shop-sales-audit-main-body-openingstock-audt-items-con">
+                                    {% for keyct, valuesct in valuescst.items %}
+
+                                        <p class="admin-panel-shop-sales-audit-main-body-closingstock-item-keyct-valuesct-con">
+                                            <span class="admin-panel-shop-sales-audit-main-body-closingstock-keyct">{{ keyct }}</span>
+                                            <span class="admin-panel-shop-sales-audit-main-body-closingstock-valuesct">{{ valuesct }}</span>
+                                        </p>
+
+                                    {% endfor %}
+                                 </div>
+
+                            {% endfor %}
+
+                        </div>
+
+                        <div class="admin-panel-shop-sales-all-sub-sales-main-con admin-panel-shop-sales-main-item-styling">
+                            <p class="admin-panel-shop-sales-all-sub-sales-main-title admin-panel-shop-sales-main-title">All Sub sales</p>
+                            {% for keyallsbsls, valueallsbsls in todaudt.allSubSales.items %}
+
+                                <div class="admin-panel-shop-sales-all-sub-sales-main-items-con admin-panel-shop-sales-audit-main-body-underline-item-con">
+
+                                    <p class="admin-panel-shop-sales-all-sub-sales-main-items-subname-con">
+                                        <span class="admin-panel-shop-sales-all-sub-sales-main-items-subname-txt">Name of Sub: </span>
+                                        <span class="admin-panel-shop-sales-all-sub-sales-main-items-subname-value">{{ valueallsbsls.subName }}</span>
+                                    </p>
+
+                                    <div class="admin-panel-shop-sales-all-sub-sales-main-product-data-con">
+                                        <p class="admin-panel-shop-sales-all-sub-sales-main-product-data-title admin-panel-shop-sales-least-highlighted">Products purchased: </p>
+                                        {% for keyallsbsl, valueallsbsl in valueallsbsls.productData.items %}
+
+                                            <p class="admin-panel-shop-sales-all-sub-sales-main-product-item-con">
+                                                <span class="admin-panel-shop-sales-all-sub-sales-main-product-item-name">{{ keyallsbsl }}: </span>
+                                                <span class="admin-panel-shop-sales-all-sub-sales-main-product-item-name-amount">{{ valueallsbsl }}</span>
+                                            </p>
+
+                                        {% endfor %}
+                                    </div>
+
+                                    <p class="admin-panel-shop-sales-all-sub-sales-product-value-con">
+                                        <span class="admin-panel-shop-sales-all-sub-sales-product-value-title">Value of products: </span>
+                                        <span class="admin-panel-shop-sales-all-sub-sales-product-value-main-value admin-panel-shop-sales-second-least-highlighted">#{{ valueallsbsls.productValue }}</span>
+                                    </p>
+
+                                    <p class="admin-panel-shop-sales-all-sub-sales-mode-of-payment-con">
+                                        <span class="admin-panel-shop-sales-all-sub-sales-mode-of-payment-title">Mode of payment: </span>
+                                        <span class="admin-panel-shop-sales-all-sub-sales-mode-of-payment-value admin-panel-shop-sales-least-highlighted">{{ valueallsbsls.modeOfPayment }}</span>
+                                    </p>
+
+                                    <p class="admin-panel-shop-sales-all-sub-sales-amt-from-sub-distributor-con">
+                                        <span class="admin-panel-shop-sales-all-sub-sales-amt-from-sub-distributor-title">Amount paid: </span>
+                                        <span class="admin-panel-shop-sales-all-sub-sales-amt-from-sub-distributor-value admin-panel-shop-sales-most-highlighted">#{{ valueallsbsls.amtFromSubDistributor }}</span>
+                                    </p>
+
+                                    <p class="admin-panel-shop-sales-all-sub-sales-sub-distributor-debt-con">
+                                        <span class="admin-panel-shop-sales-all-sub-sales-sub-distributor-debt-title">Debt: </span>
+                                        <span class="admin-panel-shop-sales-all-sub-sales-sub-distributor-debt-value">#{{ valueallsbsls.subDistributorDebt }}</span>
+                                    </p>
+
+                                    <p class="admin-panel-shop-sales-all-sub-sales-sub-distributor-balance-con">
+                                        <span class="admin-panel-shop-sales-all-sub-sales-sub-distributor-balance-title">Balance: </span>
+                                        <span class="admin-panel-shop-sales-all-sub-sales-sub-distributor-balance-value">#{{ valueallsbsls.subDistributorCredit }}</span>
+                                    </p>
+
+                                    <p class="admin-panel-shop-sales-all-sub-sales-sub-distributor-sold-at-con">
+                                        <span class="admin-panel-shop-sales-all-sub-sales-sub-distributor-sold-at-title">Sold at: </span>
+                                        <span class="admin-panel-shop-sales-all-sub-sales-sub-distributor-sold-at-value format-time">{{ valueallsbsls.soldAt }}</span>
+                                    </p>
+                                </div>
+
+                            {% endfor %}
+                        </div>
+
+                        <div class="admin-panel-shop-sales-all-wholesales-main-con admin-panel-shop-sales-main-item-styling">
+                            <p class="admin-panel-shop-sales-all-wholesales-main-title-txt admin-panel-shop-sales-main-title">All Wholesales</p>
+                            <div class="admin-panel-shop-sales-all-wholesales-main-data-con">
+
+                                {% for keyallwhls, valueallwhls in todaudt.allWholesales.items %}
+
+                                <div class="admin-panel-shop-sales-audit-main-body-underline-item-con">   
+
+                                    <p class="admin-panel-shop-sales-all-wholesales-customer-name-con">
+                                        <span class="admin-panel-shop-sales-all-wholesales-customer-name-txt">Customer name: </span>
+                                        <span class="admin-panel-shop-sales-all-wholesales-customer-name-value admin-panel-shop-sales-least-highlighted">{{ valueallwhls.customerName }}</span>
+                                    </p>
+
+                                    <div class="admin-panel-shop-sales-all-wholesales-products-data-main-con">
+                                        <p class="admin-panel-shop-sales-all-wholesales-products-data-items-con">
+                                            <span class="admin-panel-shop-sales-all-wholesales-products-data-items-title">Products purchased: </span>
+                                            {% for keyallwhl, valueallwhl in valueallwhls.productsData.items %}
+                                                <span class="admin-panel-shop-sales-all-wholesales-products-data-items-keyallwhl">{{ keyallwhl }}: </span>
+                                                <span class="admin-panel-shop-sales-all-wholesales-products-data-items-valueallwhl">{{ valueallwhl }},</span>
+                                            {% endfor %}
+                                        </p>
+                                    </div>
+
+                                    <p class="admin-panel-shop-sales-all-wholesales-product-value-con">
+                                        <span class="admin-panel-shop-sales-all-wholesales-product-value-title">Value of products: </span>
+                                        <span class="admin-panel-shop-sales-all-wholesales-product-value-value admin-panel-shop-sales-second-least-highlighted">#{{ valueallwhls.productValue }}</span>
+                                    </p>
+
+                                    <p class="admin-panel-shop-sales-all-wholesales-mode-of-payment-con">
+                                        <span class="admin-panel-shop-sales-all-wholesales-mode-of-payment-title">Mode of payment: </span>
+                                        <span class="admin-panel-shop-sales-all-wholesales-mode-of-payment-value admin-panel-shop-sales-least-highlighted">{{ valueallwhls.modeOfPayment }}</span>
+                                    </p>
+
+                                    <p class="admin-panel-shop-sales-all-wholesales-amt-from-customer-con">
+                                        <span class="admin-panel-shop-sales-all-wholesales-amt-from-customer-title">Amount paid: </span>
+                                        <span class="admin-panel-shop-sales-all-wholesales-amt-from-customer-value admin-panel-shop-sales-most-highlighted">#{{ valueallwhls.amtFromCustomer }}</span>
+                                    </p>
+
+                                    <p class="admin-panel-shop-sales-all-wholesales-customer-debt-con">
+                                        <span class="admin-panel-shop-sales-all-wholesales-customer-debt-title">Debt: </span>
+                                        <span class="admin-panel-shop-sales-all-wholesales-customer-debt-value">#{{ valueallwhls.customerDebt }}</span>
+                                    </p>
+
+                                    <p class="admin-panel-shop-sales-all-wholesales-customer-credit-con">
+                                        <span class="admin-panel-shop-sales-all-wholesales-customer-credit-title">Balance: </span>
+                                        <span class="admin-panel-shop-sales-all-wholesales-customer-credit-value">#{{ valueallwhls.customerCredit }}</span>
+                                    </p>
+
+                                    <p class="admin-panel-shop-sales-all-wholesales-sold-at-con">
+                                        <span class="admin-panel-shop-sales-all-wholesales-sold-at-title">Sold at: </span>
+                                        <span class="admin-panel-shop-sales-all-wholesales-sold-at-value format-time">{{ valueallwhls.soldAt }}</span>
+                                    </p>
+
+                                </div>     
+
+                                {% endfor %}
+
+                            </div>
+                        </div>
+
+                        <div class="admin-panel-shop-sales-all-retail-sales-main-con admin-panel-shop-sales-main-item-styling">
+                            <p class="admin-panel-shop-sales-all-retail-sales-main-title admin-panel-shop-sales-main-title">All Retail Sales</p>
+                            <div class="admin-panel-shop-sales-all-retail-sales-product-data-items-con">
+                                {% for keyallrtls, valueallrtls in todaudt.allRetailSales.items %}
+
+                                    <div class="admin-panel-shop-sales-all-retail-sales-product-data-item-con admin-panel-shop-sales-audit-main-body-underline-item-con">
+                                        <span class="admin-panel-shop-sales-all-retail-sales-product-data-item-title">Product: </span>
+                                        <span class="admin-panel-shop-sales-all-retail-sales-product-data-item-product-value">{{ valueallrtls.product }}</span>
+                                        <span class="admin-panel-shop-sales-all-retail-sales-product-data-item-product-qty">(total sold: {{ valueallrtls.productQuantity }})</span>
+                                        <p class="admin-panel-shop-sales-all-retail-sales-product-data-item-product-value">
+                                            <span class="admin-panel-shop-sales-all-retail-sales-product-data-item-total-product-value-title admin-panel-shop-sales-second-least-highlighted">Total value: </span>
+                                            <span class="admin-panel-shop-sales-all-retail-sales-product-data-item-total-product-value">#{{ valueallrtls.productValue }}</span>
+                                        </p>
+                                        <p class="admin-panel-shop-sales-all-retail-sales-product-data-item-sold-at-con">
+                                            <span class="admin-panel-shop-sales-all-retail-sales-product-data-item-sold-at-title">Sold at: </span>
+                                            <span class="admin-panel-shop-sales-all-retail-sales-product-data-item-sold-at-value format-time ">{{ valueallrtls.soldAt }}</span>
+                                        </p>
+                                    </div>
+
+                                {% endfor %}
+                            </div>
+                        </div>
+
+
+
+                        <div class="admin-panel-shop-sales-shop-attendant-delivery-stock-details admin-panel-shop-sales-main-item-styling">
+                            <p class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-main-title admin-panel-shop-sales-main-title">Shop attendant's delivery record</p>
+
+                            {% for keyshopatt, valueshopatt in todaudt.shopAttendantDeliveryStockDetails.items %}
+
+                                <p class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-driver-name-main-con">
+                                    <span class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-name-main-title">Driver's name: </span>
+                                    <span class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-name-value">{{ valueshopatt.driverName }}</span>
+                                </p>
+
+
+                                <div class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-product-data-main-con">
+                                    <p class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-product-data-main-title admin-panel-shop-sales-least-highlighted">Product Data</p>
+
+                                    {% for keyproddata, valueproddata in valueshopatt.productData.items %}
+
+                                        <p class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-product-data-product-name">{{ keyproddata }}</p>
+                                        <div class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-product-data-qty-returned">
+                                            <p class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-product-data-product-taken">
+                                                <span class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-product-data-taken-title">Taken: </span>
+                                                <span class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-product-data-taken-value">{{ valueproddata.productQuantity }}</span>
+                                            </p>
+
+                                            <p class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-product-data-product-returned">
+                                                <span class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-product-data-returned-title">returned: </span>
+                                                <span class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-product-data-returned-value">{{ valueproddata.productBroughtBack }}</span>
+                                            </p>
+
+                                            <p class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-product-data-product-price">
+                                                <span class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-product-data-price-title">Price per loaf: </span>
+                                                <span class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-product-data-price-value">#{{ valueproddata.productPrice }}</span>
+                                            </p>
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                                <p class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-amount-brought-back-con">
+                                    <span class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-amount-brought-back-title">Amount remmitted: </span>
+                                    <span class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-amount-brought-back-value admin-panel-shop-sales-second-least-highlighted">#{{ valueshopatt.amountBroughtBack }}</span>
+                                </p>
+
+                                <p class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-delivery-status-con">
+                                    <span class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-delivery-status-title">Delivery status: </span>
+                                    <span class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-delivery-status-value admin-panel-shop-sales-least-highlighted">{{ valueshopatt.deliveryStatus }}</span>
+                                </p>
+
+                                <p class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-left-at-con admin-panel-shop-sales-audit-main-body-underline-item-con">
+                                    <span class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-left-at-title">Left at: </span>
+                                    <span class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-left-at-value format-time">{{ valueshopatt.leftAt }}</span>
+                                </p>
+
+
+
+                            {% endfor %}
+
+                        </div>
+
+                        <div class="admin-panel-shop-sales-expected-shop-attendant-delivery-stock-details-main-con admin-panel-shop-sales-main-item-styling">
+                            <p class="admin-panel-shop-sales-expected-shop-attendant-delivery-stock-details-main-title admin-panel-shop-sales-main-title">Expected Delivery total(based on shop attendant's record)(audit)</p>
+                            <div class="admin-panel-shop-sales-expected-shop-attendant-delivery-stock-details-items-con">
+                                {% for keyexpsatt, valueexpsatt in todaudt.expectedShopAttendantDeliveryStockDetails.items %}
+                                    <p class="admin-panel-shop-sales-expected-shop-attendant-delivery-stock-details-items">
+                                        <span class="admin-panel-shop-sales-expected-shop-attendant-delivery-stock-details-txt">{{ keyexpsatt }}: </span>
+                                        <span class="admin-panel-shop-sales-expected-shop-attendant-delivery-stock-details-value">#{{ valueexpsatt }}</span>
+                                    </p>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+
+                        <div class="admin-panel-shop-sales-invoice-numbers-main-con admin-panel-shop-sales-main-item-styling">
+                            <p class="admin-panel-shop-sales-invoice-numbers-main-title">All invoice numbers for today: </p>
+                            <div class="admin-panel-shop-sales-invoice-numbers-items-con">
+                                {% for keyshpinv, valueshpinv in todaudt.invoiceNumbers.items %}
+
+                                    <p class="admin-panel-shop-sales-invoice-numbers-main-invoice-number">{{ valueshpinv }}</p>
+
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="admin-panel-shop-sales-shop-customers-to-transfer-main-con admin-panel-shop-sales-main-item-styling">
+                            <p class="admin-panel-shop-sales-shop-customers-to-transfer-main-title admin-panel-shop-sales-main-title">Customers to Transfer(from the shop) </p>
+                            <div class="admin-panel-shop-sales-shop-customers-to-transfer-item-main-con">
+                                {% for keyallscts, valueallscts in todaudt.shopCustomersToTransfer.items %}
+                                    <p class="admin-panel-shop-sales-shop-customers-to-transfer-customer-name-con">
+                                        <span class="admin-panel-shop-sales-shop-customers-to-transfer-customer-name-title">Name of Customer: </span>
+                                        <span class="admin-panel-shop-sales-shop-customers-to-transfer-customer-name-value admin-panel-shop-sales-least-highlighted">{{ valueallscts.customerName }}</span>
+                                    </p>
+
+                                    <p class="admin-panel-shop-sales-shop-customers-to-transfer-product-value-con">
+                                        <span class="admin-panel-shop-sales-shop-customers-to-transfer-product-value-title">Value of purchased products: </span>
+                                        <span class="admin-panel-shop-sales-shop-customers-to-transfer-product-value-value admin-panel-shop-sales-second-least-highlighted">#{{ valueallscts.productValue }}</span>
+                                    </p>
+
+                                    <p class="admin-panel-shop-sales-shop-customers-to-transfer-mode-of-payment-con admin-panel-shop-sales-audit-main-body-underline-item-con">
+                                        <span class="admin-panel-shop-sales-shop-customers-to-transfer-mode-of-payment-title">Mode of Payment: </span>
+                                        <span class="admin-panel-shop-sales-shop-customers-to-transfer-mode-of-payment-value">{{ valueallscts.modeOfPayment }}</span>
+                                    </p>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="admin-panel-shop-sales-shop-handover-main-con admin-panel-shop-sales-main-item-styling">
+                            <p class="admin-panel-shop-sales-shop-handover-title">Recorded Shop Handover</p>
+                            <p class="admin-panel-shop-sales-shop-handover-value admin-panel-shop-sales-most-highlighted">#{{ todaudt.shopHandover }}</p>
+                        </div>
+
+                        <div class="admin-panel-shop-sales-full-shop-sales-audit-main-con admin-panel-shop-sales-main-item-styling">
+                            <p class="admin-panel-shop-sales-full-shop-sales-audit-title admin-panel-shop-sales-main-title">Full Shop sales Audit (from audit)</p>
+                            <div class="admin-panel-shop-sales-full-shop-sales-audit-items-con">
+                                <p class="admin-panel-shop-sales-full-shop-sales-audit-audit-messages-title">Audit Messages</p>
+
+                                {% for keyfdsaudt, valuefdsaudt in todaudt.fullDeliverySalesAudit.items %}
+                                    
+                                    {% for keyfdsdt, valuefdsdt in valuefdsaudt.items %}
+
+                                        <p class="admin-panel-shop-sales-full-shop-sales-audit-item-con admin-panel-shop-sales-audit-main-body-underline-item-con">
+                                            <span class="admin-panel-shop-sales-full-shop-sales-audit-item-key">{{ keyfdsdt }}</span>
+                                            <span class="admin-panel-shop-sales-full-shop-sales-audit-item-value">{{ valuefdsdt }}</span>
+                                        </p>
+
+                                    {% endfor %}
+                                    
+                                {% endfor %}
+
+                                <p class="admin-panel-shop-sales-full-shop-sales-audit-expected-closing-handover-con">
+                                    <span class="admin-panel-shop-sales-full-shop-sales-audit-exp-closing-handover-title admin-panel-shop-sales-second-least-highlighted">Expected Closing Handover: </span>
+                                    <span class="admin-panel-shop-sales-full-shop-sales-audit-exp-closing-handover-value">#{{  todaudt.fullShopSalesAudit.expectedClosinghandover  }}</span>
+                                </p>
+
+                                <p class="admin-panel-shop-sales-full-shop-sales-audit-raw-sales-con">
+                                    <span class="admin-panel-shop-sales-full-shop-sales-audit-raw-sales-title admin-panel-shop-sales-most-highlighted">Raw sales: </span>
+                                    <span class="admin-panel-shop-sales-full-shop-sales-audit-raw-sales-value">#{{ todaudt.fullShopSalesAudit.rawSales }}</span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="admin-panel-shop-sales-customers-in-debt-main-con admin-panel-shop-sales-main-item-styling">
+                            <p class="admin-panel-shop-sales-customers-in-debt-title admin-panel-shop-sales-main-title">Customers in Debt</p>
+                            <div class="admin-panel-shop-sales-customers-in-debt-items-con">
+                                {% for keyallcidt, valueallcidt in todaudt.customersInDebt.items %}
+                                    <p class="admin-panel-shop-sales-customers-in-debt-item-con admin-panel-shop-sales-audit-main-body-underline-item-con">
+                                        <span class="admin-panel-shop-sales-customers-in-debt-item-name">{{ keyallcidt }}: </span>
+                                        <span class="admin-panel-shop-sales-customers-in-debt-item-value">{{ valueallcidt }}</span>
+                                    </p>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="admin-panel-shop-sales-customers-credit-main-con admin-panel-shop-sales-main-item-styling">
+                            <p class="admin-panel-shop-sales-customers-credit-title admin-panel-shop-sales-main-title">Customers that have a balance</p>
+                            <div class="admin-panel-shop-sales-customers-credit-items-con">
+                                {% for keyccredit, valueccredit in todaudt.customersCredit.items %}
+
+                                    <p class="admin-panel-shop-sales-customers-credit-item-value admin-panel-shop-sales-audit-main-body-underline-item-con">{{ valueccredit }}</p>
+
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="admin-panel-shop-sales-messages-main-con admin-panel-shop-sales-main-item-styling">
+                            <p class="admin-panel-shop-sales-messsages-title admin-panel-shop-sales-main-title">All Messages</p>
+                            <div class="admin-panel-shop-sales-messsages-items-con">
+                                {% for keymsgs, valuemsgs in todaudt.messages.items %}
+                                    <p class="admin-panel-shop-sales-messsages-item-main-con admin-panel-shop-sales-audit-main-body-underline-item-con">
+                                        <span class="admin-panel-shop-sales-messsages-item-main-number">{{ keymsgs }}. </span>
+                                        <span class="admin-panel-shop-sales-messsages-item-main-messsage-content">{{ valuemsgs.message_content }}</span>
+                                    </p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% else %}
+                    <div class="admin-panel-shop-sales-not-yet-closed-con">
+                        <p class="admin-panel-shop-sales-not-yet-closed-con-main-txt">The shop attendant has not closed</p>
+                    </div>    
+
+                    {% endif %}
+                    {% endfor %}
+
+                </div>
+
+            </div>
+        </div>
+
+        <!--Shop Sales audit option ends here-->
+
+        <!--Delivery sales audit option starts here-->
+
+        <div class="admin-panel-delivery-sales-main-hide-con admin-panel-hide">
+            <div class="admin-panel-delivery-sales-main-con">
+
+                <div class="admin-panel-delivery-sales-main-header-con">
+
+                    <div class="admin-panel-delivery-sales-main-title-con">
+                        <p class="admin-panel-delivery-sales-main-title-txt">Delivery Sales</p>
+                    </div>
+
+                    <div class="admin-panel-delivery-sales-main-exit-con">
+                        <p class="admin-panel-delivery-sales-main-exit-icon">&times;</p>
+                    </div>
+
+                </div>
+
+                <div class="admin-panel-delivery-sales-main-body-con">
+                    {% for todadt in todAudit %}
+
+                        <div class="admin-panel-delivery-sales-driver-name-main-con admin-panel-delivery-sales-main-content-styling">
+                            <p class="admin-panel-delivery-sales-driver-name-value-con">
+                                <span class="admin-panel-delivery-sales-driver-name-title">Driver name: </span>
+                                <span class="admin-panel-delivery-sales-driver-name-value admin-panel-delivery-sales-least-highlighted-txt">{{ todadt.driver }}</span>
+                            </p>
+                        </div>
+
+                        <div class="admin-panel-delivery-sales-driver-status-main-con admin-panel-delivery-sales-main-content-styling">
+                            <p class="admin-panel-delivery-sales-driver-status-value-con">
+                                <span class="admin-panel-delivery-sales-driver-status-title">Driver Status: </span>
+                                <span class="admin-panel-delivery-sales-driver-status-value admin-panel-delivery-sales-second-highlighted-txt">{{ todadt.driverStatus }}</span>
+                            </p>
+                        </div>
+
+                        <div class="admin-panel-delivery-sales-driver-delivery-stock-details-main-con admin-panel-delivery-sales-main-content-styling">
+                            <p class="admin-panel-delivery-sales-driver-delivery-stock-details-main-title admin-panel-delivery-sales-main-content-header-styling">Delivery Sales</p>
+                            <div class="admin-panel-delivery-sales-driver-delivery-stock-details-main-content-con">
+                                {% for keyddsds, valueddsds in todadt.driverDeliveryStockDetails.items %}
+
+                                    <div class="admin-panel-delivery-sales-keyddsds-valueddsds-main-con">
+
+                                        <div class="admin-panel-delivery-sales-delivery-number-main-con">
+                                            <p class="admin-panel-delivery-sales-keyddsds-main-con">
+                                                <span class="admin-panel-delivery-sales-keyddsds-main-title-txt">Delivery Number: </span>
+                                                <span class="admin-panel-delivery-sales-keyddsds-main-title-value">{{ keyddsds }}</span>
+                                            </p>
+                                        </div>
+
+                                        <div class="admin-panel-delivery-sales-driver-delivery-stock-details-products-data-main-con">
+                                            <p class="admin-panel-delivery-sales-driver-delivery-stock-details-products-data-main-title">Products Data</p>
+                                            {% for keyddsd, valueddsd in valueddsds.productsData.items %}
+
+                                                <div class="admin-panel-delivery-sales-driver-delivery-stock-details-keyddsd-valueddsd-main-con">
+                                                    <p class="admin-panel-delivery-sales-driver-delivery-stock-details-products-data-product">{{ keyddsd }}</p>
+                                                    <div class="admin-panel-delivery-sales-driver-delivery-stock-details-valueddsd-main-con">
+
+                                                        <p class="admin-panel-delivery-sales-driver-delivery-stock-details-product-taken-quantity-main-con">
+                                                            <span class="admin-panel-delivery-sales-driver-delivery-stock-details-product-taken-quantity-title-txt">Taken: </span>
+                                                            <span class="admin-panel-delivery-sales-driver-delivery-stock-details-product-taken-quantity-value">{{ valueddsd.productTakenQuantity }}</span>
+                                                        </p>
+
+                                                        <p class="admin-panel-delivery-sales-driver-delivery-stock-details-product-returned-quantity-main-con">
+                                                            <span class="admin-panel-delivery-sales-driver-delivery-stock-details-product-returned-quantity-title-txt">Returned: </span>
+                                                            <span class="admin-panel-delivery-sales-driver-delivery-stock-details-product-returned-quantity-value">{{ valueddsd.productBroughtBackQuantity }}</span>
+                                                        </p>
+
+                                                    </div>
+                                                </div>
+
+                                            {% endfor %}
+                                        </div>
+
+                                        <div class="admin-panel-delivery-sales-driver-delivery-stock-details-amount-brought-back-main-con">
+                                            <p class="admin-panel-delivery-sales-driver-delivery-stock-details-amount-brought-back-main-value">
+                                                <span class="admin-panel-delivery-sales-driver-delivery-stock-details-amount-brought-back-main-value-title">Amount remmitted: </span>
+                                                <span class="admin-panel-delivery-sales-driver-delivery-stock-details-amount-brought-back-main-value-item">#{{ valueddsds.amountBroughtBack }}</span>
+                                            </p>
+                                        </div>
+
+                                        <div class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-main-con">
+                                            <p class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-main-title">All Customer Data</p>
+                                            <div class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-main-body">
+                                                {% for keyallcd, valueallcd in valueddsds.allCustomersData.items %}
+                      
+                                                    <div class="admin-panel-delivery-sales-driver-delivery-stock-details-style-con">
+
+                                                        <p class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-customer-name-main-con">
+                                                            <span class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-customer-name-title">Customer name: </span>
+                                                            <span class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-customer-name-value admin-panel-delivery-sales-most-highlighted-txt">{{ keyallcd }}</span>
+                                                        </p>
+                                                        
+                                                        <div class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-products-purchased-main-con">
+                                                            <p class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-products-purchased-title admin-panel-delivery-sales-second-highlighted-txt">Products purchased: </p>
+                                                            <p class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-products-purchased-items-con">
+                                                                {% for keyallpp, valueallpp in valueallcd.productsPurchased.items %}
+                                                                    <span class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-products-purchased-items-product">{{ keyallpp }}: </span>
+                                                                    <span class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-products-purchased-items-product-qty">{{ valueallpp }}, </span>
+                                                                {% endfor %}
+                                                            </p>
+    
+                                                        </div>
+    
+                                                        <p class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-product-value-main-con">
+                                                            <span class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-product-value-main-title">Value of purchased products: </span>
+                                                            <span class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-product-value-main-value admin-panel-delivery-sales-second-highlighted-txt">#{{ valueallcd.productValue }}</span>
+                                                        </p>
+    
+                                                        <p class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-mode-of-payment-main-con">
+                                                            <span class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-mode-of-payment-title">Mode of Payment: </span>
+                                                            <span class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-mode-of-payment-value">{{ valueallcd.modeOfPayment }}</span>
+                                                        </p>
+    
+                                                        <p class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-amt-from-customer-con">
+                                                            <span class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-amt-from-customer-title">Amount paid: </span>
+                                                            <span class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-amt-from-customer-value">#{{ valueallcd.amtFromCustomer }}</span>
+                                                        </p>
+    
+                                                        <p class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-customer-debt-con">
+                                                            <span class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-customer-debt-title">Debt: </span>
+                                                            <span class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-customer-debt-value">#{{ valueallcd.customerDebt }}</span>
+                                                        </p>
+    
+                                                        <p class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-customer-credit-con">
+                                                            <span class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-customer-credit-title">Balance: </span>
+                                                            <span class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-customer-credit-value">#{{ valueallcd.customerCredit }}</span>
+                                                        </p>
+
+                                                    </div>
+
+
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+
+                                        <div class="admin-panel-delivery-sales-driver-delivery-stock-details-finished-selling-time-main-con">
+                                            <p class="admin-panel-delivery-sales-driver-delivery-stock-details-finished-selling-time-con">
+                                                <span class="admin-panel-delivery-sales-driver-delivery-stock-details-finished-selling-time-title">Finished at: </span>
+                                                <span class="admin-panel-delivery-sales-driver-delivery-stock-details-finished-selling-time-value format-time">{{ valueddsds.finishedSellingTime }}</span>
+                                            </p>
+                                        </div>
+
+                                    </div>
+
+                                {% endfor %}
+                            </div>
+                        </div>
+
+
+                        <div class="admin-panel-expected-driver-delivery-stock-details-main-con admin-panel-delivery-sales-main-content-styling">
+                            <p class="admin-panel-expected-driver-delivery-stock-details-main-title admin-panel-delivery-sales-main-content-header-styling">Expected Delivery Stock Details(from audit)</p>
+                            <div class="admin-panel-expected-driver-delivery-stock-details-content-main-con">
+                                {% for keyexpdd, valueexpdd in todadt.expectedDriverDeliveryStockDetails.items %}
+
+                                    <div class="admin-panel-expected-driver-delivery-stock-details-content-con admin-panel-delivery-sales-main-content-styling-underline">
+                                        <p class="admin-panel-expected-driver-delivery-stock-details-keyexpdd">{{ keyexpdd }}: </p>
+                                        <div class="admin-panel-expected-driver-delivery-stock-details-valueexpdd-main-con">
+                                            {% for keyexpd, valueexpd in valueexpdd.items %}
+                                                <span class="admin-panel-expected-driver-delivery-stock-details-keyexpd">{{ keyexpd }}: </span>
+                                                <span class="admin-panel-expected-driver-delivery-stock-details-valueexpd">{{ valueexpd }},</span>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+
+                                {% endfor %}
+                            </div>
+                        </div>
+
+
+                        <div class="admin-panel-delivery-customers-to-transfer-main-con admin-panel-delivery-sales-main-content-styling">
+                            <p class="admin-panel-delivery-customers-to-transfer-main-title admin-panel-delivery-sales-main-content-header-styling">Customers to Transfer{from Delivery}</p>
+                            <div class="admin-panel-delivery-customers-to-transfer-main-content-con">
+                                {% for keydct, valuedct in todadt.deliveryCustomersToTransfer.items %}
+
+                                    <p class="admin-panel-delivery-customers-to-transfer-content-con admin-panel-delivery-sales-main-content-styling-underline">
+                                        <span class="admin-panel-delivery-customers-to-transfer-name-of-customer-value">{{ keydct }}: </span>
+                                        <span class="admin-panel-delivery-customers-to-transfer-transfer-value">{{ valuedct }}</span>
+                                    </p>
+
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="admin-panel-delivery-total-delivery-handover-main-con admin-panel-delivery-sales-main-content-styling">
+                            <p class="admin-panel-delivery-total-delivery-handover-main-title admin-panel-delivery-sales-main-content-header-styling">Total Delivery Handover</p>
+                            <p class="admin-panel-delivery-total-delivery-handover-main-value">#{{ todadt.TotalDeliveryHandover }}</p>
+                        </div>
+
+                        <div class="admin-panel-full-delivery-sales-audit-main-con admin-panel-delivery-sales-main-content-styling">
+                            <p class="admin-panel-full-delivery-sales-audit-audit-messages-title-txt admin-panel-delivery-sales-main-content-header-styling">Audit Messages</p>
+                            <div class="admin-panel-full-delivery-sales-audit-audit-messages-main-con">
+                                {% for keyamt, valueamt in todadt.fullDeliverySalesAudit.auditMessages.items %}
+                                    <div class="admin-panel-full-delivery-sales-audit-audit-messages-main-body admin-panel-delivery-sales-main-content-styling-underline">
+                                        <p class="admin-panel-full-delivery-sales-audit-audit-messages-main-body-title">{{ keyamt }}: </p>
+                                        <p class="admin-panel-full-delivery-sales-audit-audit-messages-main-body-main-content">{{ valueamt }}</p>
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="admin-panel-full-delivery-sales-audit-total-amount-expected-based-on-record-main-con admin-panel-delivery-sales-main-content-styling-underline">
+                                <p class="admin-panel-full-delivery-sales-audit-total-amount-expected-based-on-record-main-title">Total Amount Expected (Based on Delivery Record): </p>
+                                <p class="admin-panel-full-delivery-sales-audit-total-amount-expected-based-on-record-main-value admin-panel-delivery-sales-most-highlighted-txt">#{{ todadt.fullDeliverySalesAudit.totalAmountExpectedBasedOnRecord }}</p>
+                            </div>
+
+                            <div class="admin-panel-full-delivery-sales-audit-actual-amount-expected-based-on-cash-sales-main-con admin-panel-delivery-sales-main-content-styling-underline">
+                                <p class="admin-panel-full-delivery-sales-audit-actual-amount-expected-based-on-cash-sales-main-title">Actual Amount Expected (Based on Cash Sales): </p>
+                                <p class="admin-panel-full-delivery-sales-audit-actual-amount-expected-based-on-cash-sales-main-value admin-panel-delivery-sales-most-highlighted-txt">#{{ todadt.fullDeliverySalesAudit.actualAmountExpectedBasedOnCashSales }}</p>
+                            </div>
+
+                            <div class="admin-panel-full-delivery-sales-audit-actual-amount-expected-from-all-sales-main-con admin-panel-delivery-sales-main-content-styling-underline">
+                                <p class="admin-panel-full-delivery-sales-audit-actual-amount-expected-from-all-sales-main-title">Actual Amount Expected from All Sales: </p>
+                                <p class="admin-panel-full-delivery-sales-audit-actual-amount-expected-from-all-sales-main-value admin-panel-delivery-sales-most-highlighted-txt">#{{ todadt.fullDeliverySalesAudit.actualAmountExpectedFromAllSales }}</p>
+                            </div>
+                            
+                        </div>
+
+
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+        </div>
+
+        <!--Delivery sales audit option ends here-->
+
+        <!--Debtors option starts here-->
+
+        <div class="admin-panel-debtors-main-hide-con admin-panel-hide">
+            <div class="admin-panel-debtors-main-con">
+
+                <div class="admin-panel-debtors-main-header">
+
+                    <div class="admin-panel-debtors-header-txt-con">
+                        <p class="admin-panel-debtors-header-txt">
+                            <span class="admin-panel-debtors-red-txt">Debtors</span>
+                            <span class="admin-panel-debtors-normal-txt"> & </span>
+                            <span class="admin-panel-debtors-green-txt">Creditors</span>
+                        </p>
+                    </div>
+
+                    <div class="admin-panel-debtors-header-exit-con">
+                        <p class="admin-panel-debtors-header-exit-icon">&times;</p>
+                    </div>
+
+                </div>
+
+                <div class="admin-panel-debtors-main-body-con">
+                    {% if todAudit.first %}
+                        <div class="admin-panel-debtors-tod-audit-main-con">
+                            {% for tdd in todAudit %}
+
+                                <div class="admin-panel-debtors-tod-audit-customers-in-debt-con admin-panel-debtors-debt-main-content-styling">
+                                    <p class="admin-panel-debtors-tod-audit-customers-in-debt-title-txt admin-panel-debtors-debt-main-content-styling-title">Customers in Debt</p>
+                                    <div class="admin-panel-debtors-tod-audit-customers-in-debt-main-body-con admin-panel-debtors-debt-content-styling">
+                                        {% for keytd, valuetd in tdd.customersInDebt.items %}
+                                            <p class="admin-panel-debtors-tod-audit-customers-in-debt-main-body-items admin-panel-debtors-debt-content-element-styling">
+                                                <span class="admin-panel-debtors-tod-audit-customers-in-debt-main-body-items-keytd admin-panel-debtors-debt-content-noc-element-styling">{{ keytd }}: </span>
+                                                <span class="admin-panel-debtors-tod-audit-customers-in-debt-main-body-items-valuetd">{{ valuetd }}</span>
+                                            </p>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+
+                                <div class="admin-panel-debtors-tod-audit-shop-customers-to-transfer-con admin-panel-debtors-debt-main-content-styling">
+                                    <p class="admin-panel-debtors-tod-audit-shop-customers-to-transfer-main-title-txt admin-panel-debtors-debt-main-content-styling-title">Customers to Transfer (from the Shop)</p>
+                                    <div class="admin-panel-debtors-tod-audit-shop-customers-to-transfer-main-body-con admin-panel-debtors-debt-content-styling">
+                                        {% for keydt, valuedt in tdd.shopCustomersToTransfer.items %}
+
+                                            <p class="admin-panel-debtors-tod-audit-shop-customers-to-transfer-keydt-valuedt admin-panel-debtors-debt-content-element-styling">
+                                                <span class="admin-panel-debtors-tod-audit-shop-customers-to-transfer-customer-name-txt">Customer name: </span>
+                                                <span class="admin-panel-debtors-tod-audit-shop-customers-to-transfer-customer-name-value">{{ valuedt.customerName }}, </span>
+                                                <span class="admin-panel-debtors-tod-audit-shop-customers-to-transfer-product-value-txt">Product Value: </span>
+                                                <span class="admin-panel-debtors-tod-audit-shop-customers-to-transfer-product-value-value">{{ valuedt.productValue }}, </span>
+                                                <span class="admin-panel-debtors-tod-audit-shop-customers-to-transfer-mode-of-payment-txt">Mode of Payment: </span>
+                                                <span class="admin-panel-debtors-tod-audit-shop-customers-to-transfer-mode-of-payment-value">{{ valuedt.modeOfPayment }}</span>
+                                            </p>
+
+                                        {% endfor %}
+                                    </div>
+                                </div>
+
+                                <div class="admin-panel-debtors-tod-audit-delivery-customers-to-transfer-con admin-panel-debtors-debt-main-content-styling">
+                                    <p class="admin-panel-debtors-tod-audit-delivery-customers-to-transfer-main-title-txt admin-panel-debtors-debt-main-content-styling-title">Customers to Transfer (from Delivery)</p>
+                                    <div class="admin-panel-debtors-tod-audit-delivery-customers-to-transfer-main-body-con admin-panel-debtors-debt-content-styling">
+                                        {% for keygt, valuegt in tdd.deliveryCustomersToTransfer.items %}
+
+                                            <p class="admin-panel-debtors-tod-audit-delivery-customers-to-transfer-keygt-valuegt-main-con admin-panel-debtors-debt-content-element-styling">
+                                                <span class="admin-panel-debtors-tod-audit-delivery-customers-to-transfer-keygt">{{ keygt }}: </span>
+                                                <span class="admin-panel-debtors-tod-audit-delivery-customers-to-transfer-valuegt">{{ valuegt }}</span>
+                                            </p>
+
+                                        {% endfor %}
+                                    </div>
+                                </div>
+
+                                <div class="admin-panel-debtors-tod-audit-delivery-customers-credit-con admin-panel-debtors-credit-main-content-styling">
+                                    <p class="admin-panel-debtors-tod-audit-delivery-customers-credit-main-title admin-panel-debtors-credit-main-content-styling-title">Customers with a Balance</p>
+                                    <div class="admin-panel-debtors-tod-audit-delivery-customers-credit-main-body-con admin-panel-debtors-credit-content-styling">
+                                        {% for keyst, valuest in tdd.customersCredit.items %}
+
+                                            <p class="admin-panel-debtors-tod-audit-delivery-customers-credit-keyst-valuest admin-panel-debtors-credit-content-element-styling">
+                                                <span class="admin-panel-debtors-tod-audit-delivery-customers-credit-keyst admin-panel-debtors-credit-content-noc-element-styling">{{ keyst }}: </span>
+                                                <span class="admin-panel-debtors-tod-audit-delivery-customers-credit-valuest">{{ valuest }}</span>
+                                            </p>
+
+                                        {% endfor %}
+                                    </div>
+                                </div>
+
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="admin-panel-debtors-tod-audit-delivery-if-todaudt-not-present">
+                            <p class="admin-panel-debtors-tod-audit-delivery-if-todaudt-not-present">Please visit the "Go Live" Section</p>
+                        </div>
+                    {% endif %}
+                </div>
+
+            </div>
+        </div>
+
+        <!--Debtors option ends here-->
+
+
+        <!--Audit History option starts here-->
+
+        <div class="admin-panel-audit-history-main-hide-con admin-panel-hide">
+
+            <div class="admin-panel-audit-history-main-con">
+                
+                <div class="admin-panel-audit-history-main-title-con">
+                    
+                    <div class="admin-panel-audit-history-main-title-txt-con">
+                        <p class="admin-panel-audit-history-main-title-txt">Audit History</p>
+                    </div>
+    
+                    <div class="admin-panel-audit-history-main-title-exit-con">
+                        <p class="admin-panel-audit-history-main-exit-icon">&times;</p>
+                    </div>
+    
+                </div>
+    
+    
+                <div class="admin-panel-audit-history-main-body-con">
+    
+    
+    
+                    {% for totaudt in totAudit reversed %}
+    
+                    <div class="admin-panel-audit-history-value-body-con">
+    
+                        <!--Shop sales audit starts here-->
+                        <div class="admin-panel-shop-sales-audit-main-header-con">
+
+                            <div class="admin-panel-shop-sales-audit-title-con">
+                                <p class="admin-panel-shop-sales-audit-title-txt">Shop Sales Audit</p>
+                            </div>
+        
+        
+                        </div>
+    
+                        <div class="admin-panel-shop-sales-audit-main-body-con">
+
+                            <div class="admin-panel-shop-sales-audit-main-body-main-date-con admin-panel-shop-sales-main-item-styling">
+                                <p class="admin-panel-shop-sales-audit-main-body-main-date-txt-con">
+                                    <span class="admin-panel-shop-sales-audit-main-body-main-date-txt">Date: </span>
+                                    <span class="admin-panel-shop-sales-audit-main-body-main-date-value admin-panel-shop-sales-least-highlighted">{{ totaudt.auditDate }}</span>
+                                </p>
+                            </div>
+    
+                                <div class="admin-panel-shop-sales-audit-main-body-shop-attendant-name-con admin-panel-shop-sales-main-item-styling">
+                                    <p class="admin-panel-shop-sales-audit-main-body-shop-attendant-name-txt-con">
+                                        <span class="admin-panel-shop-sales-audit-main-body-shop-attendant-name-txt">Shop attendant: </span>
+                                        <span class="admin-panel-shop-sales-audit-main-body-shop-attendant-name-value admin-panel-shop-sales-least-highlighted">{{ totaudt.shopAttendant }}</span>
+                                    </p>
+                                </div>
+    
+                                <div class="admin-panel-shop-sales-audit-main-body-shop-attendant-status-con admin-panel-shop-sales-main-item-styling">
+                                    <p class="admin-panel-shop-sales-audit-main-body-shop-attendant-status-title-txt-con">
+                                        <span class="admin-panel-shop-sales-audit-main-body-shop-attendant-status-txt">Status: </span>
+                                        <span class="admin-panel-shop-sales-audit-main-body-shop-attendant-status-value">{{ totaudt.shopAttendantStatus }}</span>
+                                    </p>
+                                </div>
+    
+                                <div class="admin-panel-shop-sales-audit-main-body-openingstock-main-con admin-panel-shop-sales-main-item-styling">
+                                    <p class="admin-panel-shop-sales-audit-main-body-openingstock-title admin-panel-shop-sales-main-title">Opening Stock</p>
+                                    {% for keytdaudt, valuestdaudt in totaudt.openingStock.items %}
+    
+                                        <div class="admin-panel-shop-sales-audit-main-body-openingstock-audt-items-con">
+                                            {% for keyaudt, valuesaudt in valuestdaudt.items %}
+                                                <p class="admin-panel-shop-sales-audit-main-body-openingstock-audt-itms-main-con">
+                                                    <span class="admin-panel-shop-sales-audit-main-body-openingstock-audt-itms-keys">{{ keyaudt }}: </span>
+                                                    <span class="admin-panel-shop-sales-audit-main-body-openingstock-audt-itms-values time-adjust">{{ valuesaudt }}</span>
+                                                </p>
+                                            {% endfor %}
+                                        </div>    
+    
+                                    {% endfor %}
+                                </div>
+    
+                                <div class="admin-panel-shop-sales-audit-main-body-newstock-main-con admin-panel-shop-sales-main-item-styling">
+                                    <div class="admin-panel-shop-sales-audit-main-body-newstock-title-con admin-panel-shop-sales-main-title">
+                                        <p class="admin-panel-shop-sales-audit-main-body-newstock-title-txt">New Stock</p>
+                                    </div>
+                                    {% for keynst, valuesnst in totaudt.newStock.items %}
+    
+                                        <div class="admin-panel-shop-sales-audit-main-body-new-stock-item-con">
+                                            {% for keynt, valuesnt in valuesnst.items %}
+    
+                                                <p class="admin-panel-shop-sales-audit-main-body-newstock-item-keynt-valuesnt-con">
+                                                    <span class="admin-panel-shop-sales-audit-main-body-newstock-keynt">{{ keynt }}: </span>
+                                                    <span class="admin-panel-shop-sales-audit-main-body-newstock-valuesnt">{{ valuesnt }}</span>
+                                                </p>
+    
+                                            {% endfor %}
+                                        </div>
+    
+                                    {% endfor %}
+                                </div>
+    
+                                <div class="admin-panel-shop-sales-audit-main-body-closing-stock-main-con admin-panel-shop-sales-main-item-styling">
+    
+                                    <div class="admin-panel-shop-sales-audit-main-body-closing-stock-title-con admin-panel-shop-sales-main-title">
+                                        <p class="admin-panel-shop-sales-audit-main-body-closing-stock-title-txt">Closing Stock</p>
+                                    </div>
+                                    {% for keycst, valuescst in totaudt.closingStock.items %}
+    
+                                        <div class="admin-panel-shop-sales-audit-main-body-closing-stock-item-con admin-panel-shop-sales-audit-main-body-openingstock-audt-items-con">
+                                            {% for keyct, valuesct in valuescst.items %}
+    
+                                                <p class="admin-panel-shop-sales-audit-main-body-closingstock-item-keyct-valuesct-con">
+                                                    <span class="admin-panel-shop-sales-audit-main-body-closingstock-keyct">{{ keyct }}</span>
+                                                    <span class="admin-panel-shop-sales-audit-main-body-closingstock-valuesct">{{ valuesct }}</span>
+                                                </p>
+    
+                                            {% endfor %}
+                                        </div>
+    
+                                    {% endfor %}
+    
+                                </div>
+    
+                                <div class="admin-panel-shop-sales-all-sub-sales-main-con admin-panel-shop-sales-main-item-styling">
+                                    <p class="admin-panel-shop-sales-all-sub-sales-main-title admin-panel-shop-sales-main-title">All Sub sales</p>
+                                    {% for keyallsbsls, valueallsbsls in totaudt.allSubSales.items %}
+    
+                                        <div class="admin-panel-shop-sales-all-sub-sales-main-items-con admin-panel-shop-sales-audit-main-body-underline-item-con">
+    
+                                            <p class="admin-panel-shop-sales-all-sub-sales-main-items-subname-con">
+                                                <span class="admin-panel-shop-sales-all-sub-sales-main-items-subname-txt">Name of Sub: </span>
+                                                <span class="admin-panel-shop-sales-all-sub-sales-main-items-subname-value">{{ valueallsbsls.subName }}</span>
+                                            </p>
+    
+                                            <div class="admin-panel-shop-sales-all-sub-sales-main-product-data-con">
+                                                <p class="admin-panel-shop-sales-all-sub-sales-main-product-data-title admin-panel-shop-sales-least-highlighted">Products purchased: </p>
+                                                {% for keyallsbsl, valueallsbsl in valueallsbsls.productData.items %}
+    
+                                                    <p class="admin-panel-shop-sales-all-sub-sales-main-product-item-con">
+                                                        <span class="admin-panel-shop-sales-all-sub-sales-main-product-item-name">{{ keyallsbsl }}: </span>
+                                                        <span class="admin-panel-shop-sales-all-sub-sales-main-product-item-name-amount">{{ valueallsbsl }}</span>
+                                                    </p>
+    
+                                                {% endfor %}
+                                            </div>
+    
+                                            <p class="admin-panel-shop-sales-all-sub-sales-product-value-con">
+                                                <span class="admin-panel-shop-sales-all-sub-sales-product-value-title">Value of products: </span>
+                                                <span class="admin-panel-shop-sales-all-sub-sales-product-value-main-value admin-panel-shop-sales-second-least-highlighted">#{{ valueallsbsls.productValue }}</span>
+                                            </p>
+    
+                                            <p class="admin-panel-shop-sales-all-sub-sales-mode-of-payment-con">
+                                                <span class="admin-panel-shop-sales-all-sub-sales-mode-of-payment-title">Mode of payment: </span>
+                                                <span class="admin-panel-shop-sales-all-sub-sales-mode-of-payment-value admin-panel-shop-sales-least-highlighted">{{ valueallsbsls.modeOfPayment }}</span>
+                                            </p>
+    
+                                            <p class="admin-panel-shop-sales-all-sub-sales-amt-from-sub-distributor-con">
+                                                <span class="admin-panel-shop-sales-all-sub-sales-amt-from-sub-distributor-title">Amount paid: </span>
+                                                <span class="admin-panel-shop-sales-all-sub-sales-amt-from-sub-distributor-value admin-panel-shop-sales-most-highlighted">#{{ valueallsbsls.amtFromSubDistributor }}</span>
+                                            </p>
+    
+                                            <p class="admin-panel-shop-sales-all-sub-sales-sub-distributor-debt-con">
+                                                <span class="admin-panel-shop-sales-all-sub-sales-sub-distributor-debt-title">Debt: </span>
+                                                <span class="admin-panel-shop-sales-all-sub-sales-sub-distributor-debt-value">#{{ valueallsbsls.subDistributorDebt }}</span>
+                                            </p>
+    
+                                            <p class="admin-panel-shop-sales-all-sub-sales-sub-distributor-balance-con">
+                                                <span class="admin-panel-shop-sales-all-sub-sales-sub-distributor-balance-title">Balance: </span>
+                                                <span class="admin-panel-shop-sales-all-sub-sales-sub-distributor-balance-value">#{{ valueallsbsls.subDistributorCredit }}</span>
+                                            </p>
+    
+                                            <p class="admin-panel-shop-sales-all-sub-sales-sub-distributor-sold-at-con">
+                                                <span class="admin-panel-shop-sales-all-sub-sales-sub-distributor-sold-at-title">Sold at: </span>
+                                                <span class="admin-panel-shop-sales-all-sub-sales-sub-distributor-sold-at-value format-time">{{ valueallsbsls.soldAt }}</span>
+                                            </p>
+                                        </div>
+    
+                                    {% endfor %}
+                                </div>
+    
+                                <div class="admin-panel-shop-sales-all-wholesales-main-con admin-panel-shop-sales-main-item-styling">
+                                    <p class="admin-panel-shop-sales-all-wholesales-main-title-txt admin-panel-shop-sales-main-title">All Wholesales</p>
+                                    <div class="admin-panel-shop-sales-all-wholesales-main-data-con">
+    
+                                        {% for keyallwhls, valueallwhls in totaudt.allWholesales.items %}
+    
+                                        <div class="admin-panel-shop-sales-audit-main-body-underline-item-con">   
+    
+                                            <p class="admin-panel-shop-sales-all-wholesales-customer-name-con">
+                                                <span class="admin-panel-shop-sales-all-wholesales-customer-name-txt">Customer name: </span>
+                                                <span class="admin-panel-shop-sales-all-wholesales-customer-name-value admin-panel-shop-sales-least-highlighted">{{ valueallwhls.customerName }}</span>
+                                            </p>
+    
+                                            <div class="admin-panel-shop-sales-all-wholesales-products-data-main-con">
+                                                <p class="admin-panel-shop-sales-all-wholesales-products-data-items-con">
+                                                    <span class="admin-panel-shop-sales-all-wholesales-products-data-items-title">Products purchased: </span>
+                                                    {% for keyallwhl, valueallwhl in valueallwhls.productsData.items %}
+                                                        <span class="admin-panel-shop-sales-all-wholesales-products-data-items-keyallwhl">{{ keyallwhl }}: </span>
+                                                        <span class="admin-panel-shop-sales-all-wholesales-products-data-items-valueallwhl">{{ valueallwhl }},</span>
+                                                    {% endfor %}
+                                                </p>
+                                            </div>
+    
+                                            <p class="admin-panel-shop-sales-all-wholesales-product-value-con">
+                                                <span class="admin-panel-shop-sales-all-wholesales-product-value-title">Value of products: </span>
+                                                <span class="admin-panel-shop-sales-all-wholesales-product-value-value admin-panel-shop-sales-second-least-highlighted">#{{ valueallwhls.productValue }}</span>
+                                            </p>
+    
+                                            <p class="admin-panel-shop-sales-all-wholesales-mode-of-payment-con">
+                                                <span class="admin-panel-shop-sales-all-wholesales-mode-of-payment-title">Mode of payment: </span>
+                                                <span class="admin-panel-shop-sales-all-wholesales-mode-of-payment-value admin-panel-shop-sales-least-highlighted">#{{ valueallwhls.modeOfPayment }}</span>
+                                            </p>
+    
+                                            <p class="admin-panel-shop-sales-all-wholesales-amt-from-customer-con">
+                                                <span class="admin-panel-shop-sales-all-wholesales-amt-from-customer-title">Amount paid: </span>
+                                                <span class="admin-panel-shop-sales-all-wholesales-amt-from-customer-value admin-panel-shop-sales-most-highlighted">#{{ valueallwhls.amtFromCustomer }}</span>
+                                            </p>
+    
+                                            <p class="admin-panel-shop-sales-all-wholesales-customer-debt-con">
+                                                <span class="admin-panel-shop-sales-all-wholesales-customer-debt-title">Debt: </span>
+                                                <span class="admin-panel-shop-sales-all-wholesales-customer-debt-value">#{{ valueallwhls.customerDebt }}</span>
+                                            </p>
+    
+                                            <p class="admin-panel-shop-sales-all-wholesales-customer-credit-con">
+                                                <span class="admin-panel-shop-sales-all-wholesales-customer-credit-title">Balance: </span>
+                                                <span class="admin-panel-shop-sales-all-wholesales-customer-credit-value">#{{ valueallwhls.customerCredit }}</span>
+                                            </p>
+    
+                                            <p class="admin-panel-shop-sales-all-wholesales-sold-at-con">
+                                                <span class="admin-panel-shop-sales-all-wholesales-sold-at-title">Sold at: </span>
+                                                <span class="admin-panel-shop-sales-all-wholesales-sold-at-value format-time">{{ valueallwhls.soldAt }}</span>
+                                            </p>
+    
+                                        </div>     
+    
+                                        {% endfor %}
+    
+                                    </div>
+                                </div>
+    
+                                <div class="admin-panel-shop-sales-all-retail-sales-main-con admin-panel-shop-sales-main-item-styling">
+                                    <p class="admin-panel-shop-sales-all-retail-sales-main-title admin-panel-shop-sales-main-title">All Retail Sales</p>
+                                    <div class="admin-panel-shop-sales-all-retail-sales-product-data-items-con">
+                                        {% for keyallrtls, valueallrtls in totaudt.allRetailSales.items %}
+    
+                                            <div class="admin-panel-shop-sales-all-retail-sales-product-data-item-con admin-panel-shop-sales-audit-main-body-underline-item-con">
+                                                <span class="admin-panel-shop-sales-all-retail-sales-product-data-item-title">Product: </span>
+                                                <span class="admin-panel-shop-sales-all-retail-sales-product-data-item-product-value">{{ valueallrtls.product }}</span>
+                                                <span class="admin-panel-shop-sales-all-retail-sales-product-data-item-product-qty">(total sold: {{ valueallrtls.productQuantity }})</span>
+                                                <p class="admin-panel-shop-sales-all-retail-sales-product-data-item-product-value">
+                                                    <span class="admin-panel-shop-sales-all-retail-sales-product-data-item-total-product-value-title admin-panel-shop-sales-second-least-highlighted">Total value: </span>
+                                                    <span class="admin-panel-shop-sales-all-retail-sales-product-data-item-total-product-value">#{{ valueallrtls.productValue }}</span>
+                                                </p>
+                                                <p class="admin-panel-shop-sales-all-retail-sales-product-data-item-sold-at-con">
+                                                    <span class="admin-panel-shop-sales-all-retail-sales-product-data-item-sold-at-title">Sold at: </span>
+                                                    <span class="admin-panel-shop-sales-all-retail-sales-product-data-item-sold-at-value format-time ">{{ valueallrtls.soldAt }}</span>
+                                                </p>
+                                            </div>
+    
+                                        {% endfor %}
+                                    </div>
+                                </div>
+    
+    
+    
+                                <div class="admin-panel-shop-sales-shop-attendant-delivery-stock-details admin-panel-shop-sales-main-item-styling">
+                                    <p class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-main-title admin-panel-shop-sales-main-title">Shop attendant's delivery record</p>
+    
+                                    {% for keyshopatt, valueshopatt in totaudt.shopAttendantDeliveryStockDetails.items %}
+    
+                                        <p class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-driver-name-main-con">
+                                            <span class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-name-main-title">Driver's name: </span>
+                                            <span class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-name-value">{{ valueshopatt.driverName }}</span>
+                                        </p>
+    
+    
+                                        <div class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-product-data-main-con">
+                                            <p class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-product-data-main-title admin-panel-shop-sales-least-highlighted">Product Data</p>
+    
+                                            {% for keyproddata, valueproddata in valueshopatt.productData.items %}
+    
+                                                <p class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-product-data-product-name">{{ keyproddata }}</p>
+                                                <div class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-product-data-qty-returned">
+                                                    <p class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-product-data-product-taken">
+                                                        <span class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-product-data-taken-title">Taken: </span>
+                                                        <span class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-product-data-taken-value">{{ valueproddata.productQuantity }}</span>
+                                                    </p>
+    
+                                                    <p class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-product-data-product-returned">
+                                                        <span class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-product-data-returned-title">returned: </span>
+                                                        <span class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-product-data-returned-value">{{ valueproddata.productBroughtBack }}</span>
+                                                    </p>
+    
+                                                    <p class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-product-data-product-price">
+                                                        <span class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-product-data-price-title">Price per loaf: </span>
+                                                        <span class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-product-data-price-value">#{{ valueproddata.productPrice }}</span>
+                                                    </p>
+                                                </div>
+    
+                                            {% endfor %}
+    
+                                        </div>
+    
+                                        <p class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-amount-brought-back-con">
+                                            <span class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-amount-brought-back-title">Amount remmitted: </span>
+                                            <span class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-amount-brought-back-value admin-panel-shop-sales-second-least-highlighted">#{{ valueshopatt.amountBroughtBack }}</span>
+                                        </p>
+    
+                                        <p class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-delivery-status-con">
+                                            <span class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-delivery-status-title">Delivery status: </span>
+                                            <span class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-delivery-status-value admin-panel-shop-sales-least-highlighted">{{ valueshopatt.deliveryStatus }}</span>
+                                        </p>
+    
+                                        <p class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-left-at-con admin-panel-shop-sales-audit-main-body-underline-item-con">
+                                            <span class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-left-at-title">Left at: </span>
+                                            <span class="admin-panel-shop-sales-shop-attendant-delivery-stock-details-left-at-value format-time">{{ valueshopatt.leftAt }}</span>
+                                        </p>
+    
+    
+    
+                                    {% endfor %}
+    
+                                </div>
+    
+                                <div class="admin-panel-shop-sales-expected-shop-attendant-delivery-stock-details-main-con admin-panel-shop-sales-main-item-styling">
+                                    <p class="admin-panel-shop-sales-expected-shop-attendant-delivery-stock-details-main-title admin-panel-shop-sales-main-title">Expected Delivery total(based on shop attendant's record)(audit)</p>
+                                    <div class="admin-panel-shop-sales-expected-shop-attendant-delivery-stock-details-items-con">
+                                        {% for keyexpsatt, valueexpsatt in totaudt.expectedShopAttendantDeliveryStockDetails.items %}
+                                            <p class="admin-panel-shop-sales-expected-shop-attendant-delivery-stock-details-items">
+                                                <span class="admin-panel-shop-sales-expected-shop-attendant-delivery-stock-details-txt">{{ keyexpsatt }}: </span>
+                                                <span class="admin-panel-shop-sales-expected-shop-attendant-delivery-stock-details-value">#{{ valueexpsatt }}</span>
+                                            </p>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+    
+    
+                                <div class="admin-panel-shop-sales-invoice-numbers-main-con admin-panel-shop-sales-main-item-styling">
+                                    <p class="admin-panel-shop-sales-invoice-numbers-main-title">All invoice numbers for today: </p>
+                                    <div class="admin-panel-shop-sales-invoice-numbers-items-con">
+                                        {% for keyshpinv, valueshpinv in totaudt.invoiceNumbers.items %}
+    
+                                            <p class="admin-panel-shop-sales-invoice-numbers-main-invoice-number">{{ valueshpinv }}</p>
+    
+                                        {% endfor %}
+                                    </div>
+                                </div>
+    
+                                <div class="admin-panel-shop-sales-shop-customers-to-transfer-main-con admin-panel-shop-sales-main-item-styling">
+                                    <p class="admin-panel-shop-sales-shop-customers-to-transfer-main-title admin-panel-shop-sales-main-title">Customers to Transfer(from the shop) </p>
+                                    <div class="admin-panel-shop-sales-shop-customers-to-transfer-item-main-con">
+                                        {% for keyallscts, valueallscts in totaudt.shopCustomersToTransfer.items %}
+                                            <p class="admin-panel-shop-sales-shop-customers-to-transfer-customer-name-con">
+                                                <span class="admin-panel-shop-sales-shop-customers-to-transfer-customer-name-title">Name of Customer: </span>
+                                                <span class="admin-panel-shop-sales-shop-customers-to-transfer-customer-name-value admin-panel-shop-sales-least-highlighted">{{ valueallscts.customerName }}</span>
+                                            </p>
+    
+                                            <p class="admin-panel-shop-sales-shop-customers-to-transfer-product-value-con">
+                                                <span class="admin-panel-shop-sales-shop-customers-to-transfer-product-value-title">Value of purchased products: </span>
+                                                <span class="admin-panel-shop-sales-shop-customers-to-transfer-product-value-value admin-panel-shop-sales-second-least-highlighted">#{{ valueallscts.productValue }}</span>
+                                            </p>
+    
+                                            <p class="admin-panel-shop-sales-shop-customers-to-transfer-mode-of-payment-con admin-panel-shop-sales-audit-main-body-underline-item-con">
+                                                <span class="admin-panel-shop-sales-shop-customers-to-transfer-mode-of-payment-title">Mode of Payment: </span>
+                                                <span class="admin-panel-shop-sales-shop-customers-to-transfer-mode-of-payment-value">{{ valueallscts.modeOfPayment }}</span>
+                                            </p>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+    
+                                <div class="admin-panel-shop-sales-shop-handover-main-con admin-panel-shop-sales-main-item-styling">
+                                    <p class="admin-panel-shop-sales-shop-handover-title">Recorded Shop Handover</p>
+                                    <p class="admin-panel-shop-sales-shop-handover-value admin-panel-shop-sales-most-highlighted">#{{ totaudt.shopHandover }}</p>
+                                </div>
+    
+                                <div class="admin-panel-shop-sales-full-shop-sales-audit-main-con admin-panel-shop-sales-main-item-styling">
+                                    <p class="admin-panel-shop-sales-full-shop-sales-audit-title admin-panel-shop-sales-main-title">Full Shop sales Audit (from audit)</p>
+                                    <div class="admin-panel-shop-sales-full-shop-sales-audit-items-con">
+                                        <p class="admin-panel-shop-sales-full-shop-sales-audit-audit-messages-title">Audit Messages</p>
+    
+                                        {% for keyfdsaudt, valuefdsaudt in totaudt.fullDeliverySalesAudit.items %}
+                                            
+                                            {% for keyfdsdt, valuefdsdt in valuefdsaudt.items %}
+    
+                                                <p class="admin-panel-shop-sales-full-shop-sales-audit-item-con admin-panel-shop-sales-audit-main-body-underline-item-con">
+                                                    <span class="admin-panel-shop-sales-full-shop-sales-audit-item-key">{{ keyfdsdt }}</span>
+                                                    <span class="admin-panel-shop-sales-full-shop-sales-audit-item-value">{{ valuefdsdt }}</span>
+                                                </p>
+    
+                                            {% endfor %}
+                                            
+                                        {% endfor %}
+    
+                                        <p class="admin-panel-shop-sales-full-shop-sales-audit-expected-closing-handover-con">
+                                            <span class="admin-panel-shop-sales-full-shop-sales-audit-exp-closing-handover-title admin-panel-shop-sales-second-least-highlighted">Expected Closing Handover: </span>
+                                            <span class="admin-panel-shop-sales-full-shop-sales-audit-exp-closing-handover-value">#{{  totaudt.fullShopSalesAudit.expectedClosinghandover  }}</span>
+                                        </p>
+    
+                                        <p class="admin-panel-shop-sales-full-shop-sales-audit-raw-sales-con">
+                                            <span class="admin-panel-shop-sales-full-shop-sales-audit-raw-sales-title admin-panel-shop-sales-most-highlighted">Raw sales: </span>
+                                            <span class="admin-panel-shop-sales-full-shop-sales-audit-raw-sales-value">#{{ totaudt.fullShopSalesAudit.rawSales }}</span>
+                                        </p>
+                                    </div>
+                                </div>
+    
+                                <div class="admin-panel-shop-sales-customers-in-debt-main-con admin-panel-shop-sales-main-item-styling">
+                                    <p class="admin-panel-shop-sales-customers-in-debt-title admin-panel-shop-sales-main-title">Customers in Debt</p>
+                                    <div class="admin-panel-shop-sales-customers-in-debt-items-con">
+                                        {% for keyallcidt, valueallcidt in totaudt.customersInDebt.items %}
+                                            <p class="admin-panel-shop-sales-customers-in-debt-item-con admin-panel-shop-sales-audit-main-body-underline-item-con">
+                                                <span class="admin-panel-shop-sales-customers-in-debt-item-name">{{ keyallcidt }}: </span>
+                                                <span class="admin-panel-shop-sales-customers-in-debt-item-value">{{ valueallcidt }}</span>
+                                            </p>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+    
+                                <div class="admin-panel-shop-sales-customers-credit-main-con admin-panel-shop-sales-main-item-styling">
+                                    <p class="admin-panel-shop-sales-customers-credit-title admin-panel-shop-sales-main-title">Customers that have a balance</p>
+                                    <div class="admin-panel-shop-sales-customers-credit-items-con">
+                                        {% for keyccredit, valueccredit in totaudt.customersCredit.items %}
+    
+                                            <p class="admin-panel-shop-sales-customers-credit-item-value admin-panel-shop-sales-audit-main-body-underline-item-con">{{ valueccredit }}</p>
+    
+                                        {% endfor %}
+                                    </div>
+                                </div>
+    
+                                <div class="admin-panel-shop-sales-messages-main-con admin-panel-shop-sales-main-item-styling">
+                                    <p class="admin-panel-shop-sales-messsages-title admin-panel-shop-sales-main-title">All Messages</p>
+                                    <div class="admin-panel-shop-sales-messsages-items-con">
+                                        {% for keymsgs, valuemsgs in totaudt.messages.items %}
+                                            <p class="admin-panel-shop-sales-messsages-item-main-con admin-panel-shop-sales-audit-main-body-underline-item-con">
+                                                <span class="admin-panel-shop-sales-messsages-item-main-number">{{ keymsgs }}. </span>
+                                                <span class="admin-panel-shop-sales-messsages-item-main-messsage-content">{{ valuemsgs.message_content }}</span>
+                                            </p>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            
+    
+                        </div>
+    
+                    <!--Shop Sales audit option ends here-->
+    
+                    <!--Delivery sales audit option starts here-->
+    
+                        <div class="admin-panel-delivery-sales-main-header-con">
+    
+                            <div class="admin-panel-delivery-sales-main-title-con">
+                                <p class="admin-panel-delivery-sales-main-title-txt">Delivery Sales</p>
+                            </div>
+    
+                        </div>
+    
+                        <div class="admin-panel-delivery-sales-main-body-con">
+    
+                                <div class="admin-panel-delivery-sales-driver-name-main-con admin-panel-delivery-sales-main-content-styling">
+                                    <p class="admin-panel-delivery-sales-driver-name-value-con">
+                                        <span class="admin-panel-delivery-sales-driver-name-title">Driver name: </span>
+                                        <span class="admin-panel-delivery-sales-driver-name-value admin-panel-delivery-sales-least-highlighted-txt">{{ totaudt.driver }}</span>
+                                    </p>
+                                </div>
+    
+                                <div class="admin-panel-delivery-sales-driver-status-main-con admin-panel-delivery-sales-main-content-styling">
+                                    <p class="admin-panel-delivery-sales-driver-status-value-con">
+                                        <span class="admin-panel-delivery-sales-driver-status-title">Driver Status: </span>
+                                        <span class="admin-panel-delivery-sales-driver-status-value admin-panel-delivery-sales-second-highlighted-txt">{{ totaudt.driverStatus }}</span>
+                                    </p>
+                                </div>
+    
+                                <div class="admin-panel-delivery-sales-driver-delivery-stock-details-main-con admin-panel-delivery-sales-main-content-styling">
+                                    <p class="admin-panel-delivery-sales-driver-delivery-stock-details-main-title admin-panel-delivery-sales-main-content-header-styling">Delivery Sales</p>
+                                    <div class="admin-panel-delivery-sales-driver-delivery-stock-details-main-content-con">
+                                        {% for keyddsds, valueddsds in totaudt.driverDeliveryStockDetails.items %}
+    
+                                            <div class="admin-panel-delivery-sales-keyddsds-valueddsds-main-con">
+    
+                                                <div class="admin-panel-delivery-sales-delivery-number-main-con">
+                                                    <p class="admin-panel-delivery-sales-keyddsds-main-con">
+                                                        <span class="admin-panel-delivery-sales-keyddsds-main-title-txt">Delivery Number: </span>
+                                                        <span class="admin-panel-delivery-sales-keyddsds-main-title-value">{{ keyddsds }}</span>
+                                                    </p>
+                                                </div>
+    
+                                                <div class="admin-panel-delivery-sales-driver-delivery-stock-details-products-data-main-con">
+                                                    <p class="admin-panel-delivery-sales-driver-delivery-stock-details-products-data-main-title">Products Data</p>
+                                                    {% for keyddsd, valueddsd in valueddsds.productsData.items %}
+    
+                                                        <div class="admin-panel-delivery-sales-driver-delivery-stock-details-keyddsd-valueddsd-main-con">
+                                                            <p class="admin-panel-delivery-sales-driver-delivery-stock-details-products-data-product">{{ keyddsd }}</p>
+                                                            <div class="admin-panel-delivery-sales-driver-delivery-stock-details-valueddsd-main-con">
+    
+                                                                <p class="admin-panel-delivery-sales-driver-delivery-stock-details-product-taken-quantity-main-con">
+                                                                    <span class="admin-panel-delivery-sales-driver-delivery-stock-details-product-taken-quantity-title-txt">Taken: </span>
+                                                                    <span class="admin-panel-delivery-sales-driver-delivery-stock-details-product-taken-quantity-value">{{ valueddsd.productTakenQuantity }}</span>
+                                                                </p>
+    
+                                                                <p class="admin-panel-delivery-sales-driver-delivery-stock-details-product-returned-quantity-main-con">
+                                                                    <span class="admin-panel-delivery-sales-driver-delivery-stock-details-product-returned-quantity-title-txt">Returned: </span>
+                                                                    <span class="admin-panel-delivery-sales-driver-delivery-stock-details-product-returned-quantity-value">{{ valueddsd.productBroughtBackQuantity }}</span>
+                                                                </p>
+    
+                                                            </div>
+                                                        </div>
+    
+                                                    {% endfor %}
+                                                </div>
+    
+                                                <div class="admin-panel-delivery-sales-driver-delivery-stock-details-amount-brought-back-main-con">
+                                                    <p class="admin-panel-delivery-sales-driver-delivery-stock-details-amount-brought-back-main-value">
+                                                        <span class="admin-panel-delivery-sales-driver-delivery-stock-details-amount-brought-back-main-value-title">Amount remmitted: </span>
+                                                        <span class="admin-panel-delivery-sales-driver-delivery-stock-details-amount-brought-back-main-value-item">#{{ valueddsds.amountBroughtBack }}</span>
+                                                    </p>
+                                                </div>
+    
+                                                <div class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-main-con">
+                                                    <p class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-main-title">All Customer Data</p>
+                                                    <div class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-main-body">
+                                                        {% for keyallcd, valueallcd in valueddsds.allCustomersData.items %}
+                            
+                                                            <div class="admin-panel-delivery-sales-driver-delivery-stock-details-style-con">
+    
+                                                                <p class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-customer-name-main-con">
+                                                                    <span class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-customer-name-title">Customer name: </span>
+                                                                    <span class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-customer-name-value admin-panel-delivery-sales-most-highlighted-txt">{{ keyallcd }}</span>
+                                                                </p>
+                                                                
+                                                                <div class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-products-purchased-main-con">
+                                                                    <p class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-products-purchased-title admin-panel-delivery-sales-second-highlighted-txt">Products purchased: </p>
+                                                                    <p class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-products-purchased-items-con">
+                                                                        {% for keyallpp, valueallpp in valueallcd.productsPurchased.items %}
+                                                                            <span class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-products-purchased-items-product">{{ keyallpp }}: </span>
+                                                                            <span class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-products-purchased-items-product-qty">{{ valueallpp }}, </span>
+                                                                        {% endfor %}
+                                                                    </p>
+    
+                                                                </div>
+    
+                                                                <p class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-product-value-main-con">
+                                                                    <span class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-product-value-main-title">Value of purchased products: </span>
+                                                                    <span class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-product-value-main-value admin-panel-delivery-sales-second-highlighted-txt">#{{ valueallcd.productValue }}</span>
+                                                                </p>
+    
+                                                                <p class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-mode-of-payment-main-con">
+                                                                    <span class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-mode-of-payment-title">Mode of Payment: </span>
+                                                                    <span class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-mode-of-payment-value">{{ valueallcd.modeOfPayment }}</span>
+                                                                </p>
+    
+                                                                <p class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-amt-from-customer-con">
+                                                                    <span class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-amt-from-customer-title">Amount paid: </span>
+                                                                    <span class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-amt-from-customer-value">#{{ valueallcd.amtFromCustomer }}</span>
+                                                                </p>
+    
+                                                                <p class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-customer-debt-con">
+                                                                    <span class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-customer-debt-title">Debt: </span>
+                                                                    <span class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-customer-debt-value">#{{ valueallcd.customerDebt }}</span>
+                                                                </p>
+    
+                                                                <p class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-customer-credit-con">
+                                                                    <span class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-customer-credit-title">Balance: </span>
+                                                                    <span class="admin-panel-delivery-sales-driver-delivery-stock-details-all-customers-data-customer-credit-value">#{{ valueallcd.customerCredit }}</span>
+                                                                </p>
+    
+                                                            </div>
+    
+    
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+    
+                                                <div class="admin-panel-delivery-sales-driver-delivery-stock-details-finished-selling-time-main-con">
+                                                    <p class="admin-panel-delivery-sales-driver-delivery-stock-details-finished-selling-time-con">
+                                                        <span class="admin-panel-delivery-sales-driver-delivery-stock-details-finished-selling-time-title">Finished at: </span>
+                                                        <span class="admin-panel-delivery-sales-driver-delivery-stock-details-finished-selling-time-value format-time">{{ valueddsds.finishedSellingTime }}</span>
+                                                    </p>
+                                                </div>
+    
+                                            </div>
+    
+                                        {% endfor %}
+                                    </div>
+                                </div>
+    
+    
+                                <div class="admin-panel-expected-driver-delivery-stock-details-main-con admin-panel-delivery-sales-main-content-styling">
+                                    <p class="admin-panel-expected-driver-delivery-stock-details-main-title admin-panel-delivery-sales-main-content-header-styling">Expected Delivery Stock Details(from audit)</p>
+                                    <div class="admin-panel-expected-driver-delivery-stock-details-content-main-con">
+                                        {% for keyexpdd, valueexpdd in totaudt.expectedDriverDeliveryStockDetails.items %}
+    
+                                            <div class="admin-panel-expected-driver-delivery-stock-details-content-con admin-panel-delivery-sales-main-content-styling-underline">
+                                                <p class="admin-panel-expected-driver-delivery-stock-details-keyexpdd">{{ keyexpdd }}: </p>
+                                                <div class="admin-panel-expected-driver-delivery-stock-details-valueexpdd-main-con">
+                                                    {% for keyexpd, valueexpd in valueexpdd.items %}
+                                                        <span class="admin-panel-expected-driver-delivery-stock-details-keyexpd">{{ keyexpd }}: </span>
+                                                        <span class="admin-panel-expected-driver-delivery-stock-details-valueexpd">{{ valueexpd }},</span>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+    
+                                        {% endfor %}
+                                    </div>
+                                </div>
+    
+    
+                                <div class="admin-panel-delivery-customers-to-transfer-main-con admin-panel-delivery-sales-main-content-styling">
+                                    <p class="admin-panel-delivery-customers-to-transfer-main-title admin-panel-delivery-sales-main-content-header-styling">Customers to Transfer{from Delivery}</p>
+                                    <div class="admin-panel-delivery-customers-to-transfer-main-content-con">
+                                        {% for keydct, valuedct in totaudt.deliveryCustomersToTransfer.items %}
+    
+                                            <p class="admin-panel-delivery-customers-to-transfer-content-con admin-panel-delivery-sales-main-content-styling-underline">
+                                                <span class="admin-panel-delivery-customers-to-transfer-name-of-customer-value">{{ keydct }}: </span>
+                                                <span class="admin-panel-delivery-customers-to-transfer-transfer-value">{{ valuedct }}</span>
+                                            </p>
+    
+                                        {% endfor %}
+                                    </div>
+                                </div>
+    
+                                <div class="admin-panel-delivery-total-delivery-handover-main-con admin-panel-delivery-sales-main-content-styling">
+                                    <p class="admin-panel-delivery-total-delivery-handover-main-title admin-panel-delivery-sales-main-content-header-styling">Total Delivery Handover</p>
+                                    <p class="admin-panel-delivery-total-delivery-handover-main-value">#{{ totaudt.TotalDeliveryHandover }}</p>
+                                </div>
+    
+                                <div class="admin-panel-full-delivery-sales-audit-main-con admin-panel-delivery-sales-main-content-styling">
+                                    <p class="admin-panel-full-delivery-sales-audit-audit-messages-title-txt admin-panel-delivery-sales-main-content-header-styling">Audit Messages</p>
+                                    <div class="admin-panel-full-delivery-sales-audit-audit-messages-main-con">
+                                        {% for keyamt, valueamt in totaudt.fullDeliverySalesAudit.auditMessages.items %}
+                                            <div class="admin-panel-full-delivery-sales-audit-audit-messages-main-body admin-panel-delivery-sales-main-content-styling-underline">
+                                                <p class="admin-panel-full-delivery-sales-audit-audit-messages-main-body-title">{{ keyamt }}: </p>
+                                                <p class="admin-panel-full-delivery-sales-audit-audit-messages-main-body-main-content">{{ valueamt }}</p>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+    
+                                    <div class="admin-panel-full-delivery-sales-audit-total-amount-expected-based-on-record-main-con admin-panel-delivery-sales-main-content-styling-underline">
+                                        <p class="admin-panel-full-delivery-sales-audit-total-amount-expected-based-on-record-main-title">Total Amount Expected (Based on Delivery Record): </p>
+                                        <p class="admin-panel-full-delivery-sales-audit-total-amount-expected-based-on-record-main-value admin-panel-delivery-sales-most-highlighted-txt">#{{ totaudt.fullDeliverySalesAudit.totalAmountExpectedBasedOnRecord }}</p>
+                                    </div>
+    
+                                    <div class="admin-panel-full-delivery-sales-audit-actual-amount-expected-based-on-cash-sales-main-con admin-panel-delivery-sales-main-content-styling-underline">
+                                        <p class="admin-panel-full-delivery-sales-audit-actual-amount-expected-based-on-cash-sales-main-title">Actual Amount Expected (Based on Cash Sales): </p>
+                                        <p class="admin-panel-full-delivery-sales-audit-actual-amount-expected-based-on-cash-sales-main-value admin-panel-delivery-sales-most-highlighted-txt">#{{ totaudt.fullDeliverySalesAudit.actualAmountExpectedBasedOnCashSales }}</p>
+                                    </div>
+    
+                                    <div class="admin-panel-full-delivery-sales-audit-actual-amount-expected-from-all-sales-main-con admin-panel-delivery-sales-main-content-styling-underline">
+                                        <p class="admin-panel-full-delivery-sales-audit-actual-amount-expected-from-all-sales-main-title">Actual Amount Expected from All Sales: </p>
+                                        <p class="admin-panel-full-delivery-sales-audit-actual-amount-expected-from-all-sales-main-value admin-panel-delivery-sales-most-highlighted-txt">#{{ totaudt.fullDeliverySalesAudit.actualAmountExpectedFromAllSales }}</p>
+                                    </div>
+                                    
+                                </div>
+    
+    
+    
+    
+                        </div>
+    
+                    <!--Delivery sales audit option ends here-->
+    
+                </div>
+    
+                {% endfor %}
+    
+    
+                </div>
+    
+            </div>
+    
+        </div>
+
+        <!--Audit History options ends here-->
+
+        <!--Catalogue section starts here-->
+
+        <div class="admin-panel-catalogue-section-main-hide-con admin-panel-hide">
+            <div class="admin-panel-catalogue-section-main-con">
+
+                <div class="admin-panel-catalogue-section-options-main-con">
+
+                    <div class="admin-panel-catalogue-section-main-header">
+
+                        <div class="admin-panel-catalogue-section-main-header-title-con">
+                            <p class="admin-panel-catalogue-section-main-header-title-txt">Catalogue Section</p>
+                        </div>
+    
+                        <div class="admin-panel-catalogue-section-main-header-exit-con">
+                            <p class="admin-panel-catalogue-section-main-header-exit-icon">&times;</p>
+                        </div>
+    
+                    </div>
+    
+                    <div class="admin-panel-catalogue-section-options-main-body-con">
+    
+                        <div class="admin-panel-catalogue-section-options-items-main-con">
+                            <div class="admin-panel-catalogue-section-options-catalogue-settings-con">
+                                <p class="admin-panel-catalogue-section-options-catalogue-settings-txt">Catalogue Settings</p>
+                            </div>
+    
+                            <div class="admin-panel-catalogue-section-options-view-catalogue-con">
+                                <p class="admin-panel-catalogue-section-options-view-catalogue-txt">View Catalogue</p>
+                            </div>
+                        </div>
+    
+                    </div>
+
+                </div>
+
+            </div>
+        </div>   
+        
+        
+        <div class="admin-panel-catalogue-settings-main-hide-con admin-panel-hide">
+            <div class="admin-panel-catalogue-settings-main-con">
+
+                <div class="admin-panel-catalogue-settings-main-header-con">
+
+                    <div class="admin-panel-catalogue-settings-header-txt-con">
+                        <p class="admin-panel-catalogue-settings-header-txt">Catalogue Settings</p>
+                    </div>
+
+                    <div class="admin-panel-catalogue-settings-header-exit-con">
+                        <p class="admin-panel-catalogue-settings-header-exit-icon">&times;</p>
+                    </div>
+
+                </div>
+
+                <div class="admin-panel-catalogue-settings-nav-main-con">
+                    
+                    <div class="admin-panel-catalogue-settings-nav-add-product-con">
+                        <p class="admin-panel-catalogue-settings-nav-add-product-txt">Add Product</p>
+                    </div>
+
+                    <div class="admin-panel-catalogue-settings-nav-delete-product-con">
+                        <p class="admin-panel-catalogue-settings-nav-delete-product-txt">Delete Product</p>
+                    </div>
+
+                </div>
+
+                <div class="admin-panel-catalogue-settings-main-body-con">
+
+                   <div class="admin-panel-catalogue-settings-add-product-con-main-hide-con admin-panel-hide">
+                        <div class="admin-panel-catalogue-settings-add-product-con">
+
+                            <div class="admin-panel-catalogue-settings-add-product-title-con">
+                                <p class="admin-panel-catalogue-settings-add-product-title-txt">Add Product</p>
+                            </div>
+
+                            <form action="" method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+
+                                <div style="display: none;">
+                                    <input type="text" name="addcatalogueproducts">
+                                </div>
+
+                                <div class="admin-panel-catalogue-settings-add-product-create-con">
+                                    <p class="admin-panel-catalogue-settings-add-product-create-txt">Name of Product: </p>
+                                    <input type="text" class="admin-panel-catalogue-settings-add-product-create-input" name="cataloguenameofproduct">
+                                </div>
+
+                                <div class="admin-panel-catalogue-settings-add-product-create-con">
+                                    <p class="admin-panel-catalogue-settings-add-product-create-txt">Reference name of Product: </p>
+                                    <input type="text" class="admin-panel-catalogue-settings-add-product-create-input" name="cataloguerefnameofproduct">
+                                </div>
+
+                                <div class="admin-panel-catalogue-settings-add-product-create-con">
+                                    <p class="admin-panel-catalogue-settings-add-product-create-txt">Image of Product: </p>
+                                    <input type="file" required name="catalogueimageofproduct">
+                                </div>
+
+                                <div class="admin-panel-catalogue-settings-add-product-create-con">
+                                    <p class="admin-panel-catalogue-settings-add-product-create-txt">Parent Company of Product: </p>
+                                    <input type="text" class="admin-panel-catalogue-settings-add-product-create-input" name="cataloguecompanyofproduct">
+                                </div>
+
+                                <div class="admin-panel-catalogue-settings-add-product-create-con">
+                                    <p class="admin-panel-catalogue-settings-add-product-create-txt">Cost Price of Product: </p>
+                                    <input type="text" class="admin-panel-catalogue-settings-add-product-create-input" name="cataloguecostpriceofproduct">
+                                </div>
+
+                                <div class="admin-panel-catalogue-settings-add-product-create-con">
+                                    <p class="admin-panel-catalogue-settings-add-product-create-txt">Sub Price of Product: </p>
+                                    <input type="text" class="admin-panel-catalogue-settings-add-product-create-input" name="cataloguesubpriceofproduct">
+                                </div>
+
+                                <div class="admin-panel-catalogue-settings-add-product-create-con">
+                                    <p class="admin-panel-catalogue-settings-add-product-create-txt">Wholesale Price of Product: </p>
+                                    <input type="text" class="admin-panel-catalogue-settings-add-product-create-input" name="cataloguewholesalepriceofproduct">
+                                </div>
+
+                                <div class="admin-panel-catalogue-settings-add-product-create-con">
+                                    <p class="admin-panel-catalogue-settings-add-product-create-txt">Retail Price of Product: </p>
+                                    <input type="text" class="admin-panel-catalogue-settings-add-product-create-input" name="catalogueretailpriceofproduct">
+                                </div>
+
+                                <div class="admin-panel-catalogue-settings-add-product-submit-btn-con">
+                                    <button type="submit" class="admin-panel-catalogue-settings-add-product-submit-btn">Add Product</button>
+                                </div>
+                            </form>
+
+                        </div>
+                   </div>
+
+                   <div class="admin-panel-catalogue-settings-delete-product-main-hide-con admin-panel-hide">
+                        <div class="admin-panel-catalogue-settings-delete-product-main-con">
+
+                            <div class="admin-panel-catalogue-settings-delete-product-title-con">
+                                <p class="admin-panel-catalogue-settings-delete-product-title-txt">Delete Product</p>
+                            </div>
+
+                            <form method="POST">
+                                {% csrf_token %}
+
+                                <div style="display: none;">
+                                    <input type="text" name="deletecatalogueproduct">
+                                </div>
+
+                                <div class="admin-panel-catalogue-settings-delete-product-delete-con">
+                                    <p class="admin-panel-catalogue-settings-delete-product-name-txt">Name of Product: </p>
+                                    <input type="text" class="admin-panel-catalogue-settings-delete-product-input" name="cataloguedeletenameofproduct">
+                                </div>
+
+                                <div class="admin-panel-catalogue-settings-delete-product-delete-con">
+                                    <button type="submit" class="admin-panel-catalogue-settings-delete-product-button">Delete Product</button>
+                                </div>
+                            </form>
+
+                        </div>
+                   </div>
+                   
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="admin-panel-view-catalogue-main-hide-con admin-panel-hide">
+            <div class="admin-panel-view-catalogue-main-con">
+
+                <div class="admin-panel-view-catalogue-main-header-con">
+                    <div class="admin-panel-view-catalogue-header-title-con">
+                        <p class="admin-panel-view-catalogue-header-title-txt">Catalogue</p>
+                    </div>
+
+                    <div class="admin-panel-view-catalogue-header-exit-con">
+                        <p class="admin-panel-view-catalogue-header-exit-icon">&times;</p>
+                    </div>
+                </div>
+
+                <div class="admin-panel-view-catalogue-main-body-con">
+                    <div class="admin-panel-view-catalogue-main-body-content-con">
+                        {% for cat in catalogue %}
+                            <div class="admin-panel-view-catalogue-cat-item-con">
+
+                                <div class="admin-panel-view-catalogue-cat-item-image">
+                                    <img src="{{ cat.image.url }}" alt="catalogue item image" class="admin-panel-view-catalogue-cat-item-image-element">
+                                </div>
+
+                                <div class="admin-panel-view-catalogue-cat-item-general-con">
+
+                                    <div class="admin-panel-view-catalogue-cat-item-general">
+                                        <p class="admin-panel-view-catalogue-cat-item-general-lead">Name: </p>
+                                        <p class="admin-panel-view-catalogue-cat-item-general-lead-value">{{ cat.name }}</p>
+                                    </div>
+
+                                    <div class="admin-panel-view-catalogue-cat-item-general">
+                                        <p class="admin-panel-view-catalogue-cat-item-general-lead">Reference name: </p>
+                                        <p class="admin-panel-view-catalogue-cat-item-general-lead-value">{{ cat.referenceName }}</p>
+                                    </div>
+
+                                    <div class="admin-panel-view-catalogue-cat-item-general">
+                                        <p class="admin-panel-view-catalogue-cat-item-general-lead">Company: </p>
+                                        <p class="admin-panel-view-catalogue-cat-item-general-lead-value">{{ cat.company }}</p>
+                                    </div>
+
+                                    <div class="admin-panel-view-catalogue-cat-item-general">
+                                        <p class="admin-panel-view-catalogue-cat-item-general-lead">Cost Price: </p>
+                                        <p class="admin-panel-view-catalogue-cat-item-general-lead-value">{{ cat.costPrice }}</p>
+                                    </div>
+
+                                    <div class="admin-panel-view-catalogue-cat-item-general">
+                                        <p class="admin-panel-view-catalogue-cat-item-general-lead">Sub Price: </p>
+                                        <p class="admin-panel-view-catalogue-cat-item-general-lead-value">{{ cat.subPrice }}</p>
+                                    </div>
+
+                                    <div class="admin-panel-view-catalogue-cat-item-general">
+                                        <p class="admin-panel-view-catalogue-cat-item-general-lead">Wholesale Price: </p>
+                                        <p class="admin-panel-view-catalogue-cat-item-general-lead-value">{{ cat.wholesalePrice }}</p>
+                                    </div>
+
+                                    <div class="admin-panel-view-catalogue-cat-item-general">
+                                        <p class="admin-panel-view-catalogue-cat-item-general-lead">Retail Price: </p>
+                                        <p class="admin-panel-view-catalogue-cat-item-general-lead-value">{{ cat.retailPrice }}</p>
+                                    </div>
+
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!--Catalogue section ends here-->
+
+        <!--Grant access section starts here-->
+
+        <div class="admin-panel-grant-access-main-hide-con admin-panel-hide">
+            <div class="admin-panel-grant-access-main-con">
+
+                <div class="admin-panel-grant-access-main-content-con">
+                    <div class="admin-panel-grant-access-content-con">
+
+                        <div class="admin-panel-grant-access-title-con">
+                            <p class="admin-panel-grant-access-title-txt">Grant access to all staff</p>
+                        </div>
+
+                        <div class="admin-panel-grant-access-btns-con">
+                            <form method="POST">
+                                {% csrf_token %}
+
+                                <div style="display: none;">
+                                    <input type="text" name="admingrantaccess">
+                                </div>
+
+                                <div class="admin-panel-grant-access-no-btn-con">
+                                    <button type="button" class="admin-panel-grant-access-no-btn">No</button>
+                                </div>
+
+                                <div class="admin-panel-grant-access-yes-btn-con">
+                                    <button type="submit" class="admin-panel-grant-access-yes-btn">Yes</button>
+                                </div>
+
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!--Grant access section ends here-->
+
+        <!--Clear Entire Database section starts here-->
+
+        <div class="admin-panel-clear-entire-database-section-main-hide-con admin-panel-hide">
+            <div class="admin-panel-clear-entire-database-section-main-con">
+
+                <div class="admin-panel-clear-entire-database-section-main-popup-con">
+                    <div class="admin-panel-clear-entire-database-section-main-popup-body">
+                        <p class="admin-panel-clear-entire-database-section-main-title-txt">This Will Clear All Database Tables</p>
+
+                        <div class="admin-panel-clear-entire-database-section-main-btns-con">
+                            <form method="POST">
+                                {% csrf_token %}
+                                <div style="display: none;">
+                                    <input type="text" name="clearentiredatabase">
+                                </div>
+
+                                <div class="admin-panel-clear-entire-database-section-go-back-btn-con">
+                                    <button class="admin-panel-clear-entire-database-section-go-back-btn" type="button">Go Back</button>
+                                </div>
+
+                                <div class="admin-panel-clear-entire-database-section-proceed-btn-con">
+                                    <button class="admin-panel-clear-entire-database-section-proceed-btn" type="submit">Proceed</button>
+                                </div>
+                            </form>
+                        </div>
+                        
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!--Clear Entire Database section ends here-->
+
+        <!--Manually Close the Shop section starts here-->
+
+        <div class="admin-panel-manually-close-shop-main-hide-con admin-panel-hide">
+            <div class="admin-panel-manually-close-shop-section-main-con">
+
+                <div class="admin-panel-manually-close-shop-section-main-popup-con">
+                    <div class="admin-panel-manually-close-shop-section-main-popup-body">
+                        <p class="admin-panel-manually-close-shop-section-main-title-txt">Do you want to close the Shop Manually?</p>
+
+                        <div class="admin-panel-manually-close-shop-section-main-btns-con">
+                            <form method="POST">
+                                {% csrf_token %}
+                                <div style="display: none;">
+                                    <input type="text" name="manuallycloseshop">
+                                </div>
+
+                                <div class="admin-panel-manually-close-shop-section-go-back-btn-con">
+                                    <button class="admin-panel-manually-close-shop-section-go-back-btn" type="button">No</button>
+                                </div>
+
+                                <div class="admin-panel-manually-close-shop-section-proceed-btn-con">
+                                    <button class="admin-panel-manually-close-shop-section-proceed-btn" type="submit">Yes</button>
+                                </div>
+                            </form>
+                        </div>
+                        
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!--Manually Close the Shop section ends here-->
+
+        <!--Go live con starts here-->
+
+        <div class="go-live-main-hide-con admin-panel-hide">
+            <div class="go-live-main-con">
+
+                <div class="go-live-main-title-con">
+                    <p class="go-live-main-title-item">Live audit</p>
+                    <div class="go-live-main-title-exit-con">
+                        <p class="go-live-main-title-exit-icon">&times;</p>
+                    </div>
+                </div>
+
+                <div class="go-live-shop-main-con">
+                    <div class="go-live-shop-con">
+
+                        <div class="go-live-shop-con-title-con">
+                            <p class="go-live-shop-con-title-item">Shop</p>
+                        </div>
+
+                        <div class="go-live-shop-con-opening-stock-main-con">
+                            <p class="go-live-shop-con-opening-stock-title-item">Opening Stock</p>
+                            <div class="go-live-shop-con-opening-stock-items-con">
+                                {% for a in goLiveCon.openingstock %}
+                                <p class="go-live-shop-con-opening-stock-item">{{ a.product.name }}: <span class="go-live-shop-con-opening-stock-item-price">{{ a.quantity }}</span></p>
+                                <p class="go-live-shop-con-opening-stock-time-recorded">Recorded at: <span class="admin-time">{{ a.addedAt }}</span></p>
+
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="go-live-shop-con-new-stock-main-con">
+                            <p class="go-live-shop-con-new-stock-title-item">New Stock</p>
+                            <div class="go-live-shop-con-new-stock-items-con">
+                                {% for b in goLiveCon.newstock %}
+                                <p class="go-live-shop-con-new-stock-item">{{ b.product.name }}: <span class="go-live-shop-con-new-stock-item-price">{{ b.quantity }}</span></p>
+                                <p class="go-live-shop-con-new-stock-time-recorded">Recorded at: <span class="admin-time">{{ b.addedAt }}</span></p>
+
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="go-live-shop-con-sub-record-main-con">
+                            <p class="go-live-shop-con-sub-record-title-item">Sub Record</p>
+                            <div class="go-live-shop-con-sub-record-items-con">
+                                {% for c in goLiveCon.subrecord %}
+                                <p class="go-live-shop-con-sub-record-sub-name-con"><span class="go-live-shop-con-sub-record-sub-name-title">Sub name: </span><span class="go-live-shop-con-sub-record-sub-name-item">{{ c.subName }}</span></p>
+                                <div class="go-live-shop-con-product-data-con">
+                                    <span class="go-live-shop-con-product-data-title">Products purchased: </span>
+                                    {% for key, value in c.productData.items %}
+                                        <span class="go-live-shop-con-sub-record-product-data-item">{{ key }}: <span class="go-live-shop-con-sub-record-products-data-key">{{ value }}</span></span>
+                                    {% endfor %}
+                                </div>
+
+                                <p class="golive-shop-con-product-value">Product Value: <span class="sbpb">#{{ c.productValue }}</span></p>
+                                <p class="go-live-shop-con-modeofpayment">Mode of payment: {{ c.modeOfPayment }}</p>
+                                <p class="go-live-shop-con-amt-from-subdistributor">Amount paid: <span class="sbapd">#{{ c.amtFromSubDistributor }}</span></p>
+                                <p class="go-live-shop-con-subdistributor-debt">Debt: #{{ c.subDistributorDebt }}</p>
+                                <p class="go-live-shop-con-subdistributorcredit">Balance: #{{ c.subDistributorCredit }}</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="go-live-shop-con-wholesalerecord">
+                            <p class="go-live-shop-con-wholesalerecord-main-title">Wholesale Record</p>
+                            <div class="go-live-shop-con-wholesalerecord-main-con">
+                                {% for e in goLiveCon.wholesalerecord %}
+                                    <p class="go-live-shop-con-wholesalerecord-customer-name"><span class="go-live-shop-con-wholesalerecord-customer-name-title">Customer name: </span> <span class="go-live-shop-con-wholesalerecord-customer-name-value"> {{ e.customerName }} </span></p>
+                                    <div class="go-live-shop-con-wholesalerecord-products-data-con">
+                                        <span class="go-live-shop-con-wholesalerecord-products-data-title">Products purchased: </span>
+                                        {% for key, value in e.productsData.items %}
+                                            <span class="go-live-shop-con-wholesalerecord-products-data-key">{{ key }}: <span class="go-live-shop-con-wholesalerecord-products-data-value">{{ value }}</span></span> 
+                                        {% endfor %}
+                                    </div>
+                                    <p class="go-live-shop-con-wholesalerecord-product-value">Product value: <span class="sbpb">#{{ e.productValue }}</span></p>
+                                    <p class="go-live-shop-con-wholesalerecord-modeofpayment">Mode of payment: <span class="sbpbtoned">{{ e.modeOfPayment }}</span></p>
+                                    <p class="go-live-shop-con-wholesalerecord-amtfromcustomer">Amount paid: <span class="sbpbnotice">{{ e.amtFromCustomer }}</span></p>
+                                    <p class="go-live-shop-con-wholesalerecord-customerdebt">Debt: #{{ e.customerDebt }}</p>
+                                    <p class="go-live-shop-con-wholesalerecord-customer-credit">Balance: #{{ e.customerCredit }}</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="go-live-shop-con-retailrecord-main-con">
+                            <p class="go-live-shop-con-retail-record-main-title">Retail record</p>
+                            {% for f in goLiveCon.retailrecord %}
+                                <p class="go-live-shop-con-retail-record-productname">{{ f.product.name }}: {{ f.productQuantity }}</p>
+                            {% endfor %}
+                        </div>
+
+
+                        <div class="go-live-openingstockcalculatedvalue-con">
+                            <p class="go-live-openingstockcalculatedvalue-total">Total value of opening stock: #{{ goLiveCon.openingStockCalculatedValue }}</p>
+                        </div>
+
+                        <div class="go-live-newstockcalculatedvalue-con">
+                            <p class="go-live-newstockcalculatevalue">Total value of new stock: #{{ goLiveCon.newStockCalculatedValue }}</p>
+                        </div>
+
+                        <div class="go-live-newstockprofitvalue-con">
+                            <p class="go-live-newstockprofitvalue">Profit Value of all new stock: #{{ goLiveCon.newStockProfitValue }}</p>
+                        </div>
+
+                        <div class="go-live-total-customer-debt-value-con">
+                            <p class="go-live-totalcustomerdebtvalue">Total value of customer debts: #{{ goLiveCon.totalCustomerDebtValue }}</p>
+                        </div>
+
+                        <div class="go-live-totalcustomerbalancevalue-con">
+                            <p class="go-live-totalcustomerbalancevalue">Total value of customer balance: #{{ goLiveCon.totalCustomerBalanceValue }}</p>
+                        </div>
+
+                        <div class="go-live-totalshopsalesvalue-con">
+                            <p class="go-live-totalshopsalesvalue">Value of all shop sales: #{{ goLiveCon.totalShopSalesValue }}</p>
+                        </div>
+
+                        <div class="go-live-totalamountofmoneyinshop-con">
+                            <p class="go-live-totalamountofmoneyinshop">Expected amount of money in shop: #{{ goLiveCon.totalAmountOfMoneyInShop }}</p>
+                        </div>
+
+                        <div class="go-live-products-sold-con">
+                            <p class="go-live-products-sold-main-title">Total Products sold: </p>
+                            {% for key, value in goLiveCon.productsSold.items %}
+                            <span class="go-live-products-sold-key">{{ key }}: <span class="go-live-products-sold-value">{{ value }}, </span></span>
+                            {% endfor %}
+                        </div>
+
+                        <div class="go-live-productsremaining">
+                            <p class="go-live-productsremaining-title">Expected remaining products: </p>
+                            {% for key, value in goLiveCon.productsRemaining.items %}
+                                <span class="go-live-productsremaining-key">{{ key }}: <span class="go-live-productsremaining-value">{{ value }}, </span></span>
+                            {% endfor %}
+                        </div>
+
+                        <div class="go-live-allproductsoriginallyavailable">
+                            <p class="go-live-allproductsoriginallyavailable-title">All products originally available: </p>
+                            {% for key, value in goLiveCon.allProductsOriginallyAvailable.items %}
+                                <span class="go-live-allproductsoriginallyavailable-key">{{ key }}: <span class="go-live-allproductsoriginallyavailable-value">{{ value }}, </span></span>
+                            {% endfor %}
+                        </div>
+
+                        <div class="go-live-customerstotransfer">
+                            <p class="go-live-customerstotransfer-title">Customers to make a transfer: </p>
+                            <div class="go-live-customerstotransfer-all-items-con">
+                                {% for key, value in goLiveCon.customersToTransfer.items %}
+                                    <p class="go-live-customerstotransfer-key">{{ key }}: <span class="go-live-customerstotransfer-value">#{{ value }}, </span></p>
+                                {% endfor %}
+                            </div>    
+                        </div>
+
+
+                        <div class="go-live-customersindebt">
+                            <p class="go-live-customersindebt-title">Customers in debt: </p>
+                            <div class="go-live-customersindebt-all-items-con">
+                                {% for key, value in goLiveCon.customersInDebt.items %}
+                                    <p class="go-live-customersindebt-key">{{ key }}: <span class="go-live-customersindebt-value">#{{ value }}, </span></p>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="go-live-customerscredit">
+                            <p class="go-live-customerscredit-title">Customers that have a balance: </p>
+                            <div class="go-live-customerscredit-all-items-con">
+                                {% for key, value in goLiveCon.customersCredit.items %}
+                                    <p class="go-live-customerscredit-key">{{ key }}: <span class="go-live-customerscredit-value">#{{ value }}, </span></p>
+                                {% endfor %}
+                            </div>    
+                        </div>
+
+                        <div class="go-live-shopdeliveryrecorded">
+                            <p class="go-live-shopdeliveryrecorded-main-title">The shop's recorded Deliveries<p>
+                            {% for key, value in goLiveCon.shopDeliveryRecorded.items %}
+                            <p class="go-live-shopdeliveryrecorded-drivername">Driver's name: <span>{{ value.driverName }}</span></p>
+    
+                                <p class="go-live-shopdeliveryrecorded-products-taken-main-title">Products Taken: </p>
+                                
+                                {% for kproductstaken, vproductstaken in value.productData.items %}
+                                    <span class="go-live-shopdeliveryrecorded-products-taken-products">{{ kproductstaken }}: </span> <span class="go-live-shopdeliveryrecorded-products-taken-quantity">{{ vproductstaken.productQuantity }}, </span>
+                                {% endfor %}
+    
+                                <p class="go-live-shopdeliveryrecorded-products-returned">Products returned: </p>
+    
+                                {% for kproductsreturned, vproductsreturned in value.productData.items %}
+                                    <span class="go-live-shopdeliveryrecorded-products-returned-products">{{ kproductsreturned }}: </span> <span class="go-live-shopdeliveryrecorded-products-returned-quantity">{{ vproductsreturned.productBroughtBack }}</span>
+                                {% endfor %}
+                                
+                                <p class="go-live-shopdeliveryrecorded-amount-remmitted-main">Amount remmitted: <span class="go-live-shopdeliveryrecorded-amount-remmitted-value sbpb">#{{ value.amountBroughtBack }}</span></p>
+        
+    
+                                <p class="go-live-shopdeliveryrecorded-amount-expected-main">Amount expected: <span class="go-live-shopdeliveryrecorded-amount-expected-value sbpbnotice">#{{ value.amountExpected }}</span></p>
+                                
+    
+                                <p class="go-live-shopdeliveryrecorded-delivery-status-main">Delivery status: <span class="go-live-shopdeliveryrecorded-delivery-status-value sbpbtoned">{{ value.deliveryStatus }}</span></p>
+                                
+                            
+                            {% endfor %}   
+                        </div>
+    
+
+                    </div>
+                </div>
+
+                <div class="go-live-delivery-main-con">
+                    <p class="go-live-delivery-main-title">Delivery</p>
+                    
+
+                    <div class="go-live-shopdeliverynotdelivered-con go-live-delivery-content-style">
+                        <p class="go-live-shopdeliverynotdelivered-main-title">Deliveries not delivered</p>
+                        {% if goLiveCon.shopDeliveryNotDelivered %}
+                            {% for g in goLiveCon.shopDeliveryNotDelivered %}
+                                <p class="go-live-shopdeliverynotdelivered-still-delivery">{{ g.deliveryStatus }}</p>
+                                <p class="go-live-shopdeliverynotdelivered-driver-name"><span>Driver's name: </span>{{ g.driverName }}</p>
+                                <p class="go-live-shopdeliverynotdelivered-delivery-number"><span>Delivery Number: </span>{{ g.deliveryNumber }}</p>
+                                <div class="go-live-shopdeliverynotdelivered-products-data-main-con">
+                                    <span class="go-live-shopdeliverynotdelivered-products-data-main-title">Products Taken: </span>
+                                    {% for key, value in g.productData.items %}
+                                    <span class="go-live-shopdeliverynotdelivered-product-data-key">{{ key }}: <span class="go-live-shopdeliverynotdelivered-product-data-value">{{ value.productQuantity }}</span></span>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                        <p class="go-live-no-shopdeliverynotdelivered">None</p>
+                        {% endif %}                        
+                    </div>
+
+                    <div class="go-live-activestartrecord-main go-live-delivery-content-style">
+                        <p class="go-live-active-startrecord-main-txt-title">Currently delivering...</p>
+                        {% if goLiveCon.activeStartRecord %}
+                            <p class="go-live-active-startrecord-producttaken-text">Products Taken</p>
+                            {% for i in goLiveCon.activeStartRecord %}
+                                <div class="go-live-activestartrecord-product-taken-con"><span class="go-live-activestartrecord-producttaken-products">{{ i.productTaken }}: </span> <span class="go-live-activestartrecord-product-taken-quantity">{{ i.productTakenQuantity }}</span> </div>
+                            {% endfor %}
+
+                            <p class="go-live-active-salesrecord-sales-text">Sales...</p>
+                            <div class="go-live-activesalesrecord-sales-main-sales-con">
+                                {% for j in goLiveCon.activeSalesRecord %}
+                                    <div class="go-live-activesalesrecord-sales-customers-con">
+                                        <p class="go-live-activesalesrecord-sales-customers-customername"><span class="go-live-activesalesrecord-sales-customers-customername-txt">Customer name: </span> <span class="go-live-activesalesrecord-sales-customers-customername-value">{{ j.deliveryCustName }}</span></p>
+                                        <p class="go-live-activesalesrecord-sales-customers-deliveryproductdata">
+                                            <p class="go-live-activesalesrecord-sales-customers-delivery-productdata-text">Products purchased: </p>
+                                            {% for keyv, valuev in j.deliveryProductData.items %}
+                                                <span class="go-live-activesalesrecord-sales-customers-deliveryproductdata-keyv">{{ keyv }}: </span> <span class="go-live-activesalesrecord-sales-customers-deliveryproductdata-valuev">{{ valuev }},</span>
+                                            {% endfor %}            
+                                        </p>
+
+                                        <p class="go-live-activesalesrecord-sales-customers-productvalue"><span class="go-live-activesalesrecord-sales-customers-productvalue-txt">Product Value: </span> <span class="go-live-activesalesrecord-sales-customers-product-value-amount">#{{ j.productValue }}</span> </p>
+                                        <p class="go-live-activesalesrecord-sales-customers-modeofpayment"><span class="go-live-activesalesrecord-sales-customers-modeofpayment-txt">Mode of payment: </span> <span class="go-live-activesalesrecord-sales-customers-modeofpayment-value">{{ j.modeOfPayment }}</span> </p>
+                                        <p class="go-live-activesalesrecord-sales-customers-amtfromcustomer"><span class="go-live-activesalesrecord-sales-customers-amtfromcustomer-txt">Amount paid: </span> <span class="go-live-activesalesrecord-sales-customers-amtfromcustomer-value">#{{ j.amtFromCustomer }}</span> </p>
+                                        <p class="go-live-activesalesrecord-sales-customers-customerdebt"><span class="go-live-activesalesrecord-sales-customers-customerdebt-txt">Customer debt: </span> <span class="go-live-activesalesrecord-sales-customers-customerdebt-value">#{{ j.customerDebt }}</span> </p>
+                                        <p class="go-live-activesalesrecord-sales-customers-customercredit"><span class="go-live-activesalesrecord-sales-customers-customercredit-txt">Customer balance: </span> <span class="go-live-activesalesrecord-sales-customers-customercredit-value">#{{ j.customerCredit }}</span></p>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="go-live-activesalesrecord-no-current-deliveries-txt">No current deliveries</p>    
+                        {% endif %}
+                    </div>
+
+                    <div class="go-live-todayallstartrecord-main go-live-delivery-content-style">
+                        <p class="go-live-todayallstartrecord-main-previous-deliveries-taken">Previous deliveries</p>
+                        {% for k in goLiveCon.todayAllStartRecord %}
+                            <div class="go-live-todayallstartrecord-products-main-con">
+                                <p class="go-live-todayallstartrecord-products-main-deliverynumber"><span class="go-live-todayallstartrecord-products-main-deliverynumber-txt">Delivery Number: </span> <span class="go-live-todayallstartrecord-products-main-deliverynumber-number">{{ k.deliveryNumber }}</span> </p>
+                                {% for keyl, valuel in k.productsData.items %}
+                                    <p class="go-live-todayallstartrecord-products-main-productsdata-text">Products Info</p>
+                                    <div class="go-live-todayallstartrecord-products-keyl-valuel">
+                                        <p class="go-live-todayallstartrecord-products-keyl">{{ keyl }}</p>
+                                        <p class="go-live-todayallstartrecord-products-valuel-producttakenqty-con"><span class="go-live-todayallstartrecord-products-valuel-productstakenqty-txt">Taken: </span> <span class="go-live-todayallstartrecord-products-valuel-productstakenqty-value">{{ valuel.productTakenQuantity }}</span> </p>
+                                        <p class="go-live-todayallstartrecord-products-valuel-productbroughtback-con"><span class="go-live-todayallstartrecord-products-valuel-productsbroughtback-txt">Returned: </span> <span class="go-live-todayallstartrecord-products-valuel-productsbroughtback-value">{{ valuel.productBroughtBackQuantity }}</span> </p>
+                                    </div>
+
+                                {% endfor %}
+                                <p class="go-live-todayallstartrecord-products-main-amountbroughtback-main-con"> <span class="go-live-todayallstartrecord-products-main-amountbroughtbackt-txt">Amount brought back: </span> <span class="go-live-todayallstartrecord-products-main-amountbroughtback-value">#{{ k.amountBroughtBack }}</span> </p>
+                            </div>
+                            
+                        {% endfor %}
+                    </div>
+
+                   <div class="go-live-todayallsalesrecord-main-con go-live-delivery-content-style">
+                    <p class="go-live-todayallsalesrecord-main-con-txt">Customers delivered to</p>
+                    <div class="go-live-todayallsalesrecord-main-con-deliverydata">
+                        {% for m in goLiveCon.todayAllSalesRecord %}
+                            <p class="go-live-todayallsalesrecord-main-deliverynumber-con"> <span class="go-live-todayallsalesrecord-main-deliverynumber-txt">Delivery Number: </span> <span class="go-live-todayallsalesrecord-main-deliverynumber-value">{{ m.deliveryNumber }}</span> </p>
+                            <p class="go-live-todayallsalesrecord-main-delivery-customersdeliveredto-txt">Customers</p>
+                            <div class="go-live-todayallsalesrecord-main-delivery-allcustomerdata-main-con">
+                                {% for keym, valuem in m.allCustomerData.items %}
+                                    <p class="go-live-todayallsalesrecord-main-customername-con"> <span class="go-live-todayallsalesrecord-main-delivery-customername-txt">Customer name: </span> <span class="go-livve-todayallsalesrecord-main-delivery-customername-value">{{ keym }}</span></p>
+                                    <div class="go-live-todayallsalesrecord-main-productspurchased-con">
+                                        <p class="go-live-todayallsalesrecord-main-productspurchased-txt">Products purchased: </p>
+                                        <div class="go-live-todayallsalesrecord-main-delivery-p-purchased-main-con">
+                                            {% for keyn, valuen in valuem.productsPurchased.items %}
+                                                <span class="go-live-todayallsalesrecord-main-p-purchased-items-con"><span class="go-live-todayallsalesrecord-main-p-purchased-keyn">{{ keyn }}: </span><span class="go-live-todayallsalesrecord-main-p-purchased-valuen">{{ valuen }}</span></span>,
+                                            {% endfor %}
+                                        </div>
+                                        <p class="go-live-todayallsalesrecord-main-products-purchased-product-value-con"><span class="go-live-todayallsalesrecord-main-product-value-txt">Products purchased value: </span><span class="go-live-todayallsalesrecord-main-product-value-value">#{{ valuem.productValue }}</span></p>
+                                        <p class="go-live-todayallsalesrecord-main-modeofpayment-con"><span class="go-live-todayallsalesrecord-main-modeofpayment-txt">Mode of payment: </span><span class="go-live-todayallsalesrecord-main-modeofpayment-value">{{ valuem.modeOfPayment }}</span></p>
+                                        <p class="go-live-todayallsalesrecord-main-amtfromcustomer-con"><span class="go-live-todayallsalesrecord-main-amtfromcustomer-txt">Amount paid: </span> <span class="go-live-todayallsalesrecord-main-amtfromcustomer-value">#{{ valuem.amtFromCustomer }}</span></p>
+                                        <p class="go-live-todayallsalesrecord-main-customerdebt-con"><span class="go-live-todayallsalesrecord-main-customerdebt-txt">Debt: </span><span class="go-live-todayallsalesrecord-main-customerdebt-value">#{{ valuem.customerDebt }}</span></p>
+                                        <p class="go-live-todayallsalesrecord-main-customercredit-con"><span class="go-live-todayallsalesrecord-main-customercredit-txt">Balance: </span><span class="go-live-todayallsalesrecord-main-customercredit-value">#{{ valuem.customerCredit }}</span></p>
+
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                   </div>
+
+
+                   {% if goLiveCon.todayAllStartRecord %}
+                    <div class="go-live-deliveryexpectedamountbasedonsales-main-con go-live-delivery-content-style">
+                        <p class="go-live-deliveryexpectedamountbasedonsales-amtexp-main-con-txt">Amount expected from each delivery(from audit)</p>
+                        <div class="go-live-deliveryexpectedamountbasedonsales-amtexp-con">
+                            {% for keyo, valueo in goLiveCon.deliveryExpectedAmountBasedOnSales.items %}
+                                <p class="go-live-deliveryexpectedamountbasedonsales-amtexpdelivery-con"><span class="go-live-deliveryexpectedamountbasedonsales-keyo">{{ keyo }}:  </span><span class="go-live-deliveryexpectedamountbasedonsales-valueo">{{ valueo }}</span></p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                   {% endif %}
+
+                   <div class="go-live-fulldeliveryaudit-main-con go-live-delivery-content-style">
+                    <p class="go-live-fulldeliveryaudit-main-con-txt">Full Delivery Audit</p>
+                    <div class="go-live-fulldeliveryaudit-values-con">
+                        {% for keyq, valueq in goLiveCon.fullDeliveryAudit.items %}
+                        <p class="go-live-fulldeliveryaudit-values-keyq">{{ keyq }}:  </p>
+                        <div class="go-live-fulldeliveryaudit-values-keyr-valuer-main-con">
+                            {% for keyr, valuer in valueq.items %}
+                                <span>{{ keyr }}: </span><span>{{ valuer }}, </span>
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
+                      
+                    </div>
+                   </div>
+
+                   <div class="go-live-fulldeliveryamtexpperdelivery-main-con go-live-delivery-content-style">
+                    <p class="go-live-fulldeliveryamtexpperdelivery-main-title">Amount expected for each delivery</p>
+                    <div class="go-live-fulldeliveryamtexpperdelivery-items-main-con">
+                        {% for keyr, valuer in goLiveCon.fullDeliveryamountexpperDelivery.items %}
+                        <p class="go-live-fulldeliveryamtexpperdelivery-item-keyr">{{ keyr }}: </p>
+                        <p class="go-live-fulldeliveryamtexpperdelivery-item-valuer">#{{ valuer }}</p>
+                        {% endfor %}
+                    </div>
+                   </div>
+
+                   <div class="go-live-totcashexpfromdeliveries-main-con go-live-delivery-content-style">
+                    <p class="go-live-totcashexpfromdeliveries-main-con-title">Total Cash expected from Deliveries(from audit): </p>
+                    <div class="go-live-totcashexpfromdeliveries-items-con">
+                        {% for keyo, valueo in goLiveCon.totCashexpfromDeliveries.items %}
+                            <span class="go-live-totcashexpfromdeliveries-items-valueo">#{{ valueo }}</span>
+                        {% endfor %}
+                    </div>
+                   </div>
+
+                   <div class="go-live-alldelsales-main-con go-live-delivery-content-style">
+                    {% for keym, valuem in goLiveCon.allDelSales.items %}
+                    <p class="go-live-alldelsales-main-con-title">{{ keym }}: </p>
+                    <p class="go-live-totcashexpfromdeliveries-items-valuem">#{{ valuem }}</p>
+                    {% endfor %}
+                   </div>
+
+                
+
+                </div>
+            </div>
+        </div>
+
+        <!--Go live con ends here-->
+
+        <!--View Today's invoice starts here-->
+        <div class="today-invoice-main-hide-con admin-panel-hide">
+            <div class="today-invoice-main-con">
+                
+                <div class="today-invoice-main-header-con">
+
+                    <div class="today-invoice-main-header-title-con">
+                        <p class="today-invoice-main-header-title">Today's Invoice</p>
+                    </div>
+
+                    <div class="today-invoice-main-header-exit-con">
+                        <p class="today-invoice-main-header-exit-icon">&times;</p>
+                    </div>
+
+                </div>
+
+                <div class="today-invoice-main-body-con">
+
+                    {% for shti in shTodayInv %}
+                    <!-- <p>{{ shti }}</p> -->
+                        <!-- <div class="today-invoice-cons"> -->
+                            <div class="today-invoice-main-body-invoice-con">
+
+                                <div class="today-invoice-main-body-invoice-image-con">
+                                    <img src="{{ shti.invoiceImage.url }}" alt="Image of an invoice" class="today-invoice-main-body-invoice-main-image">
+                                </div>
+
+                                <div class="today-invoice-main-body-invoice-details">
+
+                                    <p class="today-invoice-main-body-invoice-details-invoice-number-con">
+                                        <span class="today-invoice-main-body-invoice-details-invoice-number-txt">Invoice Number: </span>
+                                        <span class="today-invoice-main-body-invoice-details-main-invoice-number">{{ shti.invoiceNumber }} </span>
+                                    </p>
+
+                                    <p class="today-invoice-main-body-invoice-details-company-con">
+                                        <span class="today-invoice-main-body-invoice-details-company-txt">Company: </span>
+                                        <span class="today-invoice-main-body-invoice-details-company-name">{{ shti.company }} </span>
+                                    </p>
+
+                                    <p class="today-invoice-main-body-invoice-details-addedat-con">
+                                        <span class="today-invoice-main-body-invoice-details-addedat-txt">Added at: </span>
+                                        <span class="today-invoice-main-body-invoice-details-addedat-name format-time">{{ shti.addedAt }}</span>
+                                    </p>
+
+                                </div>
+                            </div>
+                        <!-- </div> -->
+                    {% endfor %}
+
+                </div>
+
+            </div>
+        </div>
+        
+        <!--View Today's invoice ends here-->
+
+        <!--View All Invoices starts here-->
+
+        <div class="all-invoices-main-hide-con admin-panel-hide">
+            <div class="all-invoices-main-con">
+
+                <div class="all-invoices-main-header-con">
+
+                    <div class="all-invoices-main-header-title-con">
+                        <p class="all-invoices-main-header-title-txt">All Invoices</p>
+                    </div>
+
+                    <div class="all-invoices-main-header-exit-con">
+                        <p class="all-invoices-main-header-exit-icon">&times;</p>
+                    </div>
+                </div>
+
+                <div class="all-invoices-main-body">
+                    {% for allinv in invoices %}
+                        <div class="all-invoices-invoice-con">
+                            
+                            <div class="all-invoices-invoice-image-con">
+                                <img src="{{ allinv.invoiceImage.url }}" alt="Image of an invoice" class="all-invoice-invoice-main-image">
+                            </div>
+
+                            <p class="all-invoices-invoice-invoice-number-main-con">
+                                <span class="all-invoices-invoice-invoice-number-main-txt">Invoice Number: </span>
+                                <span class="all-invoices-invoice-invoice-number-main-number">{{ allinv.invoiceNumber }}</span>
+                            </p>
+
+                            <p class="all-invoices-invoice-invoice-company-main-con">
+                                <span class="all-invoices-invoice-invoice-company-main-txt">Company: </span>
+                                <span class="all-invoices-invoice-invoice-company-main-value">{{ allinv.company }}</span>
+                            </p>
+
+                            <p class="all-invoices-invoice-invoice-date-main-con">
+                                <span class="all-invoices-invoice-invoice-date-main-txt">Added at: </span>
+                                <span class="all-invoices-invoice-invoice-date-main-value">{{ allinv.addedAt }}</span>
+                            </p>
+
+                        </div>
+                    {% endfor %}
+                </div>
+
+            </div>
+        </div>
+
+        <!--View All Invoices ends here-->
+
+        <!--Debtors page starts here-->
+
+        <!-- <div class="admin-panel-main-debtors-hide-con">
+            <div class="admin-panel-main-debtors-con">
+
+                
+
+            </div>
+        </div> -->
+
+        <!--Debtors page ends here-->
+
+    
+        <!-- <p>
+
+            {% for x in goLiveCon.openingstock %}
+            <p>{{ x.product.name }} <span>{{ x.quantity }}</span> <span>{{ x.addedAt }}</span> </p>
+            {% endfor %}
+        </p> -->
+
+    
+    </main>
+
+    <script>
+        let adminMenuContainer = document.querySelector(".admin-menu-container")
+        let adminHamParentCon = document.querySelector(".admin-ham-menu-parent-con")
+        let adminPanelExitCon = document.querySelector(".admin-ham-menu-main-con-title-exit-icon")
+        let todaysInvoiceClick = document.querySelector(".admin-panel-todays-invoice-click")
+        let adminPanelTableHeadersSelectExtra = document.querySelectorAll(".admin-panel-table-headers-select-extra")
+        let viewShopSalesAudit = document.querySelector(".admin-panel-view-shop-sales-audit")
+        let backendShopItems = document.querySelectorAll(".backend-shop-items")
+        let adminHamMenuMainConItem = document.querySelectorAll(".admin-ham-menu-main-con-item")
+        let goLiveMainTitleExitCon = document.querySelector(".go-live-main-title-exit-con")
+        let goLiveMainHideCon = document.querySelector(".go-live-main-hide-con")
+        let goLiveDisplay = document.querySelector(".main-admin-go-live-item")
+        let todayInvoiceMainHideCon = document.querySelector(".today-invoice-main-hide-con")
+        let todayHeaderHeaderExitCon = document.querySelector(".today-invoice-main-header-exit-con")
+        let allInvoicesMainHideCon = document.querySelector(".all-invoices-main-hide-con")
+        let allInvoicesMainExitCon = document.querySelector(".all-invoices-main-header-exit-con")
+        let adminAllInvoicesClick = document.querySelector(".admin-panel-all-invoices-click")
+        let adminPanelShopSalesMainHideCon = document.querySelector(".admin-panel-shop-sales-audit-main-hide-con")
+        let adminPanelShopSalesExitCon = document.querySelector(".admin-panel-shop-sales-audit-exit-con")
+        let adminPanelDeliverySalesExitCon = document.querySelector(".admin-panel-delivery-sales-main-exit-con")
+        let adminPanelDeliverySalesMainHideCon = document.querySelector(".admin-panel-delivery-sales-main-hide-con")
+        let adminPanelViewDeliverySalesAudit = document.querySelector(".admin-panel-view-delivery-sales-audit")
+        let adminPanelViewAllDebtorsCreditorsClick = document.querySelector(".admin-panel-view-all-debtors-and-creditors-click")
+        let adminPanelDebtorsHeaderExitCon = document.querySelector(".admin-panel-debtors-header-exit-con")
+        let adminPanelDebtorsMainHideCon = document.querySelector(".admin-panel-debtors-main-hide-con")
+        let adminPanelViewAuditHistoryClick = document.querySelector(".admin-panel-view-audit-history-click")
+        let adminPanelAuditHistoryMainHideCon = document.querySelector(".admin-panel-audit-history-main-hide-con")
+        let adminPanelAuditHistoryMainExitCon = document.querySelector(".admin-panel-audit-history-main-title-exit-con")
+        let adminPanelViewCatalogueClick = document.querySelector(".admin-panel-view-catalogue-click")
+        let adminPanelCatalogueSectionMainHideCon = document.querySelector(".admin-panel-catalogue-section-main-hide-con")
+        let adminPanelCatalogueSectionExitCon = document.querySelector(".admin-panel-catalogue-section-main-header-exit-con")
+        let adminPanelCatalogueSectionOptionsCatalogueSettingsCon = document.querySelector(".admin-panel-catalogue-section-options-catalogue-settings-con")
+        let adminPanelCatalogueSectionOptionsViewCatalogueCon = document.querySelector(".admin-panel-catalogue-section-options-view-catalogue-con")
+        let adminPanelCatalogueSettingsMainHideCon = document.querySelector(".admin-panel-catalogue-settings-main-hide-con")
+        let adminPanelViewCatalogueMainHideCon = document.querySelector(".admin-panel-view-catalogue-main-hide-con")
+        let adminPanelCatalogueSettingsHeaderExitCon = document.querySelector(".admin-panel-catalogue-settings-header-exit-con")
+        let adminPanelCatalogueSettingsNavAddProductCon = document.querySelector(".admin-panel-catalogue-settings-nav-add-product-con")
+        let adminPanelCatalogueSettingsNavAddProductTxt = document.querySelector(".admin-panel-catalogue-settings-nav-add-product-txt")
+        let adminPanelCatalogueSettingsAddProductMainHideCon = document.querySelector(".admin-panel-catalogue-settings-add-product-con-main-hide-con")
+        let adminPanelCatalogueSettingsNavDeleteProductCon = document.querySelector(".admin-panel-catalogue-settings-nav-delete-product-con")
+        let adminPanelCatalogueSettingsNavDeleteProductTxt = document.querySelector(".admin-panel-catalogue-settings-nav-delete-product-txt")
+        let adminPanelCatalogueSettingsDeleteProductMainHideCon = document.querySelector(".admin-panel-catalogue-settings-delete-product-main-hide-con")
+        let adminPanelCatalogueMainHideCon = document.querySelector(".admin-panel-view-catalogue-main-hide-con")
+        let adminPanelCatalogueMainExitCon = document.querySelector(".admin-panel-view-catalogue-header-exit-con")
+        let adminPanelGrantAccessNoBtn = document.querySelector(".admin-panel-grant-access-no-btn")
+        let adminPanelGrantAccessYesBtn = document.querySelector(".admin-panel-grant-access-yes-btn")
+        let adminPanelGrantAccessMainHideCon = document.querySelector(".admin-panel-grant-access-main-hide-con")
+        let adminPanelViewGrantAccessClick = document.querySelector(".admin-panel-view-grant-access-click")
+        let adminPanelClearDbClick = document.querySelector(".admin-panel-clear-db-click")
+        let adminPanelClearDbMainCon = document.querySelector(".admin-panel-clear-entire-database-section-main-hide-con")
+        let adminPanelClearDbGoBackBtn = document.querySelector(".admin-panel-clear-entire-database-section-go-back-btn")
+        let adminPanelManCloseShopClick = document.querySelector(".admin-panel-manually-close-shop-click")
+        let adminPanelManCloseShopMainHideCon = document.querySelector(".admin-panel-manually-close-shop-main-hide-con")
+        let adminPaneManCloseShopGoBackBtn = document.querySelector(".admin-panel-manually-close-shop-section-go-back-btn")
+
+        //Special variables
+
+        let openGoLive = localStorage.getItem("opengolive")
+
+        //Refresh go live page
+
+        if(openGoLive === "True") {
+            window.setTimeout(() => {
+                document.location.reload()
+            }, 20000)
+            goLiveMainHideCon.classList.remove("admin-panel-hide")
+        }
+
+
+
+
+        //Admin panel navigation(start)
+
+        adminMenuContainer.addEventListener('click', () => {
+            adminHamParentCon.classList.remove("admin-panel-hide")
+            adminHamParentCon.classList.add("admin-panel-show-nav-animate")
+        })
+
+        adminPanelExitCon.addEventListener('click', () => {
+            adminHamParentCon.classList.remove("admin-panel-show-nav-animate")
+            adminHamParentCon.classList.add("admin-panel-hide")
+        })
+
+       adminHamMenuMainConItem.forEach(e => {
+        e.addEventListener('click', () => {
+            adminHamParentCon.classList.remove("admin-panel-show-nav-animate")
+            adminHamParentCon.classList.add("admin-panel-hide")
+        })
+       })
+
+        //Admin panel navigation(end)
+
+ 
+       //Go Live section starts here
+
+
+        goLiveMainTitleExitCon.addEventListener('click', () => {
+            goLiveMainHideCon.classList.add("admin-panel-hide")
+            localStorage.removeItem("opengolive")
+        })
+
+        goLiveDisplay.addEventListener('click', () => {
+            goLiveMainHideCon.classList.remove("admin-panel-hide")
+            localStorage.setItem("opengolive", "True")
+            location.reload()
+        })
+
+        //Go Live section ends here
+
+        //Today's invoice section starts here
+
+        todayHeaderHeaderExitCon.addEventListener('click', () => {
+            todayInvoiceMainHideCon.classList.add("admin-panel-hide")
+        })
+
+        todaysInvoiceClick.addEventListener('click', () => {
+            todayInvoiceMainHideCon.classList.remove("admin-panel-hide")
+        })
+
+        //Today's invoice sections ends here
+
+        //All invoice section starts here
+
+        allInvoicesMainExitCon.addEventListener('click', () => {
+            allInvoicesMainHideCon.classList.add("admin-panel-hide")
+        })
+
+        adminAllInvoicesClick.addEventListener('click', () => {
+            allInvoicesMainHideCon.classList.remove("admin-panel-hide")
+        })
+
+        //All invoice sections ends here
+
+        //Shop sales section starts here
+
+        adminPanelShopSalesExitCon.addEventListener('click', () => {
+            adminPanelShopSalesMainHideCon.classList.add("admin-panel-hide")
+        })
+
+        viewShopSalesAudit.addEventListener('click', () => {
+            adminPanelShopSalesMainHideCon.classList.remove("admin-panel-hide")
+        })
+
+        //Shop sales ends here
+
+        //View Delivery Sales starts here
+
+        adminPanelViewDeliverySalesAudit.addEventListener('click', () => {
+            adminPanelDeliverySalesMainHideCon.classList.remove("admin-panel-hide")
+        })
+
+        adminPanelDeliverySalesExitCon.addEventListener('click', () => {
+            adminPanelDeliverySalesMainHideCon.classList.add("admin-panel-hide")
+        })
+
+        //View Delivery Sales ends here
+
+        // View Debtors and Creditors starts here
+
+        adminPanelViewAllDebtorsCreditorsClick.addEventListener('click', () => {
+            adminPanelDebtorsMainHideCon.classList.remove("admin-panel-hide")
+        })
+
+        adminPanelDebtorsHeaderExitCon.addEventListener('click', () => {
+            adminPanelDebtorsMainHideCon.classList.add("admin-panel-hide")
+        })
+
+        //View Debtors and Creditors ends here
+
+        
+
+        //View Audit History starts here
+
+        adminPanelViewAuditHistoryClick.addEventListener('click', () => {
+            adminPanelAuditHistoryMainHideCon.classList.remove("admin-panel-hide")
+        })
+
+        adminPanelAuditHistoryMainExitCon.addEventListener('click', () => {
+            adminPanelAuditHistoryMainHideCon.classList.add("admin-panel-hide")
+        })
+
+        //View Audit History ends here
+
+
+        //View Catalogue starts here
+        
+
+        //View Catalogue section starts here
+
+        adminPanelViewCatalogueClick.addEventListener('click', () => {
+            adminPanelCatalogueSectionMainHideCon.classList.remove("admin-panel-hide")
+        })
+
+        adminPanelCatalogueSectionExitCon.addEventListener('click', () => {
+            adminPanelCatalogueSectionMainHideCon.classList.add("admin-panel-hide")
+        })
+
+        //View Catalogue section ends here
+
+        //View Catalogue section options starts here
+
+        adminPanelCatalogueSectionOptionsCatalogueSettingsCon.addEventListener('click', () => {
+            adminPanelCatalogueSettingsMainHideCon.classList.remove("admin-panel-hide")
+        })
+
+        adminPanelCatalogueSectionOptionsViewCatalogueCon.addEventListener('click', () => {
+            adminPanelViewCatalogueMainHideCon.classList.remove("admin-panel-hide")
+        })
+
+        //View Catalogue section option ends here
+
+        //View Catalogue Settings starts here
+
+
+        adminPanelCatalogueSettingsNavAddProductCon.addEventListener('click', () => {
+            adminPanelCatalogueSettingsNavAddProductCon.classList.add("admin-panel-catalogue-settings-nav-add-delete-product-con-hover")
+            adminPanelCatalogueSettingsDeleteProductMainHideCon.classList.add("admin-panel-hide")
+            adminPanelCatalogueSettingsNavDeleteProductCon.classList.remove("admin-panel-catalogue-settings-nav-add-delete-product-con-hover")
+            adminPanelCatalogueSettingsAddProductMainHideCon.classList.remove("admin-panel-hide")
+        })
+
+        adminPanelCatalogueSettingsNavDeleteProductCon.addEventListener('click', () => {
+            adminPanelCatalogueSettingsNavDeleteProductCon.classList.add("admin-panel-catalogue-settings-nav-add-delete-product-con-hover")
+            adminPanelCatalogueSettingsAddProductMainHideCon.classList.add("admin-panel-hide")
+            adminPanelCatalogueSettingsNavAddProductCon.classList.remove("admin-panel-catalogue-settings-nav-add-delete-product-con-hover")
+            adminPanelCatalogueSettingsDeleteProductMainHideCon.classList.remove("admin-panel-hide")
+        })
+
+        adminPanelCatalogueSettingsHeaderExitCon.addEventListener('click', () => {
+            adminPanelCatalogueSettingsMainHideCon.classList.add("admin-panel-hide")
+        })
+
+        //View Catalogue Settings ends here
+
+        //Catalogue starts here
+
+        adminPanelCatalogueMainExitCon.addEventListener('click', () => {
+            adminPanelCatalogueMainHideCon.classList.add("admin-panel-hide")
+        })
+
+        //Catalogue ends here
+
+        //View Catalogue ends here
+
+        //Grant Access section starts here
+
+        adminPanelGrantAccessNoBtn.addEventListener('click', () => {
+            adminPanelGrantAccessMainHideCon.classList.add("admin-panel-hide")
+        })
+
+        adminPanelGrantAccessYesBtn.addEventListener('click', () => {
+            adminPanelGrantAccessMainHideCon.classList.add("admin-panel-hide")
+        })
+
+        adminPanelViewGrantAccessClick.addEventListener('click', () => {
+            adminPanelGrantAccessMainHideCon.classList.remove("admin-panel-hide")
+        })
+
+
+
+        //Grant Access section ends here
+
+
+        //Clear Database section starts here
+
+        adminPanelClearDbClick.addEventListener('click', () => {
+            adminPanelClearDbMainCon.classList.remove("admin-panel-hide")
+        })
+
+        adminPanelClearDbGoBackBtn.addEventListener('click', () => {
+            adminPanelClearDbMainCon.classList.add("admin-panel-hide")
+        })
+
+        //Clear Database section ends here
+
+        //Manually Close Shop section starts here
+
+        adminPanelManCloseShopClick.addEventListener('click', () => {
+            adminPanelManCloseShopMainHideCon.classList.remove("admin-panel-hide")
+        })
+
+        adminPaneManCloseShopGoBackBtn.addEventListener('click', () => {
+            adminPanelManCloseShopMainHideCon.classList.add("admin-panel-hide")
+        })
+
+        //Manually Close Shop section ends here
+
+
+
+
+        
+
+    </script>
+</body>
+</html>

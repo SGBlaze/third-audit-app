@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/appstyle.css' %}">
+    <title>Delivery Page</title>
+</head>
+<body>
+
+
+    <header class="delivery-head">DELIVERIES</header>
+
+    <main class="delivery-main-body">
+        <div class="delivery-main-outing-container">
+
+            <div class="delivery-outing-container">
+
+                <div class="delivery-outing-first">
+                    <div class="delivery-outing-first-text"></div>
+                    <div class="delivery-outing-first-icon">></div>
+                </div>
+
+                <div class="delivery-outing-second delivery-hide">New Outing</div>
+            </div>
+
+            <Button class="delivery-outing-button delivery-hide">Create New Outing</Button>
+
+            <div class="delivery-outing-close-for-the-day-hide-con">
+              <div class="delivery-outing-close-for-the-day-btn-con">
+                <button class="delivery-outing-close-for-the-day-btn">CLOSE FOR THE DAY</button>
+              </div>
+            </div>
+
+            <div class="delivery-outing-close-for-the-day-show-con-background-hide-con delivery-hide">
+              <div class="delivery-outing-close-for-the-day-show-con-background">
+                  <div class="delivery-outing-close-for-the-day-show-con">
+                    <p class="delivery-outing-close-for-the-day-show-con-title">Are you sure?</p>
+
+                      <form method="POST" class="delivery-outing-close-for-the-day-btns-container">
+                        {% csrf_token %}
+                        <div class="delivery-outing-close-for-the-day-btns-con">
+                          <Button class="delivery-outing-close-for-the-day-btn-no" type="button">No</Button>
+                        </div>
+
+                        <div class="delivery-outing-final-closing-bkend-con" style="display: none;">
+
+                        </div>
+
+                        <div class="delivery-outing-close-for-the-day-btns-con">
+                          <Button class="delivery-outing-close-for-the-day-btn-yes">Yes</Button>
+                        </div>
+                      </form>
+
+                  </div>
+              </div>
+           </div>
+
+            <!--Delivery driver's recieved stock start-->
+
+            <div class="delivery-main-amount-recieved delivery-hide">
+              <form method="POST">
+                  {% csrf_token %}
+                  <div class="delivery-goods-recieved-con" style="display: none;">
+                    <input type="text" name="deliverygoodsrecieved">
+                  </div>
+                  {% for company in companies %}
+                  <div class="delivery-item-type">
+                  <div class="delivery-item-type-title">{{ company.name }}</div>
+                  <div class="delivery-item-type-products">
+                    {% for product in products %}
+                    {% if product.company.name == company.name %}
+                      <div class="delivery-item-type-product">
+                      <img
+                          src="{{ product.image.url }}"
+                          alt=""
+                          class="delivery-item-type-image"
+                      />
+                      <p class="delivery-item-type-product-name">{{ product.name }}</p>
+                      <p class="delivery-item-type-product-status">Amount Recieved</p>
+                      <input type="text" class="delivery-item-type-product-input"/>
+                      </div>
+                      {% endif %}
+                    {% endfor %}
+
+                  </div>
+                  </div>
+                  {% endfor %}
+          
+                  <div class="delivery-item-amount-recieved-delivery-submit-con">
+          
+                    <button class="delivery-item-amount-recieved-delivery-submit" type="submit">
+                    Submit Goods Recieved
+                    </button>
+
+                  </div>
+
+              </form>
+
+            </div>    
+
+        </div>
+
+
+          <!--Delivery driver's recieved stock end-->
+
+          <!---Delivery customer sales section start-->
+
+          <div class="delivery-sales-body delivery-hide">
+            <div class="delivery-sales-customer-info">
+              <div class="form-container">
+                <input
+                  type="text"
+                  placeholder="Customer name"
+                  id="delivery-sales-customer-name"
+                />
+              </div>
+              <input type="submit" class="delivery-sales-submit-btn" />
+            </div>
+      
+            <div class="delivery-sales-display delivery-sales-product-display-hide" >
+              <div class="delivery-sales-product-display">
+                <div class="delivery-sales-customer-search">
+                  <h3 class="delivery-sales-customer-name-value"></h3>
+                  <input
+                    type="text"
+                    class="delivery-sales-search-variant-input"
+                    placeholder="Search for a Variant"
+                    onkeyup = "deliverySearch()"
+                  />
+                </div>
+                <div class="delivery-sales-product-container">
+                  {% for product in products %}
+                  <div class="delivery-sales-item">
+                    <img src="{{ product.image.url }}" alt="" />
+                    <p class="delivery-sales-product-name">{{ product.name }}</p>
+                    <p class="delivery-sales-page-price">
+                      Wholesale Price: <span class="delivery-sales-item-price">{{ product.wholesalePrice|floatformat }}</span>
+                    </p>
+                    <button class="delivery-sales-sell-btn">SELL</button>
+                  </div>
+                  {% endfor %}
+      
+                </div>
+              </div>
+      
+              <div class="delivery-sales-calculate-btn-container">
+                  <button class="delivery-sales-calculate-btn">CALCULATE</button>
+              </div>
+                </div>
+            </div>
+
+      
+            <div class="delivery-sales-popup-container delivery-sales-hidden">
+              <div class="delivery-sales-popup">
+                <div class="delivery-sales-popup-title-container">
+                  <div class="delivery-sales-popup-title-container-main-item-container">
+                    <p class="delivery-sales-popup-title-container-main-item">
+                      How many
+                      <span class="delivery-sales-popup-product-name"></span>?
+                    </p>
+                    <p class="delivery-sales-popup-title-container-main-item delivery-sales-popup-tt-sp">
+                      Price:
+                      <span class="delivery-sales-popup-product-price"></span>
+                    </p>
+                  </div>
+                  <div class="delivery-sales-menu-exit-container">
+                    <div class="delivery-sales-menu-exit delivery-sales-menu-exit-bar1"></div>
+                    <div class="delivery-sales-menu-exit delivery-sales-menu-exit-bar2"></div>
+                  </div>
+                </div>
+      
+                <input
+                  type="text"
+                  class="delivery-sales-popup-input"
+                  placeholder="Enter amount"
+                />
+                <br />
+                  <input type="submit" class="delivery-sales-popup-submit" />
+              </div>
+            </div>
+
+
+            <div class="delivery-end-outing-con">
+              <div class="delivery-end-outing">
+                  <div class="delivery-end-outing-icon delivery-hide">...</div>
+                  <div class="delivery-end-outing-selection-container delivery-hide">
+                      <div class="delivery-end-outing-text delivery-hide">End outing</div>
+                      <div class="delivery-end-outing-final-container delivery-hide">
+                          <div class="delivery-end-outing-yes">Yes</div>
+                          <div class="delivery-end-outing-no">No</div>
+                      </div>
+                  </div>
+              </div>
+            </div>
+
+            <div class="delivery-outing-calculate-page delivery-outing-hide">
+              <div class="delivery-outing-calc-main">
+                <div class="delivery-outing-calc-page-header">
+                  <div class="delivery-outing-calc-page-header-txt-con"><p class="delivery-outing-calc-page-header-txt">No Customer</p></div>
+                  <h1 class="delivery-outing-calc-page-exit-icon">&times;</h1>
+                </div>
+
+                <div class="delivery-outing-calc-page-main">
+                  <div class="delivery-outing-calc-page-main-title">
+                    <div class="delivery-outing-calc-product-txt"><p>Product</p></div>
+                    <div class="delivery-outing-calc-others">
+                      <p>Quantity</p>
+                      <p>Price</p>
+                      <p>total</p>
+                    </div>
+                  </div>
+
+                  <div class="delivery-outing-calc-page-content">
+
+                  </div>
+
+                  <div class="delivery-outing-page-calc-total">
+                    <p class="delivery-outing-page-calc-total-txt">Total</p>
+                    <p class="delivery-outing-page-calc-total-amount"></p>
+                  </div>
+
+
+                </div>
+              </div>
+
+              <div class="delivery-outing-calc-page-footer">
+                <form method="POST" class="delivery-outing-calc-page-footer-form">
+                  {% csrf_token %}
+                  <div class="delivery-outing-backend-con" style="display: none;">
+                    <input type="text" class="delivery-outing-backend-customer-name" name="deliverycustomername">
+                  </div>
+                  <div class="delivery-outing-calc-page-footer-btn1-container">
+                    <Button class="delivery-outing-go-back" type="button">Go Back</Button>
+                  </div>
+                  <div class="delivery-outing-calc-page-footer-btn2-container">
+                    <Button class="delivery-outing-finish-transaction" type="button">Finish Transaction</Button>
+                  </div>
+
+                  
+              <div class="delivery-outing-calc-page-hover-hide-con delivery-hide">
+                <div class="delivery-outing-calc-page-hover-con">
+                  <div class="delivery-outing-calc-page-main-con">
+                    <div class="delivery-outing-calc-pg-header-first-con">
+                      <div class="delivery-outing-calc-pg-header-name-total">
+                        <p class="delivery-outing-calc-pg-cname"></p>
+                        <p class="delivery-outing-calc-pg-total"></p>
+                      </div>
+                      <div class="delivery-outing-calc-pg-header-exit-con">
+                        <p class="delivery-outing-calc-pg-exit">&times;</p>
+                      </div>
+                    </div>
+
+                    <div class="delivery-outing-calc-pg-second-con">
+                      <div class="delivery-outing-calc-pg-mode-of-delivery">Mode Of Payment</div>
+                      <div class="delivery-outing-calc-pg-delivery-modes-con delivery-hide">
+                        <div class="delivery-outing-calc-pg-delivery-modes">Cash</div>
+                        <div class="delivery-outing-calc-pg-delivery-modes">Transfer</div>
+                      </div>
+
+                      <div class="delivery-outing-calc-pg-amt-collected-debt-credit-hide-con delivery-hide">
+                        <div class="delivery-outing-calc-pg-amt-collected-debt-credit-con">
+                          <div class="delivery-outing-calc-pg-amt-collected-con">
+                            <p class="delivery-calc-pg-amt-cllcted-txt">Amount Collected</p>
+                            <input type="text" class="delivery-outing-calc-pg-amt-collected">
+                          </div>
+                          <div class="delivery-outing-calc-pg-debt-con">
+                            <p class="delivery-outing-calc-pg-debt-credit-txts">Balance:</p>
+                            <input type="text" class="delivery-outing-calc-pg-debt">
+                          </div>
+                          <div class="delivery-outing-calc-pg-credit-con">
+                            <p class="delivery-outing-calc-pg-debt-credit-txts">To Balance:</p>
+                            <input type="text" class="delivery-outing-calc-pg-credit">
+                          </div>
+                        </div>
+                      </div>
+                      
+                    </div>
+                    
+                    <div class="delivery-outing-calc-pg-third-con-hide delivery-hide">
+                      <div class="delivery-outing-calc-pg-third-con">
+                        <Button class="delivery-outing-calc-pg-submit-total-values-btn" type="button">Submit</Button>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+              
+                </form>
+              </div>
+
+            </div>
+
+            <div class="delivery-outing-confirmation-product-main-con delivery-hide">
+              <div class="delivery-outing-confirmation-product-con">
+                <p class="delivery-outing-confirmation-product-header">What Did You Bring Back ?</p>
+                <div class="delivery-outing-confirmation-product-body">
+                  <form method="POST">
+                    {% csrf_token %}
+                    <div class="delivery-goods-returned-con" style="display: none;">
+                      <input type="text" name="deliverygoodsreturned">
+                    </div>
+                    {% for company in companies %}
+                    <div class="delivery-outing-confirmation-product">
+                    <div class="delivery-outing-confirmation-product-title">{{ company.name }}</div>
+                    <div class="delivery-outing-confirmation-product-products">
+                      {% for product in products %}
+                      {% if product.company.name == company.name %}
+                        <div class="delivery-outing-confirmation-product-product">
+                        <img
+                            src="{{ product.image.url }}"
+                            alt=""
+                            class="delivery-outing-confirmation-product-image"
+                        />
+                        <p class="delivery-outing-confirmation-product-product-name">{{ product.name }}</p>
+                        <p class="delivery-outing-confirmation-product-product-status">Amount Returned</p>
+                        <input type="text" class="delivery-outing-confirmation-product-product-input"/>
+                        </div>
+                        {% endif %}
+                      {% endfor %}
+                
+                    </div>
+                    </div>
+                    {% endfor %}
+                
+                    <div class="delivery-outing-amnt-recieved-delivery-submit-con">
+                      <button class="delivery-outing-amnt-recieved-delivery-submit" type="submit">
+                      Submit Goods Returned
+                      </button>
+                    </div>
+                
+                  </form>
+                
+                
+                </div>
+            </div>
+          </div>
+
+            
+
+            <div class="delivery-outing-confirmation-amount delivery-hide">
+
+              <div class="delivery-outing-confirmation-amount-ask-amount delivery-outing-confirmation-amount-hide">
+                <form method="POST">
+                 {% csrf_token %}
+                    <p class="delivery-outing-confirmation-amount-ask-amount-text">HOW MUCH MONEY DID YOU BRING BACK?</p>
+                    <div class="delivery-outing-confirmation-amount-ask-amount-input-container">
+                        <input type="text" class="delivery-outing-confirmation-amount-ask-amount-input" name="deliveryamountbroughtback">
+                    </div>
+                    <div class="delivery-outing-confirmation-amount-submit-amount-btn-container">
+                        <button class="delivery-outing-confirmation-amount-submit-amount-btn" type="submit">Submit</button>
+                    </div>
+                    <div class="delivery-outing-final-closing-btn-container"></div>
+                </form>
+              </div>
+
+            </div>
+    
+          <!--Delivery customer sales section end-->
+
+    </main>
+    
+    <script>
+
+       let deliveryOutingFirstContainer = document.querySelector(".delivery-outing-first")
+       let deliveryOutingFirstText = document.querySelector(".delivery-outing-first-text")
+       let deliveryOutingFirstIcon = document.querySelector(".delivery-outing-first-icon")
+       let deliveryOutingSecondContainer = document.querySelector(".delivery-outing-second")
+       let deliveryOutingButton = document.querySelector(".delivery-outing-button")
+
+       let deliveryAmtRecieved = document.querySelector(".delivery-main-amount-recieved")
+       let deliverysubGoodsBtn = document.querySelector(".delivery-item-amount-recieved-delivery-submit")
+       let deliveryMainOutingContainer = document.querySelector(".delivery-main-outing-container")
+
+       // delivery sales functionality start
+
+      let customerName = document.querySelector("#delivery-sales-customer-name")
+      let verifyRealCustomer = document.querySelector(".delivery-sales-submit-btn")
+      let deliveryDisplay = document.querySelector(".delivery-sales-display")
+      let customerNameDisplay = document.querySelector(".delivery-sales-customer-name-value")
+      let exitContainer = document.querySelector(".delivery-sales-menu-exit-container")
+      let deliveryPopup = document.querySelector(".delivery-sales-popup-container")
+      let deliverySellBtns = document.querySelectorAll(".delivery-sales-sell-btn")
+
+      let deliveryPopupProductName = document.querySelector(".delivery-sales-popup-product-name")
+      let deliveryPopupSubmit = document.querySelector(".delivery-sales-popup-submit")
+      let deliveryPopupProductPrice = document.querySelector(".delivery-sales-popup-product-price")
+
+      let deliveryCalculateBtn = document.querySelector(".delivery-sales-calculate-btn")
+
+      let deliveryItem = document.querySelectorAll(".delivery-sales-item")
+
+      let deliverySearchVariant = document.querySelector(".delivery-sales-search-variant-input")
+
+      let deliverySalesBody = document.querySelector(".delivery-sales-body")
+      let deliveryEndOuting = document.querySelector(".delivery-end-outing")
+      let deliveryEndOutingIcon = document.querySelector(".delivery-end-outing-icon")
+      let deliveryEndOutingText = document.querySelector(".delivery-end-outing-text")
+      let deliveryEndOutingFinalContainer = document.querySelector(".delivery-end-outing-final-container")
+      let deliveryEndOutingSelectionContainer = document.querySelector(".delivery-end-outing-selection-container")
+      let deliveryEndOutingYes = document.querySelector(".delivery-end-outing-yes")
+      let deliveryEndOutingNo = document.querySelector(".delivery-end-outing-no")
+
+      let deliveryOutingCalcPageContent = document.querySelector(".delivery-outing-calc-page-content")
+      let deliveryOutingExitCalcPage = document.querySelector(".delivery-outing-calc-page-exit-icon")
+      let deliveryOutingCalcPageGoBack = document.querySelector(".delivery-outing-go-back")
+      let deliveryOutingCalcPageFinishTrans = document.querySelector(".delivery-outing-finish-transaction")
+      let deliveryOutingCalcPage = document.querySelector(".delivery-outing-calculate-page")
+      let deliveryOutingCalcPageTotal = document.querySelector(".delivery-outing-page-calc-total-amount")
+      let deliveryOutingCustomerName = document.querySelector(".delivery-outing-calc-page-header-txt")
+
+      let deliveryItemProductInput = document.querySelectorAll(".delivery-item-type-product-input")
+
+      let deliveryOutingConfirmationProductMainCon = document.querySelector(".delivery-outing-confirmation-product-main-con")
+      let deliveryOutingConfirmationProductRecvdSubmit = document.querySelector(".delivery-outing-amnt-recieved-delivery-submit")
+      let deliveryOutingConfirmationAmount = document.querySelector(".delivery-outing-confirmation-amount")
+      let deliveryEndOutingCon = document.querySelector(".delivery-end-outing-con")
+      let deliveryOutingConfirmationAmountSubmitAmountBtn = document.querySelector(".delivery-outing-confirmation-amount-submit-amount-btn")
+      let deliveryOutingConfirmationProductInput = document.querySelectorAll(".delivery-outing-confirmation-product-product-input")
+
+      let deliveryFinalClosingBtnContainer = document.querySelector(".delivery-outing-close-for-the-day-hide-con")
+      let deliveryFinalClosingBtn = document.querySelector(".delivery-outing-close-for-the-day-btn")
+      let deliveryFinalClosingConfirmation = document.querySelector(".delivery-outing-close-for-the-day-show-con-background-hide-con")
+      let deliveryFinalClosingNo = document.querySelector(".delivery-outing-close-for-the-day-btn-no")
+      let deliveryFinalClosingYes = document.querySelector(".delivery-outing-close-for-the-day-btn-yes")
+
+      let deliveryOutingFinalTransCalcPage = document.querySelector(".delivery-outing-calc-page-hover-hide-con")
+      let deliveryOutingFinalTransExit = document.querySelector(".delivery-outing-calc-pg-exit")
+      let deliveryOutingCalcPageModeOfDelivery = document.querySelector(".delivery-outing-calc-pg-mode-of-delivery")
+      let deliveryOutingDeliveryModesCon = document.querySelector(".delivery-outing-calc-pg-delivery-modes-con")
+      let deliveryOutingDeliveryModes = document.querySelectorAll(".delivery-outing-calc-pg-delivery-modes")
+      let deliveryOutingCalcPageDebitCreditCon = document.querySelector(".delivery-outing-calc-pg-amt-collected-debt-credit-hide-con")
+      let deliveryOutingCalcPageAmtCollectedInput = document.querySelector(".delivery-outing-calc-pg-amt-collected")
+      let deliveryOutingCalcPageDebt = document.querySelector(".delivery-outing-calc-pg-debt")
+      let deliveryOutingCalcPageCredit = document.querySelector(".delivery-outing-calc-pg-credit")
+      let deliveryOutingCalcPageButtonHide = document.querySelector(".delivery-outing-calc-pg-third-con-hide")
+      let deliveryOutingCalcPageCustomerName = document.querySelector(".delivery-outing-calc-pg-cname")
+      let deliveryOutingCalcPageTotalValue = document.querySelector(".delivery-outing-calc-pg-total")
+
+      let deliveryOutingPageAmtCollectedTxt = document.querySelector(".delivery-calc-pg-amt-cllcted-txt")
+
+      let deliveryOutingCalcPageSubmitTotalValues = document.querySelector(".delivery-outing-calc-pg-submit-total-values-btn")
+
+
+      //Backend Variables
+      let deliveryOutingBackendCon = document.querySelector(".delivery-outing-backend-con")
+      let deliveryOutingBackendCustomerName = document.querySelector(".delivery-outing-backend-customer-name")
+      let deliveryGoodsRecievedCon = document.querySelector(".delivery-goods-recieved-con")
+      let deliveryOutingFinalClosingBackendCon = document.querySelector(".delivery-outing-final-closing-bkend-con")
+
+      let productName = document.querySelectorAll(".delivery-sales-product-name")
+
+      deliveryStatus = localStorage.getItem("outingStatus")
+
+
+      let productsTaken = {}
+      let itemspurchased = {}
+
+
+      // Keyboard distortion fix
+
+
+      // delivery sales functionality end
+
+
+       if(deliveryStatus == "New Outing") {
+        deliverySalesBody.classList.remove("delivery-hide")
+        deliveryMainOutingContainer.classList.add("delivery-hide")
+        deliveryEndOutingIcon.classList.remove("delivery-hide")
+       } else if(deliveryStatus == "SubmittingMoney") {
+        deliverySalesBody.classList.add("delivery-hide")
+        deliveryMainOutingContainer.classList.add("delivery-hide")
+        deliveryOutingConfirmationAmount.classList.remove("delivery-hide")
+       }else {
+        deliveryOutingFirstContainer.addEventListener('click', function() {
+            deliveryOutingFirstIcon.classList.toggle("delivery-outing-first-icon-change")
+            deliveryOutingSecondContainer.classList.toggle("delivery-hide")
+            deliveryFinalClosingBtnContainer.classList.add("delivery-hide")
+        })
+        
+        deliveryOutingSecondContainer.addEventListener('click', function() {
+            deliveryOutingFirstText.textContent += deliveryOutingSecondContainer.textContent
+            deliveryOutingButton.classList.remove("delivery-hide")
+        })
+
+        deliveryOutingButton.addEventListener('click', function() {
+            localStorage.setItem("outingStatus", "New Outing")
+            let deliveryOutingValDisplay = localStorage.getItem("outingStatus")
+            deliveryOutingFirstText.textContent = deliveryOutingValDisplay
+            deliveryAmtRecieved.classList.remove("delivery-hide")
+            deliveryOutingButton.classList.add("delivery-hide")
+        })
+
+        deliverysubGoodsBtn.addEventListener('click', function() {
+            deliverySalesBody.classList.remove("delivery-hide")
+            deliveryMainOutingContainer.classList.add("delivery-hide")
+            location.reload()
+            deliveryItemProductInput.forEach(e => {
+              if(e.value !== "") {
+                deliveryproductName = e.parentElement.querySelector(".delivery-item-type-product-name").textContent
+                deliveryproductValue = e.value
+                productsTaken[deliveryproductName] = deliveryproductValue
+              }
+            })
+            for(l in productsTaken) {
+              deliveryGoodsRecievedCon.innerHTML += `<input name="${l}" value="${productsTaken[l]}"/>`
+            }
+        })
+
+       }
+
+       deliveryOutingSecondContainer.addEventListener('click', function() {
+        deliveryOutingSecondContainer.classList.add("delivery-hide")
+       })
+
+       deliveryEndOutingIcon.addEventListener('click', function() {
+        deliveryEndOutingIcon.classList.toggle("delivery-end-outing-color")
+        deliveryEndOutingSelectionContainer.classList.toggle("delivery-hide")
+        deliveryEndOutingText.classList.toggle("delivery-hide")
+        deliveryEndOutingFinalContainer.classList.add("delivery-hide")
+       })
+
+       deliveryEndOutingText.addEventListener('click', function() {
+        deliveryEndOutingFinalContainer.classList.toggle("delivery-hide")
+       })
+
+       deliveryEndOutingYes.addEventListener('click', function() {
+        deliverySalesBody.classList.add("delivery-hide")
+        deliveryEndOutingIcon.classList.add("delivery-hide")
+        deliveryEndOutingSelectionContainer.classList.add("delivery-hide")
+        deliveryEndOutingCon.classList.add("delivery-hide")
+        deliveryOutingConfirmationProductMainCon.classList.remove("delivery-hide")
+       })
+
+       deliveryEndOutingNo.addEventListener('click', function() {
+        deliveryEndOutingSelectionContainer.classList.add("delivery-hide")
+        deliveryEndOutingText.classList.add("delivery-hide")
+        deliveryEndOutingFinalContainer.classList.add("delivery-hide")
+       })
+
+      deliveryFinalClosingBtn.addEventListener('click', () => {
+        deliveryFinalClosingConfirmation.classList.remove("delivery-hide")
+      })
+
+      deliveryFinalClosingNo.addEventListener('click', () => {
+        deliveryFinalClosingConfirmation.classList.add("delivery-hide")
+      })
+
+      deliveryFinalClosingYes.addEventListener('click', () => {
+        deliveryFinalClosingConfirmation.classList.add("delivery-hide")
+        deliveryOutingFinalClosingBackendCon.innerHTML = `<input name="closedelivery" value="closed"/>`
+        deliveryFinalClosingYes.setAttribute("type", "submit")
+      })
+
+
+
+
+      // delivery sales functionality start
+
+      /* For the delivery's(delivery.html) hidden display */
+
+
+      /* To display product and customer name */
+      verifyRealCustomer.addEventListener('click', function() {
+          if(customerName.value != "") {
+              deliveryDisplay.classList.remove("delivery-sales-product-display-hide")
+              customerNameDisplay.innerHTML = customerName.value
+          }
+      })
+
+
+      /* For Search for a Variant functionality */
+
+      function deliverySearch() {
+        deliveryItem.forEach(function(n) {
+          n.classList.add("delivery-sales-hidden")
+        })
+  
+        let value = deliverySearchVariant.value
+
+        productName.forEach(function(e) {
+          if(e.textContent.toUpperCase().includes(value.toUpperCase().trim())) {
+              e.parentElement.classList.remove("delivery-sales-hidden")
+        }
+        })
+
+      }
+
+      
+
+      /* To display items to sell */
+
+      deliverySellBtns.forEach(function(deliverySellBtn) {
+          deliverySellBtn.addEventListener('click', function(e) {
+              let itemName = e.currentTarget.parentElement.querySelector(".delivery-sales-product-name")
+              let itemPrice = e.currentTarget.parentElement.querySelector(".delivery-sales-item-price")
+              deliveryPopupProductName.textContent = itemName.textContent
+              deliveryPopupProductPrice.innerHTML = itemPrice.textContent
+              if(deliveryPopup.classList.contains("delivery-sales-hidden")) {
+                  deliveryPopup.classList.remove("delivery-sales-hidden")
+                }
+          })
+      })
+
+
+      deliveryPopupSubmit.addEventListener('click', function(e) {
+          let nameOfItem = e.currentTarget.parentElement.querySelector(".delivery-sales-popup-product-name").innerText
+          let productAmount = Number(e.currentTarget.parentElement.querySelector(".delivery-sales-popup-input").value)
+          let productPrice = Number(e.currentTarget.parentElement.querySelector(".delivery-sales-popup-product-price").innerText)
+          itemspurchased[nameOfItem] = [productAmount, productPrice]
+          deliveryPopup.classList.add("delivery-sales-hidden")
+      })
+
+
+      deliveryCalculateBtn.addEventListener('click', function() {
+        deliveryDisplay.classList.add("delivery-hide")
+        deliveryOutingCalcPage.classList.remove("delivery-outing-hide")
+        deliveryOutingBackendCustomerName.setAttribute("value", customerName.value)
+        let z = 0
+        for(n in itemspurchased) {
+          deliveryOutingItemsTotal = (itemspurchased[n][0]) * (itemspurchased[n][1])
+          z += deliveryOutingItemsTotal
+          deliveryOutingCalcPageContent.innerHTML += `<div class="delivery-outing-calc-pg-item"><div class="delivery-outing-calc-product-txt delivery-outing-gap"><p>${n}</p></div><div class="delivery-outing-calc-others delivery-outing-gap"><p>${itemspurchased[n][0]}</p><p>${itemspurchased[n][1]}</p><p>${(itemspurchased[n][0]) * (itemspurchased[n][1])}</p></div></div>`
+          deliveryOutingBackendCon.innerHTML += `<input name="${n}" value="${itemspurchased[n][0]}"/>`        
+        }
+        deliveryOutingCalcPageTotal.textContent = z
+        deliveryOutingCustomerName.textContent = customerName.value
+      })
+
+
+      deliveryOutingExitCalcPage.addEventListener('click', () => {
+        deliveryOutingCalcPage.classList.add("delivery-outing-hide")
+      })
+
+      deliveryOutingCalcPageFinishTrans.addEventListener('click', () => {
+        deliveryOutingFinalTransCalcPage.classList.remove('delivery-hide')
+        deliveryOutingCalcPageCustomerName.innerHTML = `${deliveryOutingCustomerName.textContent}:  `
+        deliveryOutingCalcPageTotalValue.textContent = deliveryOutingCalcPageTotal.textContent
+        deliveryOutingPageAmtCollectedTxt.innerHTML += ` from ${deliveryOutingCustomerName.textContent}: `
+      })
+
+      deliveryOutingFinalTransExit.addEventListener('click', () => {
+        deliveryOutingFinalTransCalcPage.classList.add("delivery-hide")
+      })
+
+      deliveryOutingCalcPageModeOfDelivery.addEventListener('click', () => {
+        deliveryOutingDeliveryModesCon.classList.toggle("delivery-hide")
+      })
+
+     
+
+      deliveryOutingDeliveryModes.forEach(e => {
+        e.addEventListener('click', () => {
+          let deliveryPaymentMode = e.textContent
+          deliveryOutingCalcPageModeOfDelivery.textContent = deliveryPaymentMode
+          deliveryOutingDeliveryModesCon.classList.add("delivery-hide")
+          if(deliveryOutingCalcPageModeOfDelivery.textContent === "Cash") {
+            deliveryOutingCalcPageDebitCreditCon.classList.remove("delivery-hide")
+            deliveryOutingCalcPageButtonHide.classList.remove("delivery-hide")
+          } else if(deliveryOutingCalcPageModeOfDelivery.textContent === "Transfer") {
+            deliveryOutingCalcPageButtonHide.classList.remove("delivery-hide")
+            deliveryOutingCalcPageDebitCreditCon.classList.add("delivery-hide")
+          }
+        })
+      })
+      
+
+      deliveryOutingConfirmationProductRecvdSubmit.addEventListener('click', () => {
+        deliveryOutingConfirmationProductInput.forEach(e => {
+          if(e.value !== "") {
+            deloutname = e.parentElement.querySelector(".delivery-outing-confirmation-product-product-name")
+            e.setAttribute("name", deloutname.textContent)
+            e.setAttribute("value", e.value)
+          }
+        })
+        deliveryOutingConfirmationProductMainCon.classList.add("delivery-hide")
+        localStorage.setItem("outingStatus", "SubmittingMoney")
+      })
+
+
+      deliveryOutingConfirmationAmountSubmitAmountBtn.addEventListener('click', () => {
+        localStorage.clear()
+      })
+
+      // Store all delivery outing calc page backend values in deliveryOUtingCalcPageModeOfDelivery div
+
+      deliveryOutingCalcPageSubmitTotalValues.addEventListener('click', () => {
+        deliveryOutingCalcPageModeOfDelivery.innerHTML += `<input type="text" name="productvalue" value="${deliveryOutingCalcPageTotal.textContent}" style="display: none;"/>`
+        deliveryOutingCalcPageModeOfDelivery.innerHTML += `<input type="text" name="modeofpayment" value="${deliveryOutingCalcPageModeOfDelivery.textContent}" style="display: none;"/>`
+        if(deliveryOutingCalcPageAmtCollectedInput.value !== "") {
+          deliveryOutingCalcPageModeOfDelivery.innerHTML += `<input type="text" name="amtfromcustomer" value="${deliveryOutingCalcPageAmtCollectedInput.value}" style="display: none;"/>`
+        }
+
+        if(deliveryOutingCalcPageDebt.value !== "") {
+          deliveryOutingCalcPageModeOfDelivery.innerHTML += `<input type="text" name="customerdebt" value="${deliveryOutingCalcPageDebt.value}" style="display: none;"/>`
+        }
+
+        if(deliveryOutingCalcPageCredit.value !== "") {
+          deliveryOutingCalcPageModeOfDelivery.innerHTML += `<input type="text" name="customercredit" value="${deliveryOutingCalcPageCredit.value}" style="display: none;"/>`
+        }
+
+        deliveryOutingCalcPageSubmitTotalValues.setAttribute("type", "submit")
+      })
+
+
+
+      exitContainer.addEventListener('click', function() {
+          deliveryPopup.classList.add("delivery-sales-hidden")
+
+      })
+
+
+
+    </script>
+</body>
+</html>
+
